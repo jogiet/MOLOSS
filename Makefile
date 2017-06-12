@@ -6,7 +6,6 @@ TARGET = native
 
 test:
 	$(OCAMLBUILD) test.$(TARGET) 
-	$(OCAMLBUILD) solve.$(TARGET) 
 
 clean:
 	rm -rf _build/
