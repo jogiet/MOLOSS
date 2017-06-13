@@ -6,6 +6,7 @@ TARGET = native
 
 test:
 	$(OCAMLBUILD) test.$(TARGET) 
+	$(OCAMLBUILD) testception.$(TARGET) 
 
 clean:
 	rm -rf _build/
