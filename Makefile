@@ -1,15 +1,25 @@
-OCAMLBUILD = ocamlbuild -classic-display \
+OCB = ocamlbuild -classic-display \
 			-use-menhir \
 			-libs unix	
 
 TARGET = native
 
+PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
+
 test:
-	$(OCAMLBUILD) test.$(TARGET) 
+	$(OCB) test.$(TARGET) 
+
+doc:
+	$(OCB)-I _build/ solve.docdir/dep.dot
+	$(OCB)-I _build/ solve.docdir/index.html
+	ln -f -s solve.docdir/index.html 
+
 
 clean:
 	rm -rf _build/
-	rm *.native
+	rm -f *.native
+	rm -f *.html
+	rm -rf solve.docdir
 
 realclear:
-	rm *~
+	rm -f *~
