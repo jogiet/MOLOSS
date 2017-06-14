@@ -14,6 +14,8 @@ doc:
 	$(OCB)-I _build/ solve.docdir/index.html
 	ln -f -s solve.docdir/index.html 
 
+graph:
+	dot -Tpdf solve.docdir/dep.dot -o dep.pdf
 
 clean:
 	rm -rf _build/
