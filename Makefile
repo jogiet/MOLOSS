@@ -6,8 +6,14 @@ TARGET = native
 
 PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 
+all: test report
+
 test:
 	$(OCB) test.$(TARGET) 
+
+report: 
+	cd report; pdflatex report.tex
+	mv report/report.pdf ./
 
 doc:
 	$(OCB)-I _build/ solve.docdir/dep.dot
@@ -17,11 +23,13 @@ doc:
 graph:
 	dot -Tpdf solve.docdir/dep.dot -o dep.pdf
 
+
 clean:
 	rm -rf _build/
 	rm -f *.native
 	rm -f *.html
 	rm -rf solve.docdir
+	cd report; rm -rf *.aux *.log *.out *.toc *.pdf
 
 realclear:
 	rm -f *~
