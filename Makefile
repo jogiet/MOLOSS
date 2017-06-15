@@ -6,7 +6,7 @@ TARGET = native
 
 PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 
-all: test report
+all: test report moloss
 
 test:
 	$(OCB) source/test.$(TARGET) 
@@ -30,10 +30,13 @@ graph:
 
 clean:
 	rm -rf _build/
+	rm -f *.pdf
+	rm -f moloss
 	rm -f *.native
 	rm -f *.html
 	rm -rf solve.docdir
 	cd report; rm -rf *.aux *.log *.out *.toc *.pdf
+	rm -rf *~
 
 realclear:
 	rm -f *~
