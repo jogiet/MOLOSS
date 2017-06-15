@@ -9,7 +9,7 @@ PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 all: test report
 
 test:
-	$(OCB) test.$(TARGET) 
+	$(OCB) source/test.$(TARGET) 
 
 moloss:
 	$(OCB) source/main.$(TARGET) 
@@ -20,8 +20,8 @@ report:
 	mv report/report.pdf ./
 
 doc:
-	$(OCB)-I _build/ solve.docdir/dep.dot
-	$(OCB)-I _build/ solve.docdir/index.html
+	$(OCB)-I _build/ source/solve.docdir/dep.dot
+	$(OCB)-I _build/ source/solve.docdir/index.html
 	ln -f -s solve.docdir/index.html 
 
 graph:

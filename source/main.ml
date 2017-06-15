@@ -26,6 +26,7 @@ let _ =
 	let argv = A.to_list (Sys.argv) 
 	and t0 = U.gettimeofday ()
 	in begin
+	begin
 		match argv with
 		| _ :: filename :: _ when good_suff filename ->
 		begin			
@@ -45,12 +46,13 @@ let _ =
 			fpf "syntax error.\n";
 			flush_all ();
 			exit 1
-end					
+		end					
 		| _ ->
 		begin
 			fpf "Donner le nom du fichier avec une extension .bml\n";
 			exit 1;
 		end;
+	end;
 		if L.mem "--time" argv then
 			fpf "Claculs effectués en %f s \n" (U.gettimeofday () -.t0);
 	end
