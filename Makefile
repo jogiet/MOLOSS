@@ -11,6 +11,10 @@ all: test report
 test:
 	$(OCB) test.$(TARGET) 
 
+moloss:
+	$(OCB) source/main.$(TARGET) 
+	mv main.native moloss
+
 report: 
 	cd report; pdflatex report.tex
 	mv report/report.pdf ./
