@@ -52,6 +52,10 @@ type dicided =
 	| Todo of config*BFO.formula*(string list)
 	(* nouvelle config, formule en plus, varaibles en plus *)
 
+let aux_out s = function
+| None -> ()
+| Some oc -> output_string oc s
+
 
 (*--------------------------------------------------------*)
 (*              Fonction sur les config                   *)
@@ -177,22 +181,27 @@ let rec bfo_to_smtlib = function
 | BFO.Dij (f1,f2) ->
 	spf "(or %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
 
-let dec_const oc v = 
-begin
-	output_string oc (spf "(declare-const %s Bool) \n" v);
-	flush_all ();
-end
-
-
-let dec_assert oc bf = 
-	let f_smt = bfo_to_smtlib bf 
+let dec_const oc v out = 
+	let s = spf "(declare-const %s Bool) \n" v 
 	in begin
-	output_string oc (spf "(assert %s) \n" f_smt);
+		output_string oc s;
+		aux_out s out;
 		flush_all ();
 	end
 
 
-let config_to_request config oc = 
+let dec_assert oc bf out = 
+	let f_smt = bfo_to_smtlib bf in
+	let s = spf "(assert %s) \n" f_smt 
+	in begin
+		output_string oc s;
+		aux_out s out;
+		flush_all ();
+	end
+	
+
+
+let config_to_request config oc out= 
 (* Permet de configurer le deébut d'une requête *)
 	let header = 
 "(set-logic QF_UF) \n
@@ -205,16 +214,19 @@ let config_to_request config oc =
 "; Fin des assertions : pour conclure :\n"
 	in
 	let aux_var v _ = 
-		dec_const oc v
+		dec_const oc v out
 	and aux_asser f = 
-		dec_assert oc f
+		dec_assert oc f out
 	in begin
 	flush_all ();
 	output_string oc header;
+	aux_out header out;
 	Smap.iter aux_var config.env;
 	output_string oc mid;
+	aux_out mid out;
 	BFOSet.iter aux_asser config.s;
 	output_string oc bottom; 
+	aux_out mid out;
 	flush_all ();
 	end
 
@@ -231,10 +243,11 @@ let report (b,e) =
  
 
 
-let get_model oc ic = 
+let get_model oc ic out = 
 begin
 	flush_all ();
 	output_string oc "(get-model) \n";
+	aux_out  "(get-model) \n" out ;
 	flush_all ();
 	let res = ref ""
 	and cont = ref true 
@@ -247,6 +260,7 @@ begin
 				cont := false;
 			end;
 		done;
+		aux_out (!res^"\n") out;
 	let lb = Lexing.from_string !res in
 	try 
 		Z3_parser.answer Z3_lexer.next_token lb
@@ -265,15 +279,19 @@ begin
 	end;
 end
 
-let get_ans oc ic = 
+let get_ans oc ic out = 
 begin
 	output_string oc "(check-sat) \n";
+	aux_out "(check-sat) \n" out;
 	flush_all ();
-	let ans = input_line ic in
-	if ans = "unsat" then
-		UNSAT
-	else
-		SAT
+	let ans = input_line ic 
+	in begin
+		aux_out ans out;
+		if ans = "unsat" then
+			UNSAT
+		else
+			SAT;
+		end;
 end
 
 
@@ -297,14 +315,14 @@ in begin
 	flush_all ();
 end
 
-let solve f = 
+let solve f out = 
 	let config = ref (init_config [f] )
 	and ic,oc = U.open_process "./z3 -in"
 	and cont = ref true 
 	in begin
-		config_to_request !config oc;
+		config_to_request !config oc out;
 		while !cont do
-			match get_ans oc ic with
+			match get_ans oc ic out with
 			| UNSAT ->
 
 			begin
@@ -312,7 +330,7 @@ let solve f =
 				flush_all ();
 				cont := false; 
 			end
-			| SAT -> let m = get_model oc ic in
+			| SAT -> let m = get_model oc ic out in
 				match decide m !config with
 				| Sat ->
 				begin
@@ -324,8 +342,8 @@ let solve f =
 				| Todo (new_config,new_bf,new_var) ->
 				begin
 					config := new_config;
-					List.iter (fun v -> dec_const oc v) new_var;
-					dec_assert oc new_bf;
+					List.iter (fun v -> dec_const oc v out) new_var;
+					dec_assert oc new_bf out;
 				end;
 		done;
 		fpf "Terminé !!! \n";

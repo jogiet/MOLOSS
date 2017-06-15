@@ -18,7 +18,7 @@ fpf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 let good_suff s = 
 	F.check_suffix s ".bml"
 let new_suff s = 
-	(F.chop_suffix s ".bml")^".conv"
+	(F.chop_suffix s ".bml")^".out"
 
 
 
@@ -31,10 +31,16 @@ let _ =
 		| _ :: filename :: _ when good_suff filename ->
 		begin			
 		let file = open_in filename in
-			let lb = Lexing.from_channel file in
+			let lb = Lexing.from_channel file 
+			and out = 
+				if L.mem "--out" argv then 
+					Some (open_out (new_suff filename))
+				else
+					None
+			in
 			try			
 			let f = Parser.file Lexer.next_token lb in
-				So.solve (C.st "w" f)
+				So.solve (C.st "w" f) out
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
