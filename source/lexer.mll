@@ -31,6 +31,7 @@ rule next_token = parse
 | "=>" {Impl}
 | "<>" {Diamond}
 | "[]" {Boxe}
+| eof {EOF}
 | ident as id {Ident id}
 | _ as s { raise (Lex_err  ("illegal character: " ^ (String.make 1 s))) }
 
