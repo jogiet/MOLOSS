@@ -6,7 +6,7 @@ TARGET = native
 
 PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 
-all: test report moloss
+all: test rapport moloss
 
 test:
 	$(OCB) source/test.$(TARGET) 
@@ -15,7 +15,7 @@ moloss:
 	$(OCB) source/main.$(TARGET) 
 	mv main.native moloss
 
-report: 
+rapport: 
 	cd report; pdflatex report.tex
 	mv report/report.pdf ./
 
