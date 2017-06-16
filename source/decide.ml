@@ -27,28 +27,26 @@ type env = (string,FO.formula) H.t
 type thetex = (string,unit) H.t
 (* représente \Theta_\exists *)
 
-module DS : H.HashedType = struct
-	type t = string*string
 
-	let equal (s11,s12) (s21,s22) = 
-		((s11 = s21) && (s12 = s22)) || ((s11 = s22) && (s12= s21))
-	
-	let hash (s1,s2) = 
-		assert false
 
-end
-
-module DSH = Hashtbl.Make(DS)
-
-type thetfor = unit DSH.t
+type thetfor = (string*string,unit) H.t
 (* représente \Theta_\forall *)
 
-type thetsim = SSSet.t
-(* représente \Theta_sym *)
+type thetsym = (string*string,unit) H.t
+(* représente \Theta_sym  
+/!\ : comme l'ordre ne compte pas (i.e. on stocke des ensembles de string
+et non des couples ), on rentre les strings en ordre croissant 
+(+ facile pour retrouver) *)
 
+type thetrans = (string*string*string,unit) H.t
 
+type theteuc = (string*(string*string),unit) H.t
+(*
+Même remarque que pour thetsym pour l'es deux dernbiers éléments de la
+clef
+*)
 
-
+type thetfonc = (string,string) H.t
 
 
 
