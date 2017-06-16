@@ -213,7 +213,7 @@ let rec symmetric config = function
 begin
 	let f = H.find config.env eps in
 	match f with
-	| FO.Relfation (x,y) ->
+	| FO.Relation (x,y) ->
 		let x, y = if x <= y then (x,y)
 							 else (y,x)
 		in
@@ -235,6 +235,52 @@ end
 | _::q -> symmetric config q
 
 
+(*  ===========> Transitivité  <=========== *)
+let transitivity config model = 
+	let rec aux rel = function 
+	| [] -> rel
+	| (eps,b)::q when b -> 
+	begin
+		match H.find config.env eps with
+		| FO.Relation (x,y) -> 
+		begin
+			let aux_pred (u,v) = 
+				v = x && not (H.mem config.trans (u,x,y))
+			and aux_succ (u,v) = 
+				y = u && not (H.mem config.trans (x,y,v))
+			in
+			match L.filter aux_pred rel with
+			| (u,_)::_ -> (* u -> x -> y *)
+				let f = 
+					FO.Dij (FO.Dij (FO.Not (FO.Relation (u,x)),
+									FO.Not (FO.Relation (x,y))),
+							FO.Relation (u,y))
+				in 
+				let f_tot,new_var = abs config.env f 
+				in begin
+					H.add config.trans (u,x,y) ();
+					raise (Found (new_var,f_tot));
+				end
+			| [] ->
+			match L.filter aux_succ rel with
+			| (_,v)::_ -> (* x -> y -> v *)
+				let f = 
+					FO.Dij (FO.Dij (FO.Not (FO.Relation (x,y)),
+									FO.Not (FO.Relation (y,v))),
+							FO.Relation (y,v))
+				in 
+				let f_tot,new_var = abs config.env f 
+				in begin
+					H.add config.trans (x,y,v) ();
+					raise (Found (new_var,f_tot));
+				end
+			| [] -> aux ((x,y)::rel) q	
+		end
+		| _ -> aux rel q
+	end
+	| _::q -> aux rel q
+	in
+	aux model |> ignore
 
 
 
