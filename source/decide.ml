@@ -16,7 +16,7 @@ module PP = Pprinter
 On essaye d'avoir une idée de l'implem à utiliser.
 -> Comme on ne bactrack pas mais on fiat beaucoup d'ajouts, on utlise
 une structure mutable : des tables de hash
-TODO : trouver une structure mutable équivalente aus Set !!
+TODO : trouver une structure mutable équivalente aux Set !!
 => réponse une trable de hash ('a,unit) ... pas plus opti ?
 *)
 
@@ -44,7 +44,7 @@ type thetrans = (string*string*string,unit) H.t
 
 type theteuc = (string*(string*string),unit) H.t
 (*
-Même remarque que pour thetsym pour l'es deux dernbiers éléments de la
+Même remarque que pour thetsym pour les deux derniers éléments de la
 clef
 *)
 
@@ -238,7 +238,7 @@ end
 (*  ===========> Transitivité  <=========== *)
 let transitivity config model = 
 	let rec aux rel = function 
-	| [] -> rel
+	| [] -> ()
 	| (eps,b)::q when b -> 
 	begin
 		match H.find config.env eps with
@@ -280,8 +280,40 @@ let transitivity config model =
 	end
 	| _::q -> aux rel q
 	in
-	aux model |> ignore
+	aux [] model 
 
+(* ===========> Euclidienne  <=========== *)
+let euclidean config model = 
+	let rec aux rel = function 
+	| [] -> ()
+	| (eps,b)::q when b ->
+	begin
+		match H.find config.env eps with
+		| FO.Relation (x,u) ->
+		begin
+			let aux_find (x0,v) = 
+				x = x0 && not (H.mem config.euc (x,if u <= v then (u,v)
+															 else (v,u)))
+			in match L.filter aux_find rel with
+			| (_,v)::_ ->
+				let f = 
+					FO.Dij (FO.Dij (FO.Not (FO.Relation (x,u)),
+									FO.Not (FO.Relation (x,v))),
+							FO.Conj (FO.Relation (u,v),
+									 FO.Relation (v,u)))
+				in
+				let f_tot,new_var = abs config.env f 
+				in begin
+					H.add config.euc (x,if u <= v then (u,v) else (v,u)) ();
+					raise (Found (new_var,f_tot));
+				end
+			| [] -> aux ((x,u)::rel) q
+		end
+		| _ -> aux rel q
+	end
+	| _::q -> aux rel q
+	in
+	aux [] model
 
 
 
