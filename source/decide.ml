@@ -206,8 +206,33 @@ end
 
 
 
-
-
+(*  ===========>  Symétrie  <=========== *)
+let rec symmetric config = function
+| [] -> ()
+| (eps,b)::q  when b ->
+begin
+	let f = H.find config.env eps in
+	match f with
+	| FO.Relfation (x,y) ->
+		let x, y = if x <= y then (x,y)
+							 else (y,x)
+		in
+		if H.mem config.sym (x,y) then
+			symmetric config q
+		else
+			let xy = FO.Relation (x,y)
+			and yx = FO.Relation (y,x) in
+			let f = FO.Dij (FO.Conj (xy,yx),
+							FO.Conj (FO.Not xy, FO.Not yx))
+			in 
+			let f_tot,new_var = abs config.env f 
+			in begin
+				H.add config.sym (x,y) ();
+				raise (Found (new_var,f_tot));
+			end
+	| _ -> symmetric config q
+end
+| _::q -> symmetric config q
 
 
 
