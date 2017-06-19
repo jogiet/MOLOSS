@@ -390,7 +390,7 @@ in begin
 	fpf "liste des mondes : \n";
 	H.iter (fun k _ -> fpf "%s \n" k) config.w;
 	flush_all ();
-	fpf "\nPropriétés à vérifier :\n ";	
+	fpf "\nPropriétés à vérifier :\n";	
 	List.iter aux m;
 	flush_all ();
 end

@@ -23,11 +23,31 @@ file :
 
 formula:
 | f = atom {f}
-| f1 = atom; Conj; f2 = atom {Ast_modal.Conj (f1,f2)}
-| f1 = atom; Dij; f2 = atom {Ast_modal.Dij (f1,f2)}
-| f1 = atom; Impl; f2 = atom {Ast_modal.Impl (f1,f2)}
-| Boxe; f = atom {Ast_modal.Boxe f}
-| Diamond; f = atom {Ast_modal.Diamond f}
+| f1 = atom; Conj; f2 = andrule {Ast_modal.Conj (f1,f2)}
+| f1 = atom; Dij; f2 = orrule {Ast_modal.Dij (f1,f2)}
+| f1 = atom; Impl; f2 = implrule {Ast_modal.Impl (f1,f2)}
+| Boxe; f = boxrule {Ast_modal.Boxe f}
+| Diamond; f = diarule {Ast_modal.Diamond f}
+
+andrule:
+| f1 = atom; Conj; f2 = andrule {Ast_modal.Conj (f1,f2)}
+| f = atom {f}
+
+orrule:
+| f1 = atom; Dij; f2 = orrule {Ast_modal.Dij (f1,f2)}
+| f = atom {f}
+
+implrule:
+| f1 = atom; Impl; f2 = implrule {Ast_modal.Impl (f1,f2)}
+| f = atom {f}
+
+boxrule:
+| Boxe; f = boxrule {Ast_modal.Boxe f}
+| f = atom {f}
+
+diarule:
+| Diamond; f = diarule {Ast_modal.Diamond f}
+| f = atom {f}
 
 atom:
 | LPAR; f = formula; RPAR {f}
