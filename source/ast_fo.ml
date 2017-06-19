@@ -186,6 +186,7 @@ end
 (*--------------------------------------------------------*)
 
 let spf = Printf.sprintf
+module H = Hashtbl
 
 let i_w = ref 0
 let get_fw () = 
@@ -223,33 +224,36 @@ On ne doit donc plus s'en soucier ...
 *)
 match f with
 | FO.Atom _ | FO.Exists _ | FO.Forall _ | FO.Relation _ -> 
-	let filter = 
-		Smap.filter
-			(fun ki fi -> FO.equalmodvquant f fi)
-			env
-	in
-	if (Smap.is_empty filter) then
-		let i = get_fv () in
-		(BFO.Atom i , Smap.add i f env,[i])
-	else
-		let i = fst (Smap.choose filter) in
-		(BFO.Atom i,env, [])
+	let found = ref None in
+	let aux key f0 = 
+		if (FO.equalmodvquant f f0) then
+			found := Some key
+	in begin
+		H.iter aux env;
+		match !found with
+		| Some key ->(BFO.Atom key,[])
+		| None -> let v = get_fv () 
+		in begin
+			H.add env v f;
+			(BFO.Atom v,[v]);
+		end
+	end
 | FO.Not f -> 
-	let bf,new_env,new_var = abs env f in
-		(BFO.Not bf ,new_env,new_var)
+	let bf,new_var = abs env f in
+		(BFO.Not bf,new_var)
 | FO.Conj (f1,f2) ->
-	let bf1,env1,new_var1 = abs env f1 in
-	let bf2,env2,new_var2 = abs env1 f2 in
-		(BFO.Conj (bf1,bf2),env2,new_var1@new_var2)
+	let bf1,new_var1 = abs env f1 in
+	let bf2,new_var2 = abs env f2 in
+		(BFO.Conj (bf1,bf2),new_var1@new_var2)
 | FO.Dij (f1,f2) ->
-	let bf1,env1,new_var1 = abs env f1 in
-	let bf2,env2,new_var2 = abs env1 f2 in
-		(BFO.Dij (bf1,bf2),env2,new_var1@new_var2)
+	let bf1,new_var1 = abs env f1 in
+	let bf2,new_var2 = abs env f2 in
+		(BFO.Dij (bf1,bf2),new_var1@new_var2)
 
 let rec conc env bf = 
 match bf with 
 | BFO.Atom i -> 
-	(Smap.find i env)
+	(H.find env i )
 | BFO.Not bf ->
 	FO.Not (conc env bf)
 | BFO.Conj (bf1,bf2) ->

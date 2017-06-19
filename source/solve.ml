@@ -26,7 +26,7 @@ module DS = struct
 	let compare = compare
 end
 module DSSet = Set.Make(DS)
-
+open Decide
 
 
 type ident = string
@@ -37,20 +37,26 @@ module BFOSet = Set.Make(BFO)
 
 type ans = SAT | UNSAT
 
-type config = 
+(*
+type config = D.config
+*)
+(*
 	{mutable w : SSet.t; (* liste des mondes possibles *)
 	 mutable env : FO.formula Smap.t; (* string -> formula *)
 	 mutable s : BFOSet.t; (* ensmble S *)
 	 mutable exists : SSet.t; (* ensemble \Theta_\exists *)
 	 mutable forall : DSSet.t} (* ensemble \Theta_\forall *)
+*)
 
 let spf = Format.sprintf
 and fpf = Format.printf
 
+(*
 type dicided = 
 	| Sat
 	| Todo of config*BFO.formula*(string list)
 	(* nouvelle config, formule en plus, varaibles en plus *)
+*)
 
 let aux_out s = function
 | None -> ()
@@ -61,6 +67,7 @@ let aux_out s = function
 (*              Fonction sur les config                   *)
 (*--------------------------------------------------------*)
 
+(*
 let rec init_config = function 
 (*
 Prend une liste de FO.formula et renvoie une config vide dont s et env
@@ -80,7 +87,9 @@ contiennent la liste de formule
 		config.s <- BFOSet.add bf config.s;
 		config;
 	end
-		
+*)
+
+
 (*--------------------------------------------------------*)
 (*                 Fonction de décision                   *)
 (*--------------------------------------------------------*)
@@ -89,7 +98,7 @@ contiennent la liste de formule
 possible de passer les règles exists & Forall en fonction annexe : 
 code + lisible , TODO
 *)
-
+(*
 let decide modele config = 
 	let rec make_rel modele config = 
 	(* Construction des relations dans le modèle *)
@@ -108,6 +117,16 @@ let decide modele config =
 	| [] -> Sat 
 	| (eps,b)::q when b = true -> 
 	begin
+		
+(*--------------------------------------------------------*)
+(*                 Fonction de décision                   *)
+(*--------------------------------------------------------*)
+
+(*
+possible de passer les règles exists & Forall en fonction annexe : 
+code + lisible , TODO
+*)
+
 		let f = Smap.find eps config.env in
 		match f with
 		| FO.Atom _ | FO.Relation _ -> 
@@ -166,7 +185,7 @@ let decide modele config =
 		aux q config rel 
 	in aux modele config (make_rel modele config) 
 
-
+*)
 
 (*--------------------------------------------------------*)
 (*       Fonctions de conversion FO <-> SMT-LIB           *)
@@ -200,7 +219,7 @@ let dec_assert oc bf out =
 	end
 	
 
-
+(*
 let config_to_request config oc out= 
 (* Permet de configurer le deébut d'une requête *)
 	let header = 
@@ -229,6 +248,7 @@ let config_to_request config oc out=
 	aux_out mid out;
 	flush_all ();
 	end
+*)
 
 (*--------------------------------------------------------*)
 (*              Fonctions pour le parsing                 *)
@@ -299,28 +319,60 @@ end
 (*                Fonction de résolution                  *)
 (*--------------------------------------------------------*)
 
+let new_config () = 
+	let config = 
+	{w = H.create 10;
+	 env = H.create 10;
+	 s = ();
+	 exists = H.create 10;
+	 forall = H.create 10;
+	 sym = H.create 10;
+	 trans = H.create 10;
+
+	 euc = H.create 10;
+	 fonc = H.create 10}
+	 in begin 
+	 	H.add config.w "w" ();
+		config;
+	end
+
+let rec init (config : config) = function 
+(* 
+renvoie la liste des vfonctions encadrées, et les nouvelles variables 
+et enrichit la config au fur et à mesure ...
+*)
+| [] -> [],[]
+| f::q -> 
+	let f_box,new_var = abs config.env f in
+	let f_rest,new_var_rest = init config q in
+		f_box::f_rest, new_var@new_var_rest
+
 
 let print_soluce config m = 
 let aux (k,b) = 
-	let f = Smap.find k config.env in
+	let f = H.find config.env k in
 	match b with
 	| true -> PP.print_fo f
 	| false -> PP.print_fo (FO.Not f)
 in begin
 	fpf "liste des mondes : \n";
-	SSet.iter (fun s -> fpf "%s \n" s) config.w;
+	H.iter (fun k _ -> fpf "%s \n" k) config.w;
 	flush_all ();
 	fpf "\nPropriétés à vérifier :\n ";	
 	List.iter aux m;
 	flush_all ();
 end
 
+
 let solve f out = 
-	let config = ref (init_config [f] )
+	let config = new_config () in
+	let fo_box, new_var = init config [f] in
+	let dec_proc = [exist;forall]
 	and ic,oc = U.open_process "./z3 -in"
 	and cont = ref true 
 	in begin
-		config_to_request !config oc out;
+		L.iter (fun v -> dec_const oc v out) new_var; 
+		L.iter (fun fb -> dec_assert oc fb out) fo_box	;
 		while !cont do
 			match get_ans oc ic out with
 			| UNSAT ->
@@ -331,17 +383,16 @@ let solve f out =
 				cont := false; 
 			end
 			| SAT -> let m = get_model oc ic out in
-				match decide m !config with
-				| Sat ->
-				begin
+				try begin
+					L.iter (fun d_proc -> d_proc config m) dec_proc;
 					fpf "La formule est satisfiable \n";
-					print_soluce !config m;
+					print_soluce config m;
 					flush_all ();
 					cont := false; 
 				end
-				| Todo (new_config,new_bf,new_var) ->
+				with
+				| Found (new_var,new_bf) ->
 				begin
-					config := new_config;
 					List.iter (fun v -> dec_const oc v out) new_var;
 					dec_assert oc new_bf out;
 				end;
@@ -351,7 +402,6 @@ let solve f out =
 	end
 					
 			
-
 
 
 

@@ -5,7 +5,7 @@
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO
 module PP = Pprinter
-
+open Ast_fo
 
 
 (*--------------------------------------------------------*)
@@ -51,7 +51,8 @@ clef
 type thetfonc = (string,string) H.t
 
 type config = 
-	{env : env;
+	{w : thetex;
+	 env : env;
 	 s : unit; (* a priori, S est inutile algiorithmiquement *)
 	 exists : thetex;
 	 forall : thetfor;
@@ -66,15 +67,13 @@ Le résultat des fonctions de décision se fera par des exceptions ...
 Le type renvoyé par les fonctions est unit (parce que L.iter ^^ )
 *)
 
-let abs (env : env) (f:FO.formula) = (* TODO *)
-	(BFO.Atom "",[""])
 (* 
 Renvoie la nouvelle formule ainsi que la liste des nuvelle variables
 introduites et modifie par effet de bord l'envirronement 
 *)
 
-let get_fw () = "" (* TODO *)
-
+type init_flag = 
+	| Reflexiv
 
 (*--------------------------------------------------------*)
 (*               Fonctions de décision                    *)
@@ -97,6 +96,7 @@ else
 		FO.Conj (FO.Relation (c,w),FO.changefv w fy) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
+		H.add config.w w ();
 		H.add config.exists eps () ;
 		raise (Found (new_var,f_tot));
 	end
