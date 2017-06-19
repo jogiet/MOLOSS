@@ -21,6 +21,9 @@ exception FreeVDM of string*string*string
 (*--------------------------------------------------------*)
 
 let rec prop_neg = function
+(* 
+Met la formule en NNF
+*)
 | M.Atom p -> M.Not (M.Atom p)
 | M.Not f -> f (* Tertium non datur *)
 | M.Conj (f1,f2) -> M.Dij (prop_neg f1,prop_neg f2)
@@ -32,10 +35,15 @@ let rec prop_neg = function
 
 let rec st x = function 
 | M.Atom p -> FO.Atom (S.uppercase p,x) 
-| M.Not f ->  (st x (prop_neg f))
+| M.Not f -> 
+begin
+	match f with
+	| M.Atom _  -> FO.Not (st x f)
+	| _ ->(st x (prop_neg f))
+end
 | M.Conj (f1,f2) -> FO.Conj (st x f1,st x f2)
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
-| M.Impl (f1,f2) -> st x (M.Conj (prop_neg f1,f2))
+| M.Impl (f1,f2) -> st x (M.Dij (prop_neg f1,f2))
 | M.Boxe f ->
 		let y = if x = x0 then y0
 						  else x0 in

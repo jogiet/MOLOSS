@@ -37,155 +37,14 @@ module BFOSet = Set.Make(BFO)
 
 type ans = SAT | UNSAT
 
-(*
-type config = D.config
-*)
-(*
-	{mutable w : SSet.t; (* liste des mondes possibles *)
-	 mutable env : FO.formula Smap.t; (* string -> formula *)
-	 mutable s : BFOSet.t; (* ensmble S *)
-	 mutable exists : SSet.t; (* ensemble \Theta_\exists *)
-	 mutable forall : DSSet.t} (* ensemble \Theta_\forall *)
-*)
 
 let spf = Format.sprintf
 and fpf = Format.printf
 
-(*
-type dicided = 
-	| Sat
-	| Todo of config*BFO.formula*(string list)
-	(* nouvelle config, formule en plus, varaibles en plus *)
-*)
 
 let aux_out s = function
 | None -> ()
 | Some oc -> output_string oc s
-
-
-(*--------------------------------------------------------*)
-(*              Fonction sur les config                   *)
-(*--------------------------------------------------------*)
-
-(*
-let rec init_config = function 
-(*
-Prend une liste de FO.formula et renvoie une config vide dont s et env
-contiennent la liste de formule
-*)
-| [] -> 
-	{w = SSet.singleton "w"; 
-	 env = Smap.empty ; 
-	 s = BFOSet.empty;
-	 forall = DSSet.empty;
-	 exists = SSet.empty}
-| f :: q -> 
-	let config = init_config q in
-	let bf,new_env,_ = abs config.env f
-	in begin
-		config.env <- new_env;
-		config.s <- BFOSet.add bf config.s;
-		config;
-	end
-*)
-
-
-(*--------------------------------------------------------*)
-(*                 Fonction de décision                   *)
-(*--------------------------------------------------------*)
-
-(*
-possible de passer les règles exists & Forall en fonction annexe : 
-code + lisible , TODO
-*)
-(*
-let decide modele config = 
-	let rec make_rel modele config = 
-	(* Construction des relations dans le modèle *)
-	match modele with
-	| [] -> []
-	| (eps,b)::q when b -> 
-	begin
-		match Smap.find eps config.env with
-		| FO.Relation (c,d) -> (c,d)::(make_rel q config)
-		| _ -> make_rel q config
-	end
-	| _::q -> make_rel q config
-	and  aux modele config rel = 
-	(* ============== coeur de la fonction ===================*)
-	match modele with
-	| [] -> Sat 
-	| (eps,b)::q when b = true -> 
-	begin
-		
-(*--------------------------------------------------------*)
-(*                 Fonction de décision                   *)
-(*--------------------------------------------------------*)
-
-(*
-possible de passer les règles exists & Forall en fonction annexe : 
-code + lisible , TODO
-*)
-
-		let f = Smap.find eps config.env in
-		match f with
-		| FO.Atom _ | FO.Relation _ -> 
-			aux q config rel
-		| FO.Exists (y,fy) ->
-		(* =============== règle exists ======================  *)
-		begin
-			if (SSet.mem eps config.exists) then
-				aux q config rel
-			else
-				let w = get_fw () in
-				let fd = match fy with 
-				| FO.Conj (FO.Relation(c,y),fy) ->
-					FO.Conj (FO.Relation(c,w),FO.changefv w fy)
-				| _ -> assert false	
-				in
-					let f_tot,new_env,new_var = 
-						abs config.env (FO.Dij (FO.Not f,fd))
-					in begin
-						config.w <- SSet.add w config.w;
-						config.s <- BFOSet.add f_tot config.s;
-						config.env <- new_env;
-						config.exists <- SSet.add eps config.exists;
-						Todo (config,f_tot,new_var);
-					end
-		end
-		| FO.Forall (y,fy) ->
-		(* =============== règle forall ======================  *)
-		begin
-			match fy with
-			| FO.Dij (FO.Not (FO.Relation (c,y)),fy) ->
-			begin
-				let aux_find (c1,d1) = 
-					c = c1 && not (DSSet.mem (eps,d1) config.forall) 
-				in
-				try 
-					let d = snd (List.find aux_find rel) in
-					let fd = 
-						FO.Dij (FO.Not(FO.Relation(c,d)),FO.changefv d fy)
-					in 
-					let f_tot,new_env,new_var= 
-						abs config.env	 (FO.Dij (FO.Not f,fd)) 
-					in begin
-						config.s <- BFOSet.add f_tot config.s;
-						config.env <-new_env;
-						config.forall <- DSSet.add (eps,d) config.forall;
-						Todo (config,f_tot,new_var);
-					end
-				with Not_found -> aux q config rel
-			end
-			|_ -> assert false
-		end
-		| _ -> assert false
-	end			
-	| _::q ->
-		aux q config rel 
-	in aux modele config (make_rel modele config) 
-
-*)
 
 (*--------------------------------------------------------*)
 (*       Fonctions de conversion FO <-> SMT-LIB           *)
@@ -218,37 +77,6 @@ let dec_assert oc bf out =
 		flush_all ();
 	end
 	
-
-(*
-let config_to_request config oc out= 
-(* Permet de configurer le deébut d'une requête *)
-	let header = 
-"(set-logic QF_UF) \n
-(set-option :produce-models true)
-(set-option :produce-proofs true) 
-; Fin du header : déclaration des variables :\n"
-	and mid = 
-";Fin de déclaration, début des assertions :\n"
-	and bottom = 
-"; Fin des assertions : pour conclure :\n"
-	in
-	let aux_var v _ = 
-		dec_const oc v out
-	and aux_asser f = 
-		dec_assert oc f out
-	in begin
-	flush_all ();
-	output_string oc header;
-	aux_out header out;
-	Smap.iter aux_var config.env;
-	output_string oc mid;
-	aux_out mid out;
-	BFOSet.iter aux_asser config.s;
-	output_string oc bottom; 
-	aux_out mid out;
-	flush_all ();
-	end
-*)
 
 (*--------------------------------------------------------*)
 (*              Fonctions pour le parsing                 *)
