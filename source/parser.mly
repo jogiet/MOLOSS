@@ -13,12 +13,12 @@ open Ast_modal
 %token <string> Ident
 
 %start file
-%type <Ast_modal.formula> file
+%type <(string list)*Ast_modal.formula> file
 
 %%
 
 file :
-| f = formula ; EOF {f}
+| f = formula ; EOF {[],f}
 
 formula:
 | f = atom {f}

@@ -336,15 +336,20 @@ let new_config () =
 		config;
 	end
 
-let rec init (config : config) = function 
+let rec init (config : config) init_flag = function 
 (* 
-renvoie la liste des vfonctions encadrées, et les nouvelles variables 
+renvoie la liste des fonctions encadrées, et les nouvelles variables 
 et enrichit la config au fur et à mesure ...
 *)
-| [] -> [],[]
+| [] -> 
+	if List.mem Reflexiv init_flag then
+		let fb,new_var = abs config.env (FO.Relation ("w","w"))
+		in [fb],new_var
+	else
+		[],[]
 | f::q -> 
 	let f_box,new_var = abs config.env f in
-	let f_rest,new_var_rest = init config q in
+	let f_rest,new_var_rest = init config init_flag q in
 		f_box::f_rest, new_var@new_var_rest
 
 
@@ -364,11 +369,10 @@ in begin
 end
 
 
-let solve f out = 
+let solve f init_flag dec_proc out = 
 	let config = new_config () in
-	let fo_box, new_var = init config [f] in
-	let dec_proc = [exist;forall]
-	and ic,oc = U.open_process "./z3 -in"
+	let fo_box, new_var = init config init_flag [f] in
+	let ic,oc = U.open_process "./z3 -in"
 	and cont = ref true 
 	in begin
 		L.iter (fun v -> dec_const oc v out) new_var; 
