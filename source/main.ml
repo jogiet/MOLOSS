@@ -36,7 +36,7 @@ let axiom_to_dec_proc axiom =
 		exit 1;
 	end
 	in let res = aux axiom in
-	if L.mem D.reflexiv res || L.mem  D.functionnal res then
+	if L.mem "-M" axiom || L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
 		D.forall::res
 	else
 		D.forall::D.exist::res

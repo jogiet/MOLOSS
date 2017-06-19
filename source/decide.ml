@@ -244,9 +244,9 @@ let transitivity config model =
 		match H.find config.env eps with
 		| FO.Relation (x,y) -> 
 		begin
-			let aux_pred (u,v) = 
+			let aux_pred (u,v) = (* u -> v = x -> y *)
 				v = x && not (H.mem config.trans (u,x,y))
-			and aux_succ (u,v) = 
+			and aux_succ (u,v) = (* x -> y = u -> v *)
 				y = u && not (H.mem config.trans (x,y,v))
 			in
 			match L.filter aux_pred rel with
@@ -267,7 +267,7 @@ let transitivity config model =
 				let f = 
 					FO.Dij (FO.Dij (FO.Not (FO.Relation (x,y)),
 									FO.Not (FO.Relation (y,v))),
-							FO.Relation (y,v))
+							FO.Relation (x,v))
 				in 
 				let f_tot,new_var = abs config.env f 
 				in begin
