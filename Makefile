@@ -6,12 +6,12 @@ TARGET = native
 
 PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 
-all: test rapport moloss
+all: tst rapport main
 
-test:
+tst:
 	$(OCB) source/test.$(TARGET) 
 
-moloss:
+main:
 	$(OCB) source/main.$(TARGET) 
 	mv main.native moloss
 

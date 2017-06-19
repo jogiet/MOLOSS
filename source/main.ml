@@ -5,7 +5,6 @@ module U = Unix
 module C = Convertisseur
 module So = Solve 
 module M = Ast_modal
-module D = Decide
 open Lexing
 
 let fpf = Printf.printf
@@ -22,30 +21,7 @@ let good_suff s =
 let new_suff s = 
 	(F.chop_suffix s ".bml")^".out"
 
-let axiom_to_dec_proc axiom = 
-	let rec aux = function 
-	| [] -> []
-	| "-M"::q | "-boxeM"::q -> D.reflexiv::(aux q)
-	| "-4"::q -> D.transitivity::(aux q)
-	| "-B"::q -> D.symmetric::(aux q)
-	| "-5"::q -> D.euclidean::(aux q)
-	| "-CD"::q -> D.functionnal::(aux q)
-	| t::q ->
-	begin
-		fpf "Axiome inconne : %s \n" t;
-		exit 1;
-	end
-	in let res = aux axiom in
-	if L.mem "-M" axiom || L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
-		D.forall::res
-	else
-		D.forall::D.exist::res
 
-let get_init_flag axioms = 
-	if L.mem  "-M" axioms then
-		[D.Reflexiv]
-	else 
-		[]
 
 let _ = 
 	let argv = A.to_list (Sys.argv) 
@@ -65,9 +41,7 @@ let _ =
 			in
 			try			
 			let a,f = Parser.file Lexer.next_token lb in
-			let init_flag = get_init_flag a
-			and dec_proc = axiom_to_dec_proc a in
-				So.solve (C.st "w" f) init_flag dec_proc out
+				So.solve (C.st "w" f) a out
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;

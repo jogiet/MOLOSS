@@ -313,7 +313,34 @@ begin
 			SAT;
 		end;
 end
+(*--------------------------------------------------------*)
+(*              Fonctions pour les axiomes                *)
+(*--------------------------------------------------------*)
 
+let axiom_to_dec_proc axiom = 
+	let rec aux = function 
+	| [] -> []
+	| "-M"::q | "-boxeM"::q -> reflexiv::(aux q)
+	| "-4"::q -> transitivity::(aux q)
+	| "-B"::q -> symmetric::(aux q)
+	| "-5"::q -> euclidean::(aux q)
+	| "-CD"::q -> functionnal::(aux q)
+	| t::q ->
+	begin
+		fpf "Axiome inconne : %s \n" t;
+		exit 1;
+	end
+	in let res = aux axiom in
+	if L.mem "-M" axiom || L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
+		forall::res
+	else
+		forall::exist::res
+
+let get_init_flag axioms = 
+	if L.mem  "-M" axioms then
+		[Reflexiv]
+	else 
+		[]
 
 (*--------------------------------------------------------*)
 (*                Fonction de résolution                  *)
@@ -369,8 +396,10 @@ in begin
 end
 
 
-let solve f init_flag dec_proc out = 
+let solve f a out = 
 	let config = new_config () in
+	let init_flag = get_init_flag a
+	and dec_proc = axiom_to_dec_proc a in	
 	let fo_box, new_var = init config init_flag [f] in
 	let ic,oc = U.open_process "./z3 -in"
 	and cont = ref true 

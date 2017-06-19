@@ -4,7 +4,6 @@
 
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO
-module PP = Pprinter
 open Ast_fo
 
 
