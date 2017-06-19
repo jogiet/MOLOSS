@@ -17,7 +17,7 @@
 
 let chiffre = ['0'-'9']
 let alpha = ['a'-'z']
-let ident = alpha (alpha | chiffre | '_')*
+let ident = alpha (alpha | chiffre | '-' | '_')*
 
 rule next_token = parse
 | ' ' | '\t' {next_token lexbuf}
@@ -28,7 +28,13 @@ rule next_token = parse
 | "~" {Not}
 | "&" {Conj}
 | "|" {Dij}
+| "-M" {Axiom "-M"}
+| "-4" {Axiom "-4"}
+| "-B" {Axiom "-B"}
+| "-5" {Axiom "-5"}
+| "-CD" {Axiom "-CD"}
 | "=>" {Impl}
+| "%" {Begin}
 | "<>" {Diamond}
 | "[]" {Boxe}
 | eof {EOF}

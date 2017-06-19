@@ -9,8 +9,9 @@ open Ast_modal
 %token EOF
 %token Conj Dij Impl
 %token Boxe Diamond
-%token Not
+%token Not Begin
 %token <string> Ident
+%token <string> Axiom
 
 %start file
 %type <(string list)*Ast_modal.formula> file
@@ -18,7 +19,7 @@ open Ast_modal
 %%
 
 file :
-| f = formula ; EOF {[],f}
+| a = axiom*; Begin; f = formula ; EOF {a,f}
 
 formula:
 | f = atom {f}
@@ -35,3 +36,6 @@ atom:
 
 ident:
 | i = Ident {i}
+
+axiom:
+| a = Axiom {a}

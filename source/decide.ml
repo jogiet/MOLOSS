@@ -126,7 +126,7 @@ let rec forall config model  =
 		| FO.Forall (y,FO.Dij (FO.Not FO.Relation (c,y0),fy)) ->
 		begin
 			let aux_find (c1,d1) = 
-				c = c1 && (H.mem config.forall (eps,d1))
+				c = c1 && not (H.mem config.forall (eps,d1))
 			in
 			try 
 				let d = snd (L.find aux_find rel) in
