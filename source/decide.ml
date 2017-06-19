@@ -164,6 +164,7 @@ else
 			     FO.changefv w fy) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
+		H.add config.w w ();
 		H.add config.exists eps () ;
 		raise (Found (new_var,f_tot));
 	end
@@ -189,6 +190,7 @@ else
 		else
 		let res = get_fw () 
 		in begin
+			H.add config.w res ();
 			H.add config.fonc c res;
 			res;
 		end
