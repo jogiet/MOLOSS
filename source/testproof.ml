@@ -39,7 +39,7 @@ with
 			exit 1
 
 let _ =
-	List.iter test ["b";"c"]
+	List.iter test ["b";"c";"d"]
 
 
 
