@@ -10,6 +10,7 @@ all: tst rapport main
 
 tst:
 	$(OCB) source/test.$(TARGET) 
+	$(OCB) source/testproof.$(TARGET) 
 
 main:
 	$(OCB) source/main.$(TARGET) 
