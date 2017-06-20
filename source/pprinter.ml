@@ -4,15 +4,17 @@
 
 
 module S = String
-module P = Printf
+module F = Format
 
 module FO = Ast_fo.FO
 module M = Ast_modal
+module P = Ast_proof
+
+let spf = Printf.sprintf
+
+let fpf  = Printf.printf
 
 
-let spf = P.sprintf
-
-let fpf  = P.printf
 
 (*--------------------------------------------------------*)
 (*          Pour les formules de logique modale           *)
@@ -53,19 +55,59 @@ let print_fo f =
 (* print la formule sur stdout *)
 	fpf "%s \n" (aux_fo f)
 
-(*
 (*--------------------------------------------------------*)
-(*          Pour les éléments du module Solve            *)
+(*            Pour les formules et les preuves            *)
 (*--------------------------------------------------------*)
-let aux_env env =
-	let res = ref "" in
-	let aux k f = 
-		res := !res ^(spf "%s -> %s \n" k (aux_fo f))
-	in begin
-		So.Smap.iter aux env;
-		!res;
-	end
+let p_off n = 
+	S.make n ' '
 
-let print_env env = 
-	fpf "%s \n" (aux_env env)
-*)
+
+let rec aux_fp = function
+| P.TRUE -> "true"
+| P.FALSE -> "false"
+| P.Reff _ -> assert false
+| P.Atom a -> a
+| P.Not f -> spf "not (%s)" (aux_fp f)
+| P.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_fp f1) (aux_fp f2)
+| P.Equiv (f1,f2) -> spf "(%s) <=> (%s)" (aux_fp f1) (aux_fp f2)
+| P.Conj (f1,f2) -> spf "(%s) and (%s)" (aux_fp f1) (aux_fp f2)
+| P.Dij (f1,f2) -> spf "(%s) or (%s)" (aux_fp f1) (aux_fp f2)
+
+let rec aux_pp off = function
+| P.Refp _ -> assert false
+| P.Axiom f -> spf "%s%s\n%s|AXIOM|\n"
+	(p_off off)  (aux_fp f) (p_off off)
+| P.Asserted f -> spf "%s%s\n%s|ASSERTED|\n"
+	(p_off off)  (aux_fp f) (p_off off)
+| P.AndElim (p,f) -> spf "%s%s\n%s|AndElim|\n%s>\n%s"
+	(p_off off) (aux_fp f) 
+	(p_off off) (* |AndElim| *)
+		(p_off (off+8)) (* > *) 
+			(aux_pp (off+9) p)
+| P.MP (p1,p2,f) -> spf "%s%s\n%s|MP|\n%s>\n%s%s>\n%s"
+	(p_off off) (aux_fp f) 
+	(p_off off) (* |MP| *) 
+		(p_off (off+3)) (* > *) 
+			(aux_pp (off+4) p1)
+		(p_off (off+3)) (* > *) 
+			(aux_pp (off+4) p2)
+| P.Rewrite (f1,f2) -> spf "%s%s\n%s<->\n%s%s\n%s|REWRITE|\n"
+	(p_off off) (aux_fp f1)
+	(p_off off)
+	(p_off off) (aux_fp f2)
+	(p_off off)
+| P.Unit (p,pl,f) -> spf "%s%s\n%s|UNIT|\n%s>\n%s%s"
+	(p_off off) (aux_fp f)
+	(p_off off)
+		(p_off (off+5)) (* > *) 
+			(aux_pp (off+6) p)
+		(let res = ref "" in
+		 let aux p  = 
+			res := spf "%s%s>\n%s" !res (p_off (off+5)) (aux_pp (off+6) p)
+		 in begin
+		 	List.iter aux pl;
+			!res;
+		 end)
+
+let print_proof p = 
+	fpf "%s" (aux_pp 0 p)
