@@ -51,17 +51,22 @@ let init oc out =
 (*--------------------------------------------------------*)
 
 let assoc = 
-[("-M","(assert (forall ((w0 W)) (r w0 w0)))");
- ("-4","(assert (forall ((w0 W) (w1 W) (w2 W)) \
- 	(=> (and (r w0 w1) (r w1 w2)) (r w0 w2))))\n");
- ("-B","(assert (forall ((w1 W)(w2 W)) \
- 	(=> (r w1 w2) (r w2 w1))))\n");
- ("-5","(assert (forall ((w0 W) (w1 W) (w2 W)) \
- 	(=> (and (r w0 w1) (r w0 w2)) \
-		(and (r w1 w2) (r w2 w1)))))\n");
- ("-CD","(assert (forall ((w0 W) (w1 W) (w2 W)) \
- 	(=> (and (r w0 w1) (r w0 w2)) \
-		(= w1 w2))))\n")]
+[("-M",";axiome de réfléxivité \n\
+	(assert (forall ((w0 W)) (r w0 w0)))");
+ ("-4",";axiome de trasitivité \n\
+ 	(assert (forall ((w0 W) (w1 W) (w2 W)) \
+			(=> (and (r w0 w1) (r w1 w2)) (r w0 w2))))\n");
+ ("-B",";axiome de symétrie \n\
+ 	(assert (forall ((w1 W)(w2 W)) \
+ 			(=> (r w1 w2) (r w2 w1))))\n");
+ ("-5",":axiome de euclidienne \n\
+ 	(assert (forall ((w0 W) (w1 W) (w2 W)) \
+ 			(=> (and (r w0 w1) (r w0 w2)) \
+				(and (r w1 w2) (r w2 w1)))))\n");
+ ("-CD",";axiome de fonctionelle \n\
+ 	(assert (forall ((w0 W) (w1 W) (w2 W)) \
+ 			(=> (and (r w0 w1) (r w0 w2)) \
+				(= w1 w2))))\n")]
 
 let rec p_axiom oc out = function
 | [] -> ()
