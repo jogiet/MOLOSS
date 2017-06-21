@@ -1,7 +1,6 @@
 
 
 %{
-open Ast_fo
 
 %}
 /* Declaration des tokens */
@@ -13,7 +12,7 @@ open Ast_fo
 %token <string> IDENT
 
 %start answer
-%type <Ast_fo.model> answer
+%type <(string*bool) list> answer
 
 %%
 

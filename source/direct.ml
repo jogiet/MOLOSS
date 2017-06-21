@@ -7,8 +7,8 @@ module A = Array
 module F = Filename
 module U = Unix
 module C = Convertisseur
-module M = Ast_modal
-module FO = Ast_fo.FO
+module M = C.M
+module FO = C.FO
 open Lexing
 
 

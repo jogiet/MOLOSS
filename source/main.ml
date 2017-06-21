@@ -4,7 +4,6 @@ module F = Filename
 module U = Unix
 module C = Convertisseur
 module So = Solve 
-module M = Ast_modal
 open Lexing
 
 let fpf = Printf.printf

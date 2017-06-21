@@ -19,7 +19,7 @@ main:
 	mv direct.native direct
 
 rapport: 
-	cd report; pdflatex report.tex
+	cd report; $(PDFLTX) report.tex; bibtex report.aux; $(PDFLTX) report.tex
 	mv report/report.pdf ./
 
 doc:
