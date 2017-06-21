@@ -14,7 +14,9 @@ tst:
 
 main:
 	$(OCB) source/main.$(TARGET) 
+	$(OCB) source/truc.$(TARGET) 
 	mv main.native moloss
+	mv truc.native direct
 
 rapport: 
 	cd report; pdflatex report.tex

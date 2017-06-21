@@ -16,7 +16,7 @@ open Ast_proof
 %token TRUE FALSE
 %token Conj Dij Impl Equiv
 %token Not 
-
+%right LPAR
 
 %token <string> Ident
 %token <string> ProofRef
