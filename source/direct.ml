@@ -6,9 +6,7 @@ module H = Hashtbl
 module A = Array
 module F = Filename
 module U = Unix
-module C = Convertisseur
-module M = C.M
-module FO = C.FO
+module FO = Ast_fo.FO
 open Lexing
 
 
@@ -203,68 +201,28 @@ let get_model ic oc out =
 (*--------------------------------------------------------*)
 
 
-let _ = 
-	let argv = A.to_list (Sys.argv) 
-	and t0 = U.gettimeofday ()
-	and ic,oc = U.open_process "./z3 -in"
+let solve fo a out = 
+
+	let ic,oc = U.open_process "./z3 -in"
 	in begin
-	begin
-		match argv with
-		| _ :: filename :: _ when good_suff filename ->
-		begin			
-		let file = open_in filename in
-			let lb = Lexing.from_channel file 
-			and out = 
-				if L.mem "--out" argv then 
-					Some (open_out (new_suff filename))
-				else
-					None
-			in
-			try			
-			let a,f = Parser.file Lexer.next_token lb in
-			let fo = C.st "w" f
+		init oc out;
+		p_axiom oc out a;
+		p_prop oc out fo;
+		p_for oc out fo;
+		match check_sat ic oc out with
+		| UNSAT -> 
+			let s = "la formule est insatisfiable \n"
 			in begin
-				init oc out;
-				p_axiom oc out a;
-				p_prop oc out fo;
-				p_for oc out fo;
-				match check_sat ic oc out with
-				| UNSAT -> 
-					let s = "la formule est insatisfiable \n"
-					in begin
-						fpf "%s" s;
-					end
-				| SAT -> 
-					let s = "la formule est satisfiable \n"
-					and m = get_model ic oc out 
-					in begin
-						fpf "%s" s;
-						fpf "%s" m;
-					end
+				fpf "%s" s;
 			end
-			with
-			| Lexer.Lex_err s ->
-			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "lexical error: %s.\n" s;
-			flush_all ();
-			exit 1
-  			| Parser.Error ->
-			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "syntax error.\n";
-			flush_all ();
-			exit 1
-		end					
-		| _ ->
-		begin
-			fpf "Donner le nom du fichier avec une extension .bml\n";
-			exit 1;
-		end;
-	end;
-		if L.mem "--time" argv then
-			fpf "Claculs effectués en %f s \n" (U.gettimeofday () -.t0);
+		| SAT -> 
+			let s = "la formule est satisfiable \n"
+			and m = get_model ic oc out 
+			in begin
+				fpf "%s" s;
+				fpf "%s" m;
+			end
 	end
-
-
 
 
 

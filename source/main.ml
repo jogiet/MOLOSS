@@ -4,6 +4,7 @@ module F = Filename
 module U = Unix
 module C = Convertisseur
 module So = Solve 
+module D = Direct
 open Lexing
 
 let fpf = Printf.printf
@@ -40,7 +41,10 @@ let _ =
 			in
 			try			
 			let a,f = Parser.file Lexer.next_token lb in
-				So.solve (C.st "w" f) a out
+				if L.mem "--direct" argv then
+					D.solve (C.st "w" f) a out
+				else
+					So.solve (C.st "w" f) a out
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;

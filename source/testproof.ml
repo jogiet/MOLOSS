@@ -40,7 +40,7 @@ with
 			exit 1
 			*)
 let _ =
-	List.iter test ["c";"d"]
+	List.iter test ["test/b";"test/c";"test/d"]
 
 
 

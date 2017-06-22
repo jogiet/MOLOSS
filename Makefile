@@ -14,9 +14,7 @@ tst:
 
 main:
 	$(OCB) source/main.$(TARGET) 
-	$(OCB) source/direct.$(TARGET) 
 	mv main.native moloss
-	mv direct.native direct
 
 rapport: 
 	cd report; $(PDFLTX) report.tex; bibtex report.aux; $(PDFLTX) report.tex
