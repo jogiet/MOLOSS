@@ -57,8 +57,10 @@ all:
 
 | LPAR ; Impl; f0 = all; f1 = all ; RPAR {Impl (f0,f1)}
 | LPAR ; Equiv; f0 = all; f1 = all ; RPAR {Equiv (f0,f1)}
-| LPAR ; Conj; f0 = all; f1 = all ; RPAR {Conj (f0,f1)}
-| LPAR ; Dij; f0 = all; f1 = all ; RPAR {Dij (f0,f1)}
+| LPAR ; Conj; f0 = all; f1 = all+ ; RPAR 
+	{List.fold_left (fun f0 f1 -> Conj(f0,f1)) f0 f1}
+| LPAR ; Dij; f0 = all; f1 = all+ ; RPAR 
+	{List.fold_left (fun f0 f1 -> Dij(f0,f1)) f0 f1}
 | LPAR ; Not; f0 = all; RPAR {Not (f0)}
 | LPAR ; Equal ; f0 = all; f1 = all;RPAR {Equal (f0,f1)}
 

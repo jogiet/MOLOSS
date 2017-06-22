@@ -132,6 +132,7 @@ let rec conv_form = function
 | A.Equiv (f1,f2) -> P.Equiv (conv_form f1,conv_form f2) 
 | A.Conj (f1,f2) -> P.Conj (conv_form f1,conv_form f2) 
 | A.Dij (f1,f2) -> P.Dij (conv_form f1,conv_form f2) 
+| A.Equal (f1,f2) -> P.Equal (conv_form f1,conv_form f2) 
 | _ -> assert false
 
 and aux_unit = function
