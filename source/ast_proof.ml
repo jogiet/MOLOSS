@@ -1,7 +1,32 @@
-
 module H= Hashtbl
 
+module All = struct
 
+type all = 
+	| TRUE | FALSE
+	| Atom of string
+	| Reff of string (* e.g. : $x12 *)
+	| Refp of string (* e.g. : @x21 *)
+	| Impl of all*all
+	| Equiv of all*all
+	| Not of all
+	| Conj of all*all
+	| Dij of all*all
+	| Axiom of all
+	| Asserted of all
+	| AndElim of all*all
+	| MP of all*all*all
+	| Rewrite of all*all
+	| Unit of all*(all list)
+
+type file = 
+	| Declf of string*all*file
+	| Declp of string*all*file
+	| Proof of all
+
+end
+
+module Proof = struct
 
 type formula = 
 	| TRUE | FALSE
@@ -81,10 +106,49 @@ let extract p =
 		end
 	in aux (H.create 42) (H.create 42) p
 
+end
 
+module A = All
+module P = Proof
 
+(*   Fonctions de conversion All -> Proof    *)
 
+let rec conv_form = function
+| A.TRUE -> P.TRUE
+| A.FALSE -> P.FALSE
+| A.Reff s -> P.Reff s
+| A.Atom s -> P.Atom s
+| A.Not f -> P.Not (conv_form f)
+| A.Impl (f1,f2) -> P.Impl (conv_form f1,conv_form f2) 
+| A.Equiv (f1,f2) -> P.Equiv (conv_form f1,conv_form f2) 
+| A.Conj (f1,f2) -> P.Conj (conv_form f1,conv_form f2) 
+| A.Dij (f1,f2) -> P.Dij (conv_form f1,conv_form f2) 
+| _ -> assert false
 
+and aux_unit = function
+| [] -> assert false
+| [x] -> [],(conv_form x)
+| t::q -> 
+	let pl,f = aux_unit q in
+	(conv_proof t)::pl,f
+
+and conv_proof = function
+| A.Axiom f -> P.Axiom (conv_form f)
+| A.Refp s -> P.Refp s
+| A.Asserted f -> P.Asserted (conv_form f)
+| A.AndElim (p,f) -> P.AndElim (conv_proof p,conv_form f)
+| A.MP (p1,p2,f) ->P.MP (conv_proof p1,conv_proof p2,conv_form f)
+| A.Rewrite (f1,f2) -> P.Rewrite (conv_form f1,conv_form f2)
+| A.Unit (p,pl) -> 
+	let p = conv_proof p
+	and pl,f = aux_unit pl in
+		(P.Unit (p,pl,f))
+| _ -> assert false
+
+and conv_file = function
+| A.Declf (s,f,fl) -> P.DeclF (s,conv_form f,conv_file fl)
+| A.Declp (s,p,fl) -> P.DeclP (s,conv_proof p,conv_file fl)
+| A.Proof p -> P.Proof (conv_proof p)
 
 
 

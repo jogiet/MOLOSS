@@ -8,7 +8,7 @@ module F = Format
 
 module FO = Ast_fo.FO
 module M = Ast_modal
-module P = Ast_proof
+module P = Ast_proof.P
 
 let spf = Printf.sprintf
 

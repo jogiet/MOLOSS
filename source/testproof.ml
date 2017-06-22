@@ -21,7 +21,7 @@ let file =
 	let lb = Lexing.from_channel file in 
 try 
 let a = Pparser.s0 Plexer.next_token lb in
-	 P.extract a |> PP.print_proof
+	 (P.conv_file a |> P.P.extract) |> PP.print_proof
 with 
 			| Plexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
@@ -33,13 +33,14 @@ with
 			fpf "syntax error.\n";
 			flush_all ();
 			exit 1
+			(*
 			| _ ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
 			flush_all ();
 			exit 1
-
+			*)
 let _ =
-	List.iter test ["b";"c";"d"]
+	List.iter test ["c";"d"]
 
 
 
