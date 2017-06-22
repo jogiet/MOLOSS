@@ -92,7 +92,8 @@ else
 	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
 	let w = get_fw () in
 	let fd = 
-		FO.Conj (FO.Relation (c,w),FO.changefv w fy) in
+		FO.Dij (FO.Not f,
+				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
 		H.add config.w w ();
@@ -121,7 +122,8 @@ let rec forall config model  =
 	| [] -> ()
 	| (eps,b)::q when b ->
 	begin 
-		match H.find config.env eps with
+		let f = H.find config.env eps in
+		match f with
 		| FO.Forall (y,FO.Dij (FO.Not FO.Relation (c,y0),fy)) ->
 		begin
 			let aux_find (c1,d1) = 
@@ -130,7 +132,9 @@ let rec forall config model  =
 			try 
 				let d = snd (L.find aux_find rel) in
 				let fd = 
-					FO.Dij (FO.Not (FO.Relation (c,d)),FO.changefv d fy) in
+					FO.Dij (FO.Not f,
+						FO.Dij (FO.Not (FO.Relation (c,d)),FO.changefv d
+						fy)) in
 				let f_tot,new_var = abs config.env fd
 				in begin
 					H.add config.forall (eps,d) ();

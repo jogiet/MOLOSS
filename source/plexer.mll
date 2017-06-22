@@ -20,6 +20,7 @@
 	 ("unit-resolution",Unit);
 	 ("def-axiom",Axiom);
 	 ("mp",MP);
+	 ("monotonicity",Monotonicity);
 	 ("rewrite",Rewrite);
 	 ("proof",PROOF);
 	 ("true",TRUE);

@@ -14,6 +14,7 @@ open Ast_fo
 open Lexing
 open Format
 
+module P = Ast_proof
 
 module PP = Pprinter
 module U = Unix
@@ -79,15 +80,15 @@ let dec_assert oc bf out =
 	
 
 (*--------------------------------------------------------*)
-(*              Fonctions pour le parsing                 *)
+(*         Fonctions pour le parsing du modèle            *)
 (*--------------------------------------------------------*)
 
 
-let report (b,e) =
+let report (b,e) f =
   let l = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
   let lc = e.pos_cnum - b.pos_bol + 1 in
-  fpf "File \"%s\", line %d, characters %d-%d:\n" "model" l fc lc
+  fpf "File \"%s\", line %d, characters %d-%d:\n" f l fc lc
  
 
 
@@ -115,18 +116,66 @@ begin
 	with
 
 	| Z3_lexer.Lex_err s ->
-	report (lexeme_start_p lb, lexeme_end_p lb);
+	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
 	fpf "lexical error: %s.\n" s;
 	flush_all ();
 	exit 1
     | Z3_parser.Error ->
-	report (lexeme_start_p lb, lexeme_end_p lb);
+	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
 	fpf "syntax error.\n";
 	flush_all ();
 	exit 1
 	end;
 end
 
+(*--------------------------------------------------------*)
+(*        Fonctions pour le parsing de la preuve          *)
+(*--------------------------------------------------------*)
+
+
+
+
+
+let get_proof oc ic out = 
+begin
+	flush_all ();
+	output_string oc "(get-proof) \n";
+	aux_out  "(get-proof) \n" out ;
+	flush_all ();
+	let res = ref ""
+	and cont = ref true 
+	in begin
+		while !cont do 
+			let ligne = input_line ic 
+			in begin
+			res := spf "%s \n%s" !res ligne;
+			if ligne = "" then
+				cont := false;
+			end;
+		done;
+		aux_out (!res^"\n") out;
+	let lb = Lexing.from_string !res in
+	try 
+		let file = Pparser.s0 Plexer.next_token lb
+		in P.traite file
+	with
+
+	| Plexer.Lex_err s ->
+	report (lexeme_start_p lb, lexeme_end_p lb) "proof";
+	fpf "lexical error: %s.\n" s;
+	flush_all ();
+	exit 1
+    | Pparser.Error ->
+	report (lexeme_start_p lb, lexeme_end_p lb) "proof";
+	fpf "syntax error.\n";
+	flush_all ();
+	exit 1
+	end;
+end
+
+(*--------------------------------------------------------*)
+(*            Fonctions pour le réponse                   *)
+(*--------------------------------------------------------*)
 let get_ans oc ic out = 
 begin
 	output_string oc "(check-sat) \n";
@@ -134,7 +183,7 @@ begin
 	flush_all ();
 	let ans = input_line ic 
 	in begin
-		aux_out ans out;
+		aux_out (ans^"\n") out;
 		if ans = "unsat" then
 			UNSAT
 		else
@@ -231,15 +280,19 @@ let solve f a out =
 	let fo_box, new_var = init config init_flag [f] in
 	let ic,oc = U.open_process "./z3 -in"
 	and cont = ref true 
+	and s = "(set-option :produce-proofs true)\n"
 	in begin
+		output_string oc s;
+		aux_out s out;
 		L.iter (fun v -> dec_const oc v out) new_var; 
 		L.iter (fun fb -> dec_assert oc fb out) fo_box	;
 		while !cont do
 			match get_ans oc ic out with
 			| UNSAT ->
-
-			begin
+			let p = get_proof oc ic out
+			in begin
 				fpf "La formule est insatisfiable \n";
+				PP.print_proof config.env p;
 				flush_all ();
 				cont := false; 
 			end

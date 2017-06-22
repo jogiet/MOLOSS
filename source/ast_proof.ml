@@ -18,6 +18,8 @@ type all =
 	| MP of all*all*all
 	| Rewrite of all*all
 	| Unit of all*(all list)
+	| Monotonicity of all list
+	| Equal of all*all
 
 type file = 
 	| Declf of string*all*file
@@ -37,6 +39,7 @@ type formula =
 	| Not of formula
 	| Conj of formula*formula
 	| Dij of formula*formula
+	| Equal of formula*formula
 
 type proof = 
 	| Refp of string (* e.g. : @x21 *)
@@ -46,6 +49,7 @@ type proof =
 	| MP of proof*proof*formula
 	| Rewrite of formula*formula
 	| Unit of proof*(proof list)*formula
+	| Monotonicity of (proof list)*formula
 
 let rec con = function 
 | Refp _ -> assert false
@@ -55,6 +59,7 @@ let rec con = function
 | MP (_,_,f) -> f
 | Rewrite (f1,f2) -> Equiv (f1,f2) (* à vérifier *)
 | Unit (_,_,f) -> f
+| Monotonicity (_,f) -> f
 
 
 type penv = (string,proof) H.t
@@ -70,6 +75,7 @@ let rec inlinef fenv = function
 	| Conj (f1,f2) -> Conj (inlinef fenv f1,inlinef fenv f2)  
 	| Dij (f1,f2) -> Dij (inlinef fenv f1,inlinef fenv f2)  
 	| Not f -> Not (inlinef fenv f)
+	| Equal (f1,f2) -> Equal (inlinef fenv f1,inlinef fenv f2)  
 
 let rec inlinep penv fenv = function 
 	| Refp s -> H.find penv s
@@ -82,6 +88,9 @@ let rec inlinep penv fenv = function
 	| Unit(p,pl,f) -> Unit (inlinep penv fenv p,
 			List.map (fun p -> inlinep penv fenv p) pl,
 			inlinef fenv f)
+	| Monotonicity (pl,f) ->
+			Monotonicity (List.map (fun p -> inlinep penv fenv p) pl,
+						  inlinef fenv f)
 
 type file = 
 	| DeclF of string*formula*file
@@ -132,6 +141,7 @@ and aux_unit = function
 	let pl,f = aux_unit q in
 	(conv_proof t)::pl,f
 
+
 and conv_proof = function
 | A.Axiom f -> P.Axiom (conv_form f)
 | A.Refp s -> P.Refp s
@@ -143,6 +153,9 @@ and conv_proof = function
 	let p = conv_proof p
 	and pl,f = aux_unit pl in
 		(P.Unit (p,pl,f))
+| A.Monotonicity pl -> 
+	let pl,f = aux_unit pl in
+	P.Monotonicity (pl,f)
 | _ -> assert false
 
 and conv_file = function
@@ -153,7 +166,7 @@ and conv_file = function
 
 
 
-
+let traite file = conv_file file |> P.extract
 
 
 

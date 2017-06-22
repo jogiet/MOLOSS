@@ -1,5 +1,6 @@
 %{
-open Ast_proof.A
+
+	open Ast_proof.All
 
 %}
 
@@ -11,12 +12,11 @@ open Ast_proof.A
 %token Axiom Asserted
 %token AndElim MP
 %token Rewrite Unit
-%token Equal
+%token Equal Monotonicity
 
 %token TRUE FALSE
 %token Conj Dij Impl Equiv
 %token Not 
-%right LPAR
 
 %token <string> Ident
 %token <string> ProofRef
@@ -24,7 +24,7 @@ open Ast_proof.A
 
 
 %start s0
-%type <Ast_proof.A.file> s0
+%type <Ast_proof.All.file> s0
 
 
 %%
@@ -40,21 +40,26 @@ file:
 	{Declf (s,f0,f)} 
 
 all:
+| i = Ident {Atom i}
+| s = FormRef {Reff s}
+| TRUE {TRUE}
+| FALSE {FALSE}
+
 | s = ProofRef {Refp s}
 | LPAR; Axiom; f = all; RPAR {Axiom f}
 | LPAR; Asserted; f = all; RPAR {Asserted f}
 | LPAR; AndElim; p = all; f = all; RPAR {AndElim (p,f)}
 | LPAR; MP; p1 = all; p2 = all; f = all; RPAR {MP (p1,p2,f)}
-| LPAR; Rewrite; LPAR ; Equal; f1 = all ;f2 = all;RPAR;RPAR {Rewrite (f1,f2)}
+| LPAR; Rewrite; LPAR ; Equal; f1 = all ;f2 = all;RPAR;RPAR 
+	{Rewrite (f1,f2)}
+| LPAR; Monotonicity ;pl =  all+;RPAR {Monotonicity pl}
 | LPAR; Unit; p =all; pl = all+; RPAR {Unit (p,pl)}
-| s = FormRef {Reff s}
-| i = Ident {Atom i}
-| TRUE {TRUE}
-| FALSE {FALSE}
+
 | LPAR ; Impl; f0 = all; f1 = all ; RPAR {Impl (f0,f1)}
 | LPAR ; Equiv; f0 = all; f1 = all ; RPAR {Equiv (f0,f1)}
 | LPAR ; Conj; f0 = all; f1 = all ; RPAR {Conj (f0,f1)}
 | LPAR ; Dij; f0 = all; f1 = all ; RPAR {Dij (f0,f1)}
 | LPAR ; Not; f0 = all; RPAR {Not (f0)}
+| LPAR ; Equal ; f0 = all; f1 = all;RPAR {Equal (f0,f1)}
 
 
