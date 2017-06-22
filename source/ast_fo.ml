@@ -17,10 +17,6 @@ module FO  = struct
 
 type ident = string
 
-type quantifier = 
-	| Forall
-	| Exists
-
 type formula = 
 	| Atom of ident*ident (* Atom (p,x) ->  P(x) *)
 	| Not of formula
@@ -62,37 +58,6 @@ match f with
 		[x;y]
 | Exists (new_fv,f) | Forall (new_fv,f) -> 
 	List.filter (fun x -> x <> new_fv) (extractfv f) 
-
-(*
-let rec equalmodfv f1 f2 = 
-(* 
-Renvoie vrai si les formuiles sont égales modulo la variable libre qui
-peut être différente dans les deux formules 
-*)
-match f1,f2 with
-| Atom (p1,_) ,Atom (p2,_) -> p1 = p2
-| Not f1,Not f2 -> equalmodfv f1 f2
-| Conj (f11,f12) ,Conj(f21,f22) ->
-	(equalmodfv f11 f21) && (equalmodfv f12 f22)
-| Dij (f11,f12) , Dij(f21,f22) ->
-	(equalmodfv f11 f21) && (equalmodfv f12 f22)
-| Relation _ , Relation _ -> assert false 
-| Forall (x1,f1) , Forall (x2,f2)->
-begin
-	match f1,f2 with
-	| Dij (_,f1),Dij(_,f2) -> 
-	equalmodfv f1 f2
-	| _ -> assert false
-end
-| Exists (x1,f1) , Exists (x2,f2)->
-begin
-	match f1,f2 with
-	| Conj (_,f1),Conj (_,f2) -> 
-	equalmodfv f1 f2
-	| _ -> assert false
-end
-| _ -> false
-*)
 
 let equalmodvquant f1 f2 =
 (*
