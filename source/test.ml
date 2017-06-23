@@ -5,6 +5,7 @@ module FO = Ast_fo
 module M = Ast_modal
 module C = Convertisseur
 module PP = Pprinter
+module U = Unix
 
 module R = Random
 module L = List
@@ -27,7 +28,7 @@ begin
 	L.nth variables (R.int 4);
 end
 
-let rec tire_form n = 
+let rec tire_aux n = 
 begin
 	R.self_init ();
 	match n with
@@ -42,9 +43,30 @@ begin
 		match R.int 6 with 
 		| 0 -> M.Atom (tire_var ())
 		| 1 -> M.Not (M.Atom (tire_var ()))
+		| 2 -> M.Conj (tire_aux (n-1),tire_aux (n-1))
+		| 3 -> M.Dij (tire_aux (n-1),tire_aux (n-1))
+		| _ -> M.Boxe (tire_aux(n-1))
+	end;
+end
+
+let rec tire_form n = 
+begin
+	R.self_init ();
+	match n with
+	| 0 -> 
+	begin
+		match R.int 2 with
+		| 0 -> M.Atom (tire_var () )
+		| _ -> M.Not (M.Atom (tire_var () ))
+	end
+	| n -> 
+	begin
+		match (R.int 3) +2  with 
+		| 8 -> M.Atom (tire_var ())
+		| 9 -> M.Not (M.Atom (tire_var ()))
 		| 2 -> M.Conj (tire_form (n-1),tire_form (n-1))
 		| 3 -> M.Dij (tire_form (n-1),tire_form (n-1))
-		| 4 -> M.Boxe (tire_form (n-1))
+		| 4 -> M.Boxe (tire_aux(n-1))
 		| _ -> M.Diamond (tire_form (n-1))
 	end;
 
@@ -105,6 +127,15 @@ let get_arg () =
 		end
 	in (nb,n)
 
+let rec check_form = function
+| M.Atom _ -> true
+| M.Not f -> check_form f
+| M.Conj (f1,f2) | M.Dij (f1,f2) | M.Impl (f1,f2) ->
+	(check_form f1) && (check_form f2)
+| M.Diamond f -> check_form f
+| M.Boxe f -> match f with
+	| M.Diamond _ -> false
+	| _ -> check_form f
 
 let _ = 
 	let nb,n = get_arg () 
@@ -115,6 +146,7 @@ let _ =
 	and a = tire_ax ()
 	and out = open_out "test.out"
 	in begin
+		print_debug (string_of_int nb);
 		print_debug "\n \n =====================================\n ";
 		print_debug "On commence une nouvelle formule \n";
 		print_debug "Formule modale : \n";
@@ -122,6 +154,22 @@ let _ =
 		L.iter (fun s -> pf "%s\n" s) a;
 		flush_all ();
 		PP.print_m f;
-		So.solve f0 a (Some out);
+		if (check_form f) then
+			So.solve f0 a (Some out)
+			(*
+			let pid = U.fork () in
+			if pid = 0 then
+			(* processus fils *)
+				So.solve f0 a (Some out)
+			else
+			begin
+				U.sleep (2*n);
+				U.kill pid Sys.sigkill;
+				U.wait () |> ignore;
+			end
+			*)
+		else
+			print_debug 
+			"On ne traite pas cette formule : pattern [] (<> ..)\n";
 	end;
 	done

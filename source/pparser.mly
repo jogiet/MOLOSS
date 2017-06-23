@@ -12,7 +12,7 @@
 %token Axiom Asserted
 %token AndElim MP
 %token Rewrite Unit
-%token Equal Monotonicity Trans
+%token Equal Monotonicity Trans Hyp Lemma
 
 %token TRUE FALSE
 %token Conj Dij Impl Equiv
@@ -50,11 +50,13 @@ all:
 | LPAR; Asserted; f = all; RPAR {Asserted f}
 | LPAR; AndElim; p = all; f = all; RPAR {AndElim (p,f)}
 | LPAR; MP; p1 = all; p2 = all; f = all; RPAR {MP (p1,p2,f)}
-| LPAR; Rewrite; LPAR ; Equal; f1 = all ;f2 = all;RPAR;RPAR 
-	{Rewrite (f1,f2)}
+| LPAR; Rewrite; f = all; RPAR 
+	{Rewrite (f)}
 | LPAR; Monotonicity ;pl =  all+;RPAR {Monotonicity pl}
 | LPAR; Unit; p =all; pl = all+; RPAR {Unit (p,pl)}
 | LPAR; Trans; p = all;q = all; r = all ; RPAR ; {Trans (p,q,r)}
+| LPAR; Hyp ; p = all; RPAR {Hyp p}
+| LPAR; Lemma ; p = all ; f = all ; RPAR {Lemma (p,f)}
 
 | LPAR ; Impl; f0 = all; f1 = all ; RPAR {Impl (f0,f1)}
 | LPAR ; Equiv; f0 = all; f1 = all ; RPAR {Equiv (f0,f1)}

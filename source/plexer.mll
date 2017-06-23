@@ -19,6 +19,8 @@
 	 ("and-elim",AndElim);
 	 ("unit-resolution",Unit);
 	 ("def-axiom",Axiom);
+	 ("hypothesis",Hyp);
+	 ("lemma",Lemma);
 	 ("mp",MP);
 	 ("trans",Trans);
 	 ("monotonicity",Monotonicity);

@@ -291,7 +291,7 @@ let solve f a out =
 			| UNSAT ->
 			let p = get_proof oc ic out
 			in begin
-				fpf "\027[31m La formule est insatisfiable \027[0m\n";
+				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
 				PP.print_proof config.env p;
 				flush_all ();
 				cont := false; 
@@ -299,7 +299,7 @@ let solve f a out =
 			| SAT -> let m = get_model oc ic out in
 				try begin
 					L.iter (fun d_proc -> d_proc config m) dec_proc;
-					fpf "\027[92m La formule est satisfiable \027[0m\n";
+					fpf "\027[92mLa formule est satisfiable \027[0m\n";
 					print_soluce config m;
 					flush_all ();
 					cont := false; 

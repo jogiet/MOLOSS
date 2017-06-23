@@ -16,11 +16,13 @@ type all =
 	| Asserted of all
 	| AndElim of all*all
 	| MP of all*all*all
-	| Rewrite of all*all
+	| Rewrite of all
 	| Unit of all*(all list)
 	| Monotonicity of all list
 	| Equal of all*all
 	| Trans of all*all*all
+	| Hyp of all
+	| Lemma of all*all
 
 type file = 
 	| Declf of string*all*file
@@ -48,10 +50,12 @@ type proof =
 	| Asserted of formula
 	| AndElim of proof*formula
 	| MP of proof*proof*formula
-	| Rewrite of formula*formula
+	| Rewrite of formula
 	| Unit of proof*(proof list)*formula
 	| Monotonicity of (proof list)*formula
 	| Trans of proof*proof*formula
+	| Hyp of formula
+	| Lemma of proof*formula
 
 
 let rec con = function 
@@ -60,10 +64,12 @@ let rec con = function
 | Asserted f -> f
 | AndElim (_,f) -> f
 | MP (_,_,f) -> f
-| Rewrite (f1,f2) -> Equiv (f1,f2) (* à vérifier *)
+| Rewrite f -> f 
 | Unit (_,_,f) -> f
 | Monotonicity (_,f) -> f
 | Trans (_,_,f) -> f
+| Hyp f -> f
+| Lemma (_,f) -> f
 
 
 type penv = (string,proof) H.t
@@ -88,7 +94,7 @@ let rec inlinep penv fenv = function
 	| AndElim (p,f) -> AndElim (inlinep penv fenv p,inlinef fenv f)
 	| MP (p1,p2,f) -> MP (inlinep penv fenv p1,inlinep penv fenv p2,
 			inlinef fenv f)
-	| Rewrite (f1,f2) -> Rewrite (inlinef fenv f1,inlinef fenv f2)
+	| Rewrite f -> Rewrite (inlinef fenv f)
 	| Unit(p,pl,f) -> Unit (inlinep penv fenv p,
 			List.map (fun p -> inlinep penv fenv p) pl,
 			inlinef fenv f)
@@ -99,6 +105,9 @@ let rec inlinep penv fenv = function
 			Trans (inlinep penv fenv p,
 				   inlinep penv fenv q,
 				   inlinef fenv r)
+	| Hyp f -> Hyp (inlinef fenv f)
+	| Lemma (p,f) -> Lemma (inlinep penv fenv p,
+						    inlinef fenv f)
 
 
 type file = 
@@ -158,7 +167,7 @@ and conv_proof = function
 | A.Asserted f -> P.Asserted (conv_form f)
 | A.AndElim (p,f) -> P.AndElim (conv_proof p,conv_form f)
 | A.MP (p1,p2,f) ->P.MP (conv_proof p1,conv_proof p2,conv_form f)
-| A.Rewrite (f1,f2) -> P.Rewrite (conv_form f1,conv_form f2)
+| A.Rewrite (f) -> P.Rewrite (conv_form f)
 | A.Unit (p,pl) -> 
 	let p = conv_proof p
 	and pl,f = aux_unit pl in
@@ -170,6 +179,8 @@ and conv_proof = function
 	P.Trans (conv_proof p,
 			 conv_proof q,
 			 conv_form r)
+| A.Hyp f -> P.Hyp (conv_form f)
+| A.Lemma (p,f) -> P.Lemma (conv_proof p, conv_form f)
 | _ -> assert false
 
 and conv_file = function

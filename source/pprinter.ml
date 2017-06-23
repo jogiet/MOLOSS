@@ -95,11 +95,17 @@ let rec aux_pp env off = function
 			(aux_pp env (off+4) p1)
 		(p_off (off+3)) (* > *) 
 			(aux_pp env (off+4) p2)
-| P.Rewrite (f1,f2) -> spf "%s%s\n%s<->\n%s%s\n%s%s\n"
+| P.Rewrite (f) -> 
+begin
+	match f with 
+	| P.Equal (f1,f2) ->
+		spf "%s%s\n%s<->\n%s%s\n%s%s\n"
 	(p_off off) (aux_fp env f1)
-	(p_off off) "\027[94m|REWRITE|\027[0m"
+	(p_off off) (* <-> *)
 	(p_off off) (aux_fp env f2)
-	(p_off off)
+	(p_off off) "\027[94m|REWRITE|\027[0m"
+	| _ -> assert false
+end
 | P.Unit (p,pl,f) -> spf "%s%s\n%s%s\n%s>\n%s%s"
 	(p_off off) (aux_fp env f)
 	(p_off off) "\027[94m|UNIT|\027[0m"
@@ -114,7 +120,7 @@ let rec aux_pp env off = function
 		 end)
 | P.Monotonicity (pl,f) -> spf "%s%s\n%s%s\n%s"
 	(p_off off) (aux_fp env f)
-	(p_off off) "\027[94m|ASSERTED|\027[0m"
+	(p_off off) "\027[94m|MONOTONICITY|\027[0m"
 		(let res = ref "" in
 		 let aux p  = 
 			res := spf "%s%s>\n%s" !res (p_off (off+5)) (aux_pp env (off+6) p)
@@ -124,11 +130,20 @@ let rec aux_pp env off = function
 		 end)
 | P.Trans (p,q,r) -> spf "%s%s\n%s%s\n%s>\n%s%s>\n%s"
 	(p_off off) (aux_fp env r)
-	(p_off off) "\027[94m|ASSERTED|\027[0m"
+	(p_off off) "\027[94m|TRANSITIVITY|\027[0m"
 	(p_off (off +5))
 		(aux_pp env (off+6) p)
 	(p_off (off +5))
 		(aux_pp env (off+6) q)
+| P.Hyp f -> spf "%s%s\n%s%s\n"
+	(p_off off) (aux_fp env f)
+	(p_off off) "\027[94m|HYPOTHESIS|\027[0m"
+| P.Lemma (p,f) -> spf "%s%s\n%s%s\n%s>\n%s"
+	(p_off off) (aux_fp env f)
+	(p_off off) "\027[94m|LEMMA|\027[0m"
+		(p_off (off+5)) (* > *)
+		  (aux_pp env (off +6) p)
+
 
 
 let print_proof env p = 
