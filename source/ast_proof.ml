@@ -20,6 +20,7 @@ type all =
 	| Unit of all*(all list)
 	| Monotonicity of all list
 	| Equal of all*all
+	| Trans of all*all*all
 
 type file = 
 	| Declf of string*all*file
@@ -50,6 +51,8 @@ type proof =
 	| Rewrite of formula*formula
 	| Unit of proof*(proof list)*formula
 	| Monotonicity of (proof list)*formula
+	| Trans of proof*proof*formula
+
 
 let rec con = function 
 | Refp _ -> assert false
@@ -60,6 +63,7 @@ let rec con = function
 | Rewrite (f1,f2) -> Equiv (f1,f2) (* à vérifier *)
 | Unit (_,_,f) -> f
 | Monotonicity (_,f) -> f
+| Trans (_,_,f) -> f
 
 
 type penv = (string,proof) H.t
@@ -91,6 +95,11 @@ let rec inlinep penv fenv = function
 	| Monotonicity (pl,f) ->
 			Monotonicity (List.map (fun p -> inlinep penv fenv p) pl,
 						  inlinef fenv f)
+	| Trans (p,q,r) -> 
+			Trans (inlinep penv fenv p,
+				   inlinep penv fenv q,
+				   inlinef fenv r)
+
 
 type file = 
 	| DeclF of string*formula*file
@@ -157,6 +166,10 @@ and conv_proof = function
 | A.Monotonicity pl -> 
 	let pl,f = aux_unit pl in
 	P.Monotonicity (pl,f)
+| A.Trans (p,q,r) ->
+	P.Trans (conv_proof p,
+			 conv_proof q,
+			 conv_form r)
 | _ -> assert false
 
 and conv_file = function

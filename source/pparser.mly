@@ -12,7 +12,7 @@
 %token Axiom Asserted
 %token AndElim MP
 %token Rewrite Unit
-%token Equal Monotonicity
+%token Equal Monotonicity Trans
 
 %token TRUE FALSE
 %token Conj Dij Impl Equiv
@@ -54,6 +54,7 @@ all:
 	{Rewrite (f1,f2)}
 | LPAR; Monotonicity ;pl =  all+;RPAR {Monotonicity pl}
 | LPAR; Unit; p =all; pl = all+; RPAR {Unit (p,pl)}
+| LPAR; Trans; p = all;q = all; r = all ; RPAR ; {Trans (p,q,r)}
 
 | LPAR ; Impl; f0 = all; f1 = all ; RPAR {Impl (f0,f1)}
 | LPAR ; Equiv; f0 = all; f1 = all ; RPAR {Equiv (f0,f1)}

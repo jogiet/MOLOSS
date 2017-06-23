@@ -50,6 +50,25 @@ begin
 
 end
 
+
+(*--------------------------------------------------------*)
+(*                    Pour les axiomes                    *) 
+(*--------------------------------------------------------*)
+
+let tire_ax () = 
+	let ax_a = [|"-M";"-4";"-B";"-5";"-CD"|] in
+	let res = ref [] 
+	in begin
+		for i = 0 to 4 do 
+			if R.int 2 = 0 then
+				res := ax_a.(i)::(!res);
+		done;
+		!res;
+	end
+		
+
+
+
 (*--------------------------------------------------------*)
 (*                Les tests en question                   *) 
 (*--------------------------------------------------------*)
@@ -92,30 +111,17 @@ let _ =
 	in
 	for i = 1 to nb do
 	let f = tire_form n in
-	let f0 = C.st "w" f in
-	let f1,x = 
-		try C.st_inv f0
-		with exc ->
-		begin  
-			handle exc;
-			exit 1;
-		end
+	let f0 = C.st "w" f
+	and a = tire_ax ()
+	and out = open_out "test.out"
 	in begin
 		print_debug "\n \n =====================================\n ";
 		print_debug "On commence une nouvelle formule \n";
 		print_debug "Formule modale : \n";
+		print_debug "Liste des axiomes : \n";
+		L.iter (fun s -> pf "%s\n" s) a;
+		flush_all ();
 		PP.print_m f;
-		print_debug "Formule du premier ordre \n";
-		PP.print_fo f0;
-		if f1 = f && x = "w" then
-			()
-		else
-		begin	
-			print_debug "ERREUR : dans la conversion inverse \n";
-			pf "st_inv(st(f)) : \n"; 
-			PP.print_m f1;
-			exit 1;
-		end;
-		(So.solve f0);
+		So.solve f0 a (Some out);
 	end;
 	done

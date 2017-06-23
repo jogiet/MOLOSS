@@ -67,7 +67,7 @@ let rec aux_fp env = function
 | P.TRUE -> "true"
 | P.FALSE -> "false"
 | P.Reff _ -> assert false
-| P.Atom a -> aux_fo (H.find env a)^(spf "--> %s" a)
+| P.Atom a -> aux_fo (H.find env a)
 | P.Not f -> spf "not (%s)" (aux_fp env f)
 | P.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_fp env f1) (aux_fp env f2)
 | P.Equiv (f1,f2) -> spf "(%s) <=> (%s)" (aux_fp env f1) (aux_fp env f2)
@@ -77,30 +77,32 @@ let rec aux_fp env = function
 
 let rec aux_pp env off = function
 | P.Refp _ -> assert false
-| P.Axiom f -> spf "%s%s\n%s|AXIOM|\n"
-	(p_off off)  (aux_fp env f) (p_off off)
-| P.Asserted f -> spf "%s%s\n%s|ASSERTED|\n"
-	(p_off off)  (aux_fp  env f) (p_off off)
-| P.AndElim (p,f) -> spf "%s%s\n%s|AndElim|\n%s>\n%s"
+| P.Axiom f -> spf "%s%s\n%s%s\n"
+	(p_off off)  (aux_fp env f) 
+	(p_off off)  "\027[94m|AXIOM|\027[0m"
+| P.Asserted f -> spf "%s%s\n%s%s\n"
+	(p_off off)  (aux_fp  env f) 
+	(p_off off) "\027[94m|ASSERTED|\027[0m"
+| P.AndElim (p,f) -> spf "%s%s\n%s%s\n%s>\n%s"
 	(p_off off) (aux_fp env  f) 
-	(p_off off) (* |AndElim| *)
+	(p_off off) "\027[94m|AndELIM|\027[0m"
 		(p_off (off+8)) (* > *) 
 			(aux_pp env (off+9) p)
-| P.MP (p1,p2,f) -> spf "%s%s\n%s|MP|\n%s>\n%s%s>\n%s"
+| P.MP (p1,p2,f) -> spf "%s%s\n%s%s\n%s>\n%s%s>\n%s"
 	(p_off off) (aux_fp env f) 
-	(p_off off) (* |MP| *) 
+	(p_off off) "\027[94m|MP|\027[0m"
 		(p_off (off+3)) (* > *) 
 			(aux_pp env (off+4) p1)
 		(p_off (off+3)) (* > *) 
 			(aux_pp env (off+4) p2)
-| P.Rewrite (f1,f2) -> spf "%s%s\n%s<->\n%s%s\n%s|REWRITE|\n"
+| P.Rewrite (f1,f2) -> spf "%s%s\n%s<->\n%s%s\n%s%s\n"
 	(p_off off) (aux_fp env f1)
-	(p_off off)
+	(p_off off) "\027[94m|REWRITE|\027[0m"
 	(p_off off) (aux_fp env f2)
 	(p_off off)
-| P.Unit (p,pl,f) -> spf "%s%s\n%s|UNIT|\n%s>\n%s%s"
+| P.Unit (p,pl,f) -> spf "%s%s\n%s%s\n%s>\n%s%s"
 	(p_off off) (aux_fp env f)
-	(p_off off)
+	(p_off off) "\027[94m|UNIT|\027[0m"
 		(p_off (off+5)) (* > *) 
 			(aux_pp env (off+6) p)
 		(let res = ref "" in
@@ -110,9 +112,9 @@ let rec aux_pp env off = function
 		 	List.iter aux pl;
 			!res;
 		 end)
-| P.Monotonicity (pl,f) -> spf "%s%s\n%s|MONOTONICITY|\n%s"
+| P.Monotonicity (pl,f) -> spf "%s%s\n%s%s\n%s"
 	(p_off off) (aux_fp env f)
-	(p_off off)
+	(p_off off) "\027[94m|ASSERTED|\027[0m"
 		(let res = ref "" in
 		 let aux p  = 
 			res := spf "%s%s>\n%s" !res (p_off (off+5)) (aux_pp env (off+6) p)
@@ -120,6 +122,14 @@ let rec aux_pp env off = function
 		 	List.iter aux pl;
 			!res;
 		 end)
+| P.Trans (p,q,r) -> spf "%s%s\n%s%s\n%s>\n%s%s>\n%s"
+	(p_off off) (aux_fp env r)
+	(p_off off) "\027[94m|ASSERTED|\027[0m"
+	(p_off (off +5))
+		(aux_pp env (off+6) p)
+	(p_off (off +5))
+		(aux_pp env (off+6) q)
+
 
 let print_proof env p = 
 	fpf "%s" (aux_pp env 0 p)
