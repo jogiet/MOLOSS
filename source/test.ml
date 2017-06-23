@@ -6,7 +6,7 @@ module M = Ast_modal
 module C = Convertisseur
 module PP = Pprinter
 module U = Unix
-
+module A = Array
 module R = Random
 module L = List
 module Sy = Sys
@@ -138,24 +138,28 @@ let rec check_form = function
 	| _ -> check_form f
 
 let _ = 
-	let nb,n = get_arg () 
-	in
+let nb,n = get_arg () 
+and t0 = U.gettimeofday ()
+in begin
 	for i = 1 to nb do
 	let f = tire_form n in
 	let f0 = C.st "w" f
 	and a = tire_ax ()
+	(*
 	and out = open_out "test.out"
+	*)
 	in begin
-		print_debug (string_of_int nb);
 		print_debug "\n \n =====================================\n ";
+		(*
 		print_debug "On commence une nouvelle formule \n";
 		print_debug "Formule modale : \n";
 		print_debug "Liste des axiomes : \n";
 		L.iter (fun s -> pf "%s\n" s) a;
-		flush_all ();
 		PP.print_m f;
+		*)
+		flush_all ();
 		if (check_form f) then
-			So.solve f0 a (Some out)
+			So.solve f0 a (None)
 			(*
 			let pid = U.fork () in
 			if pid = 0 then
@@ -172,4 +176,9 @@ let _ =
 			print_debug 
 			"On ne traite pas cette formule : pattern [] (<> ..)\n";
 	end;
-	done
+	done;
+	if L.mem "--time" (A.to_list (Sys.argv)) then
+		pf "Claculs effectués en %f s \n" 
+		((U.gettimeofday () -.t0)/. (float_of_int nb));
+
+end
