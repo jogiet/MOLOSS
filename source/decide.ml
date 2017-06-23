@@ -162,9 +162,10 @@ else
 	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
 	let w = get_fw () in
 	let fd = 
-		FO.Conj (FO.Conj (FO.Relation (c,w),
-				          FO.Relation (w,w)),
-			     FO.changefv w fy) in
+	FO.Dij (FO.Not f,
+			FO.Conj (FO.Conj (FO.Relation (c,w),
+				          	  FO.Relation (w,w)),
+			     	 FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
 		H.add config.w w ();
