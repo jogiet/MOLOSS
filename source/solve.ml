@@ -292,9 +292,7 @@ let solve f a out =
 			let p = get_proof oc ic out
 			in begin
 				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
-				(*
 				PP.print_proof config.env p;
-				*)
 				flush_all ();
 				cont := false; 
 			end
@@ -302,9 +300,7 @@ let solve f a out =
 				try begin
 					L.iter (fun d_proc -> d_proc config m) dec_proc;
 					fpf "\027[92mLa formule est satisfiable \027[0m\n";
-					(*
 					print_soluce config m;
-					*)
 					flush_all ();
 					cont := false; 
 				end
@@ -315,8 +311,6 @@ let solve f a out =
 					dec_assert oc new_bf out;
 				end;
 		done;
-		fpf "Terminé !!! \n";
-		flush_all ();
 	end
 					
 			

@@ -64,7 +64,7 @@ let _ =
 		end;
 	end;
 		if L.mem "--time" argv then
-			fpf "Claculs effectués en %f s \n" (U.gettimeofday () -.t0);
+			fpf "Calculs effectués en %f s \n" (U.gettimeofday () -.t0);
 	end
 			 
 

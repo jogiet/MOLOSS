@@ -149,7 +149,7 @@ in begin
 	and out = open_out "test.out"
 	*)
 	in begin
-		print_debug "\n \n =====================================\n ";
+		print_debug "\n \n=====================================\n";
 		(*
 		print_debug "On commence une nouvelle formule \n";
 		print_debug "Formule modale : \n";
