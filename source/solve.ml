@@ -225,7 +225,8 @@ let get_init_flag axioms =
 
 let new_config () = 
 	let config = 
-	{w = H.create 10;
+	{cardw = 1;
+	 w = H.create 10;
 	 env = H.create 10;
 	 s = ();
 	 exists = H.create 10;

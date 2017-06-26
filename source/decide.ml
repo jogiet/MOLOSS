@@ -50,7 +50,8 @@ clef
 type thetfonc = (string,string) H.t
 
 type config = 
-	{w : thetex;
+	{cardw : int;
+	 w : thetex;
 	 env : env;
 	 s : unit; (* a priori, S est inutile algiorithmiquement *)
 	 exists : thetex;
@@ -61,14 +62,24 @@ type config =
 	 fonc : thetfonc}
 
 exception Found of (string list*BFO.formula)
+exception SoftFound of (string list*BFO.formula*BFO.formula*int)
+
 (* 
 Le résultat des fonctions de décision se fera par des exceptions ...
 Le type renvoyé par les fonctions est unit (parce que L.iter ^^ )
 *)
 
 (* 
-Renvoie la nouvelle formule ainsi que la liste des nuvelle variables
-introduites et modifie par effet de bord l'envirronement 
+Une exception prend comme arguement : 
+-> La liste des nouvelle variables à rajouter au modèle
+	(Elles correspondent aux nouvelles variables des formules encadrées
+	(ci-dessous
+-> Une nouvelle formule à rajouter 
+Dans le cas de Soft, il y a en plus : 
+-> Une formule à mettre en assert soft 
+-> et le poids de la formule
+Les fonctions de décisions changent l'environnement par effet de bord
+et la config de manière générale
 *)
 
 type init_flag = 
