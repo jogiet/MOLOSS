@@ -200,7 +200,8 @@ else
 		end
 	in
 	let fd = 
-		FO.Conj (FO.Relation (c,w),FO.changefv w fy) in
+		FO.Dij (FO.Not f,
+				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
 		H.add config.exists eps () ;
