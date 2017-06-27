@@ -50,8 +50,8 @@ clef
 type thetfonc = (string,string) H.t
 
 type config = 
-	{cardw : int;
-	 w : thetex;
+	{mutable cardw : int;
+	 mutable w : string list;
 	 env : env;
 	 s : unit; (* a priori, S est inutile algiorithmiquement *)
 	 exists : thetex;
@@ -62,7 +62,12 @@ type config =
 	 fonc : thetfonc}
 
 exception Found of (string list*BFO.formula)
-exception SoftFound of (string list*BFO.formula*BFO.formula*int)
+exception SoftFound of 
+	(string list*
+	 BFO.formula*
+	 string list*
+	 BFO.formula*
+	 int)
 
 (* 
 Le résultat des fonctions de décision se fera par des exceptions ...
@@ -107,7 +112,7 @@ else
 				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
-		H.add config.w w ();
+		config.w <- w::config.w;
 		H.add config.exists eps () ;
 		raise (Found (new_var,f_tot));
 	end
@@ -179,7 +184,7 @@ else
 			     	 FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd 
 	in begin
-		H.add config.w w ();
+		config.w <- w::config.w;
 		H.add config.exists eps () ;
 		raise (Found (new_var,f_tot));
 	end
@@ -205,7 +210,7 @@ else
 		else
 		let res = get_fw () 
 		in begin
-			H.add config.w res ();
+			config.w <- res::config.w;
 			H.add config.fonc c res;
 			res;
 		end
@@ -322,7 +327,11 @@ let euclidean config model =
 				in
 				let f_tot,new_var = abs config.env f 
 				in begin
-					H.add config.euc (x,if u <= v then (u,v) else (v,u)) ();
+					H.add 
+						config.euc 
+						(x,if u <= v then (u,v) 
+									 else (v,u)) 
+						();
 					raise (Found (new_var,f_tot));
 				end
 			| [] -> aux ((x,u)::rel) q
@@ -336,6 +345,57 @@ let euclidean config model =
 
 
 
+(*--------------------------------------------------------*)
+(*                  Contrer l'explosion                   *)
+(*--------------------------------------------------------*)
+
+
+let rec softexist config = function
+| [] -> ()
+| (eps,b)::q when b ->
+begin
+if H.mem config.exists eps then
+	softexist config q
+else
+	let f = H.find config.env eps in
+	match f with
+	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
+	let w0 = get_fw () in
+	let aux1 f w =
+		FO.Dij (f,
+				FO.Conj (FO.Relation (c,w),
+						 FO.changefv w fy))
+	and aux2 f w = 
+		FO.Conj (f,
+				 FO.Not (FO.Relation (w,w0))) in
+	let fd = 
+		FO.Dij (FO.Not f,
+				L.fold_left 
+					aux1 
+					(FO.Conj (FO.Relation (c,w0),
+				 			  FO.changefv w0 fy))
+						config.w )
+	and fg = 
+		match config.w with
+		| [] -> assert false (* on met au moins "w" *)
+		| t::q -> L.fold_left 
+			aux2
+			(FO.Not (FO.Relation (t,w0)))
+			q
+	in
+	let fd_tot,new_var1 = abs config.env fd 
+	and fg_tot,new_var2 = abs config.env fg 
+	in begin
+		config.cardw <- 1+config.cardw;
+		H.add config.exists eps () ;
+		config.w <- w0::config.w;
+		raise (SoftFound (new_var1,fd_tot,new_var2,fg_tot,config.cardw));
+	end
+	| _ -> softexist config q
+end
+| _::q -> softexist config q
+
+	
 
 
 
@@ -347,17 +407,29 @@ let euclidean config model =
 
 
 
+(*
+begin
+if H.mem config.exists eps then
+	exist config q
+else
+	let f = H.find config.env eps in
+	match f with
+	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
+	let w = get_fw () in
+	let fd = 
+		FO.Dij (FO.Not f,
+				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
+	let f_tot,new_var = abs config.env fd 
+	in begin
+		H.add config.w w ();
+		H.add config.exists eps () ;
+		raise (Found (new_var,f_tot));
+	end
+	| _ -> exist config q
+end
+| _::q -> exist config q 
 
-
-
-
-
-
-
-
-
-
-
+*)
 
 
 

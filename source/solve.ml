@@ -226,7 +226,7 @@ let get_init_flag axioms =
 let new_config () = 
 	let config = 
 	{cardw = 1;
-	 w = H.create 10;
+	 w = ["w"];
 	 env = H.create 10;
 	 s = ();
 	 exists = H.create 10;
@@ -237,7 +237,6 @@ let new_config () =
 	 euc = H.create 10;
 	 fonc = H.create 10}
 	 in begin 
-	 	H.add config.w "w" ();
 		config;
 	end
 
@@ -266,7 +265,7 @@ let aux (k,b) =
 	| false -> PP.print_fo (FO.Not f)
 in begin
 	fpf "liste des mondes : \n";
-	H.iter (fun k _ -> fpf "%s \n" k) config.w;
+	L.iter (fun k  -> fpf "%s \n" k) config.w;
 	flush_all ();
 	fpf "\nPropriétés à vérifier :\n";	
 	List.iter aux m;
