@@ -78,6 +78,14 @@ let dec_assert oc bf out =
 		flush_all ();
 	end
 	
+let dec_asssert_soft oc bf out weight = 
+	let f_smt = bfo_to_smtlib bf in
+	let s = spf "(assert %s :weight %d)" f_smt weight 
+	in begin
+		output_string oc s;
+		aux_out s out;
+		flush_all ();
+	end
 
 (*--------------------------------------------------------*)
 (*         Fonctions pour le parsing du modèle            *)
@@ -260,9 +268,15 @@ et enrichit la config au fur et à mesure ...
 let print_soluce config m = 
 let aux (k,b) = 
 	let f = H.find config.env k in
-	match b with
-	| true -> PP.print_fo f
-	| false -> PP.print_fo (FO.Not f)
+	match f with
+	| FO.Atom _ | FO.Relation _ | FO.Not _ ->
+	begin
+		match b with
+		| true -> PP.print_fo f
+		| false -> PP.print_fo (FO.Not f)
+	end
+	| FO.Exists _ | FO.Forall _ -> ()
+	| _ -> assert false
 in begin
 	fpf "liste des mondes : \n";
 	L.iter (fun k  -> fpf "%s \n" k) config.w;
@@ -310,6 +324,13 @@ let solve f a out =
 					List.iter (fun v -> dec_const oc v out) new_var;
 					dec_assert oc new_bf out;
 				end;
+				| SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
+				begin
+					List.iter (fun v -> dec_const oc v out) new_var;
+					List.iter (fun v -> dec_const oc v out) new_var2;
+					dec_assert oc new_bf out;
+					dec_asssert_soft oc bf_soft out wght;
+				end
 		done;
 	end
 					
