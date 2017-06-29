@@ -80,7 +80,7 @@ let dec_assert oc bf out =
 	
 let dec_asssert_soft oc bf out weight = 
 	let f_smt = bfo_to_smtlib bf in
-	let s = spf "(assert %s :weight %d)" f_smt weight 
+	let s = spf "(assert-soft %s :weight %d)" f_smt weight 
 	in begin
 		output_string oc s;
 		aux_out s out;
@@ -112,7 +112,13 @@ begin
 		while !cont do 
 			let ligne = input_line ic 
 			in begin
-			res := spf "%s \n%s" !res ligne;
+			if ligne = "(objectives" then
+			begin
+				input_line ic |> ignore; (*  (1) *)
+				input_line ic |> ignore; (* )    *)
+			end
+			else
+				res := spf "%s \n%s" !res ligne;
 			if ligne = ")" then
 				cont := false;
 			end;
@@ -205,7 +211,11 @@ end
 let axiom_to_dec_proc axiom = 
 	let rec aux = function 
 	| [] -> []
-	| "-M"::q | "-boxeM"::q -> reflexiv::(aux q)
+	| "-M"::q | "-boxeM"::q ->
+		if L.mem "-5" axiom then
+			softreflexiv::(aux q)
+		else 
+			reflexiv::(aux q)
 	| "-4"::q -> transitivity::(aux q)
 	| "-B"::q -> symmetric::(aux q)
 	| "-5"::q -> euclidean::(aux q)
@@ -218,6 +228,8 @@ let axiom_to_dec_proc axiom =
 	in let res = aux axiom in
 	if L.mem "-M" axiom || L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
 		forall::res
+	else if L.mem "-4" axiom || L.mem "-5" axiom then
+		forall::softexist::res
 	else
 		forall::exist::res
 
@@ -326,7 +338,7 @@ let solve f a out =
 				end;
 				| SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
 				begin
-					List.iter (fun v -> dec_const oc v out) new_var;
+					List.iter (fun v -> dec_const oc v out) new_var1;
 					List.iter (fun v -> dec_const oc v out) new_var2;
 					dec_assert oc new_bf out;
 					dec_asssert_soft oc bf_soft out wght;

@@ -350,6 +350,7 @@ let euclidean config model =
 (*--------------------------------------------------------*)
 
 
+(* ===========> règle exists <=========== *)
 let rec softexist config = function
 | [] -> ()
 | (eps,b)::q when b ->
@@ -361,9 +362,58 @@ else
 	match f with
 	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
 	let w0 = get_fw () in
-	let aux1 f w =
+	let auxd f w =
 		FO.Dij (f,
 				FO.Conj (FO.Relation (c,w),
+						 FO.changefv w fy))
+	and auxg f w = 
+		FO.Conj (f,
+				 FO.Not (FO.Relation (w,w0))) in
+	let fd = 
+		FO.Dij (FO.Not f,
+				L.fold_left 
+					auxd 
+					(FO.Conj (FO.Relation (c,w0),
+				 			  FO.changefv w0 fy))
+						config.w )
+	and fg = 
+		match config.w with
+		| [] -> assert false (* on met au moins "w" *)
+		| t::q -> L.fold_left 
+			auxg
+			(FO.Not (FO.Relation (t,w0)))
+			q
+	in
+	let fd_tot,new_var1 = abs config.env fd 
+	and fg_tot,new_var2 = abs config.env fg 
+	in begin
+		config.cardw <- 1+config.cardw;
+		H.add config.exists eps () ;
+		config.w <- w0::config.w;
+		raise (SoftFound (new_var1,fd_tot,new_var2,fg_tot,config.cardw));
+	end
+	| _ -> softexist config q
+end
+| _::q -> softexist config q
+
+	
+
+(* ===========>   symetrique   <=========== *)
+let rec softreflexiv config = function
+| [] -> ()
+| (eps,b)::q when b ->
+begin
+if H.mem config.exists eps then
+	softreflexiv config q
+else
+	let f = H.find config.env eps in
+	match f with
+	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
+	let w0 = get_fw () in
+	let aux1 f w =
+		FO.Dij (f,
+				FO.Conj (FO.Conj (FO.Relation (c,w),
+								  FO.Relation (w,w)),
 						 FO.changefv w fy))
 	and aux2 f w = 
 		FO.Conj (f,
@@ -372,7 +422,8 @@ else
 		FO.Dij (FO.Not f,
 				L.fold_left 
 					aux1 
-					(FO.Conj (FO.Relation (c,w0),
+					(FO.Conj (FO.Conj (FO.Relation (c,w0),
+									   FO.Relation (w0,w0)),
 				 			  FO.changefv w0 fy))
 						config.w )
 	and fg = 
@@ -391,56 +442,11 @@ else
 		config.w <- w0::config.w;
 		raise (SoftFound (new_var1,fd_tot,new_var2,fg_tot,config.cardw));
 	end
-	| _ -> softexist config q
+	| _ -> softreflexiv config q
 end
-| _::q -> softexist config q
+| _::q -> softreflexiv config q
 
 	
-
-
-
-
-
-
-
-
-
-
-
-(*
-begin
-if H.mem config.exists eps then
-	exist config q
-else
-	let f = H.find config.env eps in
-	match f with
-	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
-	let w = get_fw () in
-	let fd = 
-		FO.Dij (FO.Not f,
-				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
-	let f_tot,new_var = abs config.env fd 
-	in begin
-		H.add config.w w ();
-		H.add config.exists eps () ;
-		raise (Found (new_var,f_tot));
-	end
-	| _ -> exist config q
-end
-| _::q -> exist config q 
-
-*)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
