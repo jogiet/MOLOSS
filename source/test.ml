@@ -28,26 +28,6 @@ begin
 	L.nth variables (R.int 4);
 end
 
-let rec tire_aux n = 
-begin
-	R.self_init ();
-	match n with
-	| 0 -> 
-	begin
-		match R.int 2 with
-		| 0 -> M.Atom (tire_var () )
-		| _ -> M.Not (M.Atom (tire_var () ))
-	end
-	| n -> 
-	begin
-		match R.int 6 with 
-		| 0 -> M.Atom (tire_var ())
-		| 1 -> M.Not (M.Atom (tire_var ()))
-		| 2 -> M.Conj (tire_aux (n-1),tire_aux (n-1))
-		| 3 -> M.Dij (tire_aux (n-1),tire_aux (n-1))
-		| _ -> M.Boxe (tire_aux(n-1))
-	end;
-end
 
 let rec tire_form n = 
 begin
@@ -66,7 +46,7 @@ begin
 		| 9 -> M.Not (M.Atom (tire_var ()))
 		| 2 -> M.Conj (tire_form (n-1),tire_form (n-1))
 		| 3 -> M.Dij (tire_form (n-1),tire_form (n-1))
-		| 4 -> M.Boxe (tire_aux(n-1))
+		| 4 -> M.Boxe (tire_form(n-1))
 		| _ -> M.Diamond (tire_form (n-1))
 	end;
 

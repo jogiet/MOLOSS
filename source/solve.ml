@@ -315,10 +315,12 @@ let solve f a out =
 		while !cont do
 			match get_ans oc ic out with
 			| UNSAT ->
-			let p = get_proof oc ic out
+			let p = () (*      get_proof oc ic out*)
 			in begin
 				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
+				(*
 				PP.print_proof config.env p;
+				*)
 				flush_all ();
 				cont := false; 
 			end
@@ -344,6 +346,7 @@ let solve f a out =
 					dec_asssert_soft oc bf_soft out wght;
 				end
 		done;
+		U.close_process (ic,oc) |> ignore;
 	end
 					
 			
