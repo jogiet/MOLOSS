@@ -92,7 +92,8 @@ let _ =
 		end
 		| _ ->
 		begin
-			fpf "Donner le nom du fichier avec une extension .bml\n";
+			fpf 
+			"Donner le nom du fichier avec une extension .bmli ou .dfg\n";
 			exit 1;
 		end;
 	end;

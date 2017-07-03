@@ -34,6 +34,9 @@ Met la formule en NNF
 
 
 let rec st x = function 
+(*
+Cette fonction assure une transformation en NNF
+*)
 | M.Atom p -> FO.Atom (S.uppercase p,x) 
 | M.Not f -> 
 begin
