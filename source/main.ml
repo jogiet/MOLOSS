@@ -61,6 +61,35 @@ let _ =
 			flush_all ();
 			exit 1
 		end					
+		| _ ::filename ::_ when F.check_suffix filename ".dfg" -> 
+		begin
+			let file = open_in filename in
+			let lb = Lexing.from_channel file 
+			and out = 
+				if L.mem "--out" argv then 
+					Some (open_out (new_suff filename))
+				else
+					None
+			in
+			try			
+			let f,a = Sp_parser.problem Sp_lexer.next_token lb in
+				if L.mem "--direct" argv then
+					D.solve (C.st "w" f) a out
+				else
+					So.solve (C.st "w" f) a out
+			with
+			| Sp_lexer.Lex_err s ->
+			report (lexeme_start_p lb, lexeme_end_p lb) filename;
+			fpf "lexical error: %s.\n" s;
+			flush_all ();
+			exit 1
+  			| Sp_parser.Error ->
+			report (lexeme_start_p lb, lexeme_end_p lb) filename;
+			fpf "syntax error.\n";
+			flush_all ();
+			exit 1
+			
+		end
 		| _ ->
 		begin
 			fpf "Donner le nom du fichier avec une extension .bml\n";

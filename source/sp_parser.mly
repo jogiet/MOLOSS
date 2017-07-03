@@ -5,7 +5,7 @@
 
 %}
 
-%token LPAR RPAR LACC RACC 
+%token LPAR RPAR LACC RACC LCRO RCRO
 %token DOT COMMA TIMES EOF
 %token <string> Ident
 %token <int> Int
@@ -42,16 +42,16 @@ description:
 | LoDesc; DOT ; pot_pourri* ; EoL; DOT {()}
 
 log_part:
-| 
+| symbol_list?;
   f = special_formula_list; 
    {f}
 	
 
 symbol_list: 
 | LoSym ;DOT;  Predicates ; 
-  LACC ;
-  separated_nonempty_list(COMMA,symb_decl);
-  RACC ; EoL ;DOT {()}
+  LCRO;
+  separated_nonempty_list(COMMA,symb_decl); 
+  RCRO; DOT ; EoL ;DOT {()}
 
 symb_decl:
 | Ident {()}
@@ -73,7 +73,7 @@ origin_type:
 | Conjectures {()}
 
 labelled_formula:
-| prop_form_name; LPAR; f = prop_term ; c_label? ; RPAR {f}
+| prop_form_name; LPAR; f = prop_term ; c_label? ; RPAR; DOT {f}
 
 prop_form_name:
 | Form {()}
@@ -119,6 +119,7 @@ settings:
 	in
 	match aux with
 	| [x] -> x
+	| [] -> None
 	| _ -> assert false}
 
 flag:
@@ -131,10 +132,11 @@ flag:
 			| 6 -> ["-M";"-4"]
 			| 7 -> ["-M";"-5"]
 			| _ -> assert false)}
-| SetFlag; pot_pourri* {None}
+| SetFlag; pot_pourri_l*; DOT {None}
 
 pot_pourri:
 | Ident {()}
+| Int {()}
 | DOT {()}
 | COMMA {()}
 | LPAR {()}
@@ -144,6 +146,15 @@ pot_pourri:
 | TIMES {()}
 
 
+pot_pourri_l:
+| Ident {()}
+| Int {()}
+| COMMA {()}
+| LPAR {()}
+| RPAR {()}
+| LACC {()}
+| RACC {()}
+| TIMES {()}
 
 
 

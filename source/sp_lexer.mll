@@ -21,9 +21,10 @@
 	 ("equiv",Equiv);
 	 ("dia",Dia);
 	 ("some",Dia);
-	 ("boxe",Boxe);
-	 ("begin-problem",BeginP);
-	 ("end-problem",EndP);
+	 ("box",Boxe);
+	 ("all",Boxe);
+	 ("begin_problem",BeginP);
+	 ("end_problem",EndP);
 	 ("list_of_descriptions",LoDesc);
 	 ("list_of_symbols",LoSym);
 	 ("list_of_special_formulae",LoSF);
@@ -66,6 +67,8 @@ rule next_token = parse
 | "," {COMMA}
 | "(" { LPAR}
 | ")" { RPAR}
+| "[" {LCRO}
+| "]" {RCRO}
 | "{" {LACC}
 | "}" {RACC}
 | "*" {TIMES}
