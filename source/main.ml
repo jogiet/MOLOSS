@@ -22,6 +22,10 @@ let new_suff s =
 	(F.chop_suffix s ".bml")^".out"
 
 
+let truc bidule = 
+	let lb = Lexing.from_channel bidule in
+	Sp_parser.problem Sp_lexer.next_token lb
+	
 
 let _ = 
 	let argv = A.to_list (Sys.argv) 

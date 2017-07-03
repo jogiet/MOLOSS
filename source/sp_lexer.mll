@@ -1,6 +1,6 @@
 {
 	open Lexing
-	open Pparser
+	open Sp_parser
 
 	exception Lex_err of string
 
@@ -13,8 +13,8 @@
 	let kwd_tbl = 
 	[("true",TRUE);
 	 ("false",FALSE);
- 	 ("and",Conj);
-	 ("or",Dij);
+ 	 ("and",AND);
+	 ("or",OR);
 	 ("not",Not);
 	 ("implies",Implies);
 	 ("implied",Implied);
@@ -22,10 +22,24 @@
 	 ("dia",Dia);
 	 ("some",Dia);
 	 ("boxe",Boxe);
-	 ("begin-problem",BegP);
+	 ("begin-problem",BeginP);
 	 ("end-problem",EndP);
-	 ("list_of_symbols",LoSymb);
-	 ("end_of_list",EoList);
+	 ("list_of_descriptions",LoDesc);
+	 ("list_of_symbols",LoSym);
+	 ("list_of_special_formulae",LoSF);
+	 ("list_of_settings",LoSet);
+	 ("end_of_list",EoL);
+	 ("EML",EML);
+	 ("eml",EML);
+	 ("axioms",Axioms);
+	 ("conjectures",Conjectures);
+	 ("formula",Form);
+	 ("prop_formula",PForm);
+	 ("concept_formula",CForm);
+	 ("predicates",Predicates);
+	 ("EMLTheory",THRY);
+	 ("SPASS",SPASS);
+	 ("set_flag",SetFlag)
 	 ]
 
 	let check_kwd s = 
@@ -39,21 +53,24 @@
 
 
 let digit = ['0'-'9']
+let number = digit+
 let letter = ['a'-'z' 'A'-'Z']
 let spec_symb = '_'
 let ident = (letter|digit|spec_symb)+
 
-ule next_token = parse
+rule next_token = parse
 | ' ' | '\t' {next_token lexbuf}
 | '\n' | '\r' {newline lexbuf; next_token lexbuf}
 | ";" {comment lexbuf}
+| "." {DOT}
+| "," {COMMA}
 | "(" { LPAR}
 | ")" { RPAR}
 | "{" {LACC}
 | "}" {RACC}
+| "*" {TIMES}
 | eof {EOF}
-| pident as id {ProofRef id}
-| fident as id {FormRef id}
+| number as n {Int (int_of_string n)}
 | ident as id {check_kwd id}
 | _ as s { raise (Lex_err  ("illegal character: " ^ (String.make 1 s))) }
 
