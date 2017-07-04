@@ -1,0 +1,4 @@
+-M; on travaille sans axiomes
+%
+  (<> p) & (<> p1)       ; afin de créer des nouveaux mondes fils
+& ([](a => b)) & ([] a) 

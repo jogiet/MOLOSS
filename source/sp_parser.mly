@@ -66,7 +66,7 @@ special_formula_list:
 	 |  [] -> assert false
 	 | t::q -> 
 		let aux f1 f2 = M.Dij (f1,f2)
-	 in L.fold_left aux t q}
+	 in M.Not (L.fold_left aux t q)}
 
 origin_type:
 | Axioms {()}
