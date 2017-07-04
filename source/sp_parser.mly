@@ -65,7 +65,7 @@ special_formula_list:
 	{match f with
 	 |  [] -> assert false
 	 | t::q -> 
-		let aux f1 f2 = M.Conj (f1,f2)
+		let aux f1 f2 = M.Dij (f1,f2)
 	 in L.fold_left aux t q}
 
 origin_type:
