@@ -145,7 +145,7 @@ and t0 = ref 0.
 and t_mol = ref 0.
 and t_z3 = ref 0.
 and out = None (* Some (open_out "test.out") *)
-and res = open_out "resultatsz3.csv"
+and res = open_out_gen [Open_append] 777 "resultatsz3.csv"
 in begin
 	for i = 1 to nb do
 		let f = tire_form n in
@@ -171,7 +171,7 @@ in begin
 		pf "Pour Moloss : %f \n" t_mol_f;
 		pf "Pour z3 : %f \n" t_z3_f;
 		flush_all ();
-		output_string res (spf "%s, %d,%f,%f" logic nb t_mol_f t_z3_f);
+		output_string res (spf "%s, %d,%f,%f \n" logic nb t_mol_f t_z3_f);
 	end;
 
 end
