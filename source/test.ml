@@ -69,6 +69,24 @@ let tire_ax () =
 		!res;
 	end
 		
+let get_logic () = 
+	let argv = A.to_list (Sy.argv) in
+	if L.mem "-T" argv then
+		["-M"]
+	else if L.mem "-B" argv then
+		["-B"]
+	else if L.mem "-4" argv then
+		["-4"]
+	else if L.mem "-5" argv then
+		["-5"]
+	else if L.mem "-S4" argv then
+		["-M";"-4"]
+	else if L.mem "-S5" argv then
+		["M";"-5"]
+	else
+		[]
+	
+
 
 
 
