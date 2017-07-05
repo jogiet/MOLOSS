@@ -10,6 +10,7 @@ module A = Array
 module R = Random
 module L = List
 module Sy = Sys
+module D = Direct
 module S = String
 
 module So = Solve
@@ -20,7 +21,7 @@ let pf = Printf.printf
 (*--------------------------------------------------------*)
 (*            Génération aléatoire de formule             *)
 (*--------------------------------------------------------*)
-let variables = ["p";"q";"p'";"q'"]
+let variables = ["p";"q";"p2";"q2"]
 
 let tire_var () =
 begin
@@ -119,46 +120,32 @@ let rec check_form = function
 
 let _ = 
 let nb,n = get_arg () 
-and t0 = U.gettimeofday ()
+and t0 = ref 0.
+and t_mol = ref 0.
+and t_z3 = ref 0.
+and out = None (* Some (open_out "test.out") *)
 in begin
 	for i = 1 to nb do
-	let f = tire_form n in
-	let f0 = C.st "w" f
-	and a = tire_ax ()
-	(*
-	and out = open_out "test.out"
-	*)
-	in begin
-		print_debug "\n \n=====================================\n";
-		(*
-		print_debug "On commence une nouvelle formule \n";
-		print_debug "Formule modale : \n";
-		print_debug "Liste des axiomes : \n";
-		L.iter (fun s -> pf "%s\n" s) a;
-		PP.print_m f;
-		*)
-		flush_all ();
-		if (check_form f) then
-			So.solve f0 a (None)
-			(*
-			let pid = U.fork () in
-			if pid = 0 then
-			(* processus fils *)
-				So.solve f0 a (Some out)
-			else
-			begin
-				U.sleep (2*n);
-				U.kill pid Sys.sigkill;
-				U.wait () |> ignore;
-			end
-			*)
-		else
-			print_debug 
-			"On ne traite pas cette formule : pattern [] (<> ..)\n";
-	end;
+		let f = tire_form n in
+		let f0 = C.st "w" f
+		and a = tire_ax ()
+		in begin
+			pf "========================= \n";
+			flush_all ();
+	 		t0 := U.gettimeofday () ;
+			So.solve f0 [] out;
+			t_mol := !t_mol +.(U.gettimeofday () -. !t0); 
+
+	 		t0 := U.gettimeofday () ;
+			D.solve f0 [] out;
+			t_z3 := !t_z3 +.(U.gettimeofday () -. !t0); 
+		end;
 	done;
-	if L.mem "--time" (A.to_list (Sys.argv)) then
-		pf "Claculs effectués en %f s \n" 
-		((U.gettimeofday () -.t0)/. (float_of_int nb));
+	pf "Calculs effectués en : \n" ;
+	pf "Pour Moloss : %f \n"
+		((!t_mol)/. (float_of_int nb));
+	pf "Pour z3 : %f \n"
+		((!t_z3)/. (float_of_int nb));
+	flush_all ();
 
 end

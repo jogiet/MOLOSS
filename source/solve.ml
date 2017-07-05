@@ -328,7 +328,9 @@ let solve f a out =
 				try begin
 					L.iter (fun d_proc -> d_proc config m) dec_proc;
 					fpf "\027[92mLa formule est satisfiable \027[0m\n";
+					(*
 					print_soluce config m;
+					*)
 					flush_all ();
 					cont := false; 
 				end

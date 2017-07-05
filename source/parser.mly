@@ -52,6 +52,7 @@ diarule:
 atom:
 | LPAR; f = formula; RPAR {f}
 | Not; i = ident; {Ast_modal.Not (Ast_modal.Atom i)}
+| Not; f = formula; {Ast_modal.Not f}
 | i = ident; {Ast_modal.Atom i}
 
 ident:

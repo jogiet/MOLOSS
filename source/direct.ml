@@ -211,16 +211,18 @@ let solve fo a out =
 		p_for oc out fo;
 		match check_sat ic oc out with
 		| UNSAT -> 
-			let s = "la formule est insatisfiable \n"
+			let s = "\027[31mla formule est insatisfiable \027[0m\n"
 			in begin
 				fpf "%s" s;
 			end
 		| SAT -> 
-			let s = "la formule est satisfiable \n"
+			let s = "\027[92mla formule est satisfiable \027[0m\n"
 			and m = get_model ic oc out 
 			in begin
 				fpf "%s" s;
+				(*
 				fpf "%s" m;
+				*)
 			end
 	end
 

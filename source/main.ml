@@ -76,7 +76,11 @@ let _ =
 				if L.mem "--direct" argv then
 					D.solve (C.st "w" f) a out
 				else
-					So.solve (C.st "w" f) a out
+				begin
+					fpf "Fin du parsing\n";
+					flush_all ();
+					So.solve (C.st "w" f) a out;
+				end
 			with
 			| Sp_lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
