@@ -17,6 +17,7 @@ module So = Solve
 
 
 let pf = Printf.printf
+let spf = Printf.sprintf
 
 (*--------------------------------------------------------*)
 (*            Génération aléatoire de formule             *)
@@ -72,21 +73,21 @@ let tire_ax () =
 let get_logic () = 
 	let argv = A.to_list (Sy.argv) in
 	if L.mem "-T" argv then
-		["-M"]
+		["-M"],"-T"
 	else if L.mem "-B" argv then
-		["-B"]
+		["-B"],"-B"
 	else if L.mem "-4" argv then
-		["-4"]
+		["-4"],"-4"
 	else if L.mem "-5" argv then
-		["-5"]
+		["-5"],"-5"
 	else if L.mem "-S4" argv then
-		["-M";"-4"]
+		["-M";"-4"],"-S4"
 	else if L.mem "-S5" argv then
-		["-M";"-5"]
+		["-M";"-5"],"-S5"
 	else if L.mem "-K" argv then
-		[]
+		[],"-K"
 	else
-		tire_ax ()
+		tire_ax (),"Undef"
 	
 
 
@@ -144,15 +145,13 @@ and t0 = ref 0.
 and t_mol = ref 0.
 and t_z3 = ref 0.
 and out = None (* Some (open_out "test.out") *)
+and res = open_out "resultatsz3.csv"
 in begin
 	for i = 1 to nb do
 		let f = tire_form n in
 		let f0 = C.st "w" f
-		and a = get_logic ()
+		and a,_ = get_logic ()
 		in begin
-			pf "========================= \n";
-			pf "========================= \n";
-			PP.print_m f;
 			pf "========================= \n";
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
@@ -164,11 +163,15 @@ in begin
 			t_z3 := !t_z3 +.(U.gettimeofday () -. !t0); 
 		end;
 	done;
-	pf "Calculs effectués en : \n" ;
-	pf "Pour Moloss : %f \n"
-		((!t_mol)/. (float_of_int nb));
-	pf "Pour z3 : %f \n"
-		((!t_z3)/. (float_of_int nb));
-	flush_all ();
+	let t_mol_f = 	(!t_mol/. (float_of_int nb))
+	and t_z3_f = (!t_z3 /. (float_of_int nb))
+	and _,logic = get_logic ()
+	in begin
+		pf "Calculs effectués en : \n" ;
+		pf "Pour Moloss : %f \n" t_mol_f;
+		pf "Pour z3 : %f \n" t_z3_f;
+		flush_all ();
+		output_string res (spf "%s, %d,%f,%f" logic nb t_mol_f t_z3_f);
+	end;
 
 end
