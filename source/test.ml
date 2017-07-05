@@ -83,8 +83,10 @@ let get_logic () =
 		["-M";"-4"]
 	else if L.mem "-S5" argv then
 		["M";"-5"]
-	else
+	else if L.mem "-K" argv then
 		[]
+	else
+		tire_ax ()
 	
 
 
@@ -146,16 +148,16 @@ in begin
 	for i = 1 to nb do
 		let f = tire_form n in
 		let f0 = C.st "w" f
-		and a = tire_ax ()
+		and a = get_logic ()
 		in begin
 			pf "========================= \n";
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
-			So.solve f0 [] out;
+			So.solve f0 a out;
 			t_mol := !t_mol +.(U.gettimeofday () -. !t0); 
 
 	 		t0 := U.gettimeofday () ;
-			D.solve f0 [] out;
+			D.solve f0 a out;
 			t_z3 := !t_z3 +.(U.gettimeofday () -. !t0); 
 		end;
 	done;
