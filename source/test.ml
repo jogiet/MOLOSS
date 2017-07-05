@@ -151,6 +151,9 @@ in begin
 		and a = get_logic ()
 		in begin
 			pf "========================= \n";
+			pf "========================= \n";
+			PP.print_m f;
+			pf "========================= \n";
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
 			So.solve f0 a out;
