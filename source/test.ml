@@ -171,7 +171,7 @@ in begin
 		pf "Pour Moloss : %f \n" t_mol_f;
 		pf "Pour z3 : %f \n" t_z3_f;
 		flush_all ();
-		output_string res (spf "%s, %d,%f,%f \n" logic nb t_mol_f t_z3_f);
+		output_string res (spf "%s, %d,%f,%f \n" logic n t_mol_f t_z3_f);
 	end;
 
 end
