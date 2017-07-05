@@ -82,7 +82,7 @@ let get_logic () =
 	else if L.mem "-S4" argv then
 		["-M";"-4"]
 	else if L.mem "-S5" argv then
-		["M";"-5"]
+		["-M";"-5"]
 	else if L.mem "-K" argv then
 		[]
 	else
