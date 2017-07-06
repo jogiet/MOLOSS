@@ -325,6 +325,7 @@ let solve f a out =
 				(*
 				PP.print_proof config.env p;
 				*)
+				p |> ignore;
 				flush_all ();
 				cont := false; 
 			end
