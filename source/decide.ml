@@ -56,6 +56,7 @@ type config =
 	 s : unit; (* a priori, S est inutile algiorithmiquement *)
 	 exists : thetex;
 	 forall : thetfor;
+	 reflex : thetex;
 	 sym : thetsym;
 	 trans : thetrans;
 	 euc : theteuc;
@@ -165,6 +166,7 @@ let rec forall config model  =
 	in aux config (make_rel config model) model
 
 (*  ===========>  Réflexivité  <=========== *)
+(*
 let rec reflexiv config = function
 (* Il s'agit d'une réécriture de la fonction exists *)
 | [] -> ()
@@ -191,6 +193,49 @@ else
 	| _ -> reflexiv config q
 end
 | _::q -> reflexiv config q 
+
+*)
+
+let reflexiv config model = 
+	let aux (eps,b) = 
+		b &&
+		begin
+		match H.find config.env eps with
+		| FO.Forall (_,(FO.Dij (_,f)) )
+		when not (H.mem config.reflex eps) -> 
+		begin
+			H.add config.reflex eps ();
+			true;
+		end
+		| _ -> false
+		end
+	in
+ 	match L.filter aux model with
+	| [] -> ()
+	| (eps,_)::q -> 
+	let fd = L.fold_left
+	(fun f0 (eps,_) -> 
+		let f = H.find config.env eps in
+		match f with
+		| FO.Forall (_,FO.Dij (FO.Not (FO.Relation (w,_)),fi)) ->
+			FO.Conj (f0,
+		  			 FO.Dij (FO.Not f,
+		 		 		     FO.changefv w fi)) 
+		| _ -> assert false)
+	(let f0 = H.find config.env eps in
+	 match f0 with
+	 | FO.Forall (_,FO.Dij (FO.Not (FO.Relation (w,_)),fi)) ->
+	 	FO.Dij (FO.Not f0,
+			     FO.changefv w fi) 
+	 | _ -> assert false)
+	q in
+	let f_tot,new_var = abs config.env fd 
+	in begin
+		raise (Found (new_var,f_tot));
+	end
+	
+
+
 
 (*  ===========>  Fonctionnelle  <=========== *)
 let rec functionnal config = function 

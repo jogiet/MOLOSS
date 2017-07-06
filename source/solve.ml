@@ -251,12 +251,13 @@ let new_config () =
 	 s = ();
 	 exists = H.create 10;
 	 forall = H.create 10;
+	 reflex = H.create 10;
 	 sym = H.create 10;
 	 trans = H.create 10;
 
 	 euc = H.create 10;
 	 fonc = H.create 10}
-	 in begin 
+	in begin 
 		config;
 	end
 
@@ -267,8 +268,11 @@ et enrichit la config au fur et à mesure ...
 *)
 | [] -> 
 	if List.mem Reflexiv init_flag then
+		(*
 		let fb,new_var = abs config.env (FO.Relation ("w","w"))
 		in [fb],new_var
+		*)
+		[],[]
 	else
 		[],[]
 | f::q -> 
