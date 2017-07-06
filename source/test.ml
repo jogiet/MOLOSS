@@ -158,7 +158,9 @@ in begin
 			pf "========================= \n";
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
+			(*
 			So.solve f0 a out;
+			*)
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 
