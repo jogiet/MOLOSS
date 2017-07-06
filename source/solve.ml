@@ -226,12 +226,12 @@ let axiom_to_dec_proc axiom =
 		exit 1;
 	end
 	in let res = aux axiom in
-	if L.mem "-M" axiom || L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
+	if L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
 		forall::res
 	else if L.mem "-4" axiom || L.mem "-5" axiom then
 		forall::softexist::res
 	else
-		forall::exist::res
+		forall::res@[exist]
 
 let get_init_flag axioms = 
 	if L.mem  "-M" axioms then

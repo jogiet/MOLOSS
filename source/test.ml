@@ -144,8 +144,11 @@ let nb,n = get_arg ()
 and t0 = ref 0.
 and t_mol = ref 0.
 and t_z3 = ref 0.
+and dt_mol = ref 0.
+and dt_z3 = ref 0.
 and out = None (* Some (open_out "test.out") *)
 and res = open_out_gen [Open_append] 777 "resultatsz3.csv"
+and comp = ref 0
 in begin
 	for i = 1 to nb do
 		let f = tire_form n in
@@ -156,20 +159,26 @@ in begin
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
 			So.solve f0 a out;
-			t_mol := !t_mol +.(U.gettimeofday () -. !t0); 
+			dt_mol := (U.gettimeofday () -. !t0); 
+			t_mol := !t_mol +. !dt_mol;
 
 	 		t0 := U.gettimeofday () ;
 			D.solve f0 a out;
-			t_z3 := !t_z3 +.(U.gettimeofday () -. !t0); 
+			dt_z3 := (U.gettimeofday () -. !t0); 
+			t_z3 := !t_z3 +. !dt_z3;
+
+			if !dt_mol < !dt_z3 then incr comp;
 		end;
 	done;
 	let t_mol_f = 	(!t_mol/. (float_of_int nb))
 	and t_z3_f = (!t_z3 /. (float_of_int nb))
 	and _,logic = get_logic ()
+	and tx = (float_of_int !comp) /. (float_of_int nb)
 	in begin
 		pf "Calculs effectués en : \n" ;
 		pf "Pour Moloss : %f \n" t_mol_f;
 		pf "Pour z3 : %f \n" t_z3_f;
+		pf "taux : %f \n" tx;
 		flush_all ();
 		output_string res (spf "%s, %d,%f,%f \n" logic n t_mol_f t_z3_f);
 	end;
