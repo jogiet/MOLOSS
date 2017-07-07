@@ -1,218 +1,16 @@
-(*########################################################*)
-(*               Essai d'un solveur basique               *) 
-(*########################################################*)
-(*
-TODO : rassembler les morceaux de code dans un seul module/dossier : +
-correcte
-*)
+module Solve (SMT : Sign.Smt) = 
+struct
 
-(*--------------------------------------------------------*)
-(*              Types & modules manipulés                 *)
-(*--------------------------------------------------------*)
-
-open Ast_fo
-open Lexing
 open Format
-
-module P = Ast_proof
-
-module PP = Pprinter
-module U = Unix
-module FOMap = Map.Make(FO)
-module FOSet = Set.Make(FO)
-module Smap = Map.Make(String)
-module SSet = Set.Make(String)
-module DS = struct
-	type t= string*string
-	let compare = compare
-end
-module DSSet = Set.Make(DS)
+open Ast_fo
 open Decide
 
+module PP = Pprinter
 
-type ident = string
-
-
-type ans = 
-	| UNSAT 
-	| SAT of (string*bool) list
+let fpf = printf
 
 
 
-
-module BFOSet = Set.Make(BFO)
-
-(*
-type ans = SAT | UNSAT
-*)
-
-
-
-let spf = Format.sprintf
-and fpf = Format.printf
-
-
-let aux_out s = function
-| None -> ()
-| Some oc -> output_string oc s
-
-(*--------------------------------------------------------*)
-(*       Fonctions de conversion FO <-> SMT-LIB           *)
-(*--------------------------------------------------------*)
-
-
-let rec bfo_to_smtlib = function
-| BFO.Atom i -> i
-| BFO.Not f -> spf "(not %s)" (bfo_to_smtlib f)
-| BFO.Conj (f1,f2) ->
-	spf "(and %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
-| BFO.Dij (f1,f2) ->
-	spf "(or %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
-
-let dec_const oc v out = 
-	let s = spf "(declare-const %s Bool) \n" v 
-	in begin
-		output_string oc s;
-		aux_out s out;
-		flush_all ();
-	end
-
-
-let dec_assert oc bf out = 
-	let f_smt = bfo_to_smtlib bf in
-	let s = spf "(assert %s) \n" f_smt 
-	in begin
-		output_string oc s;
-		aux_out s out;
-		flush_all ();
-	end
-	
-let dec_asssert_soft oc bf out weight = 
-	let f_smt = bfo_to_smtlib bf in
-	let s = spf "(assert-soft %s :weight %d)" f_smt weight 
-	in begin
-		output_string oc s;
-		aux_out s out;
-		flush_all ();
-	end
-
-(*--------------------------------------------------------*)
-(*         Fonctions pour le parsing du modèle            *)
-(*--------------------------------------------------------*)
-
-
-let report (b,e) f =
-  let l = b.pos_lnum in
-  let fc = b.pos_cnum - b.pos_bol + 1 in
-  let lc = e.pos_cnum - b.pos_bol + 1 in
-  fpf "File \"%s\", line %d, characters %d-%d:\n" f l fc lc
- 
-
-
-let get_model oc ic out = 
-begin
-	flush_all ();
-	output_string oc "(get-model) \n";
-	aux_out  "(get-model) \n" out ;
-	flush_all ();
-	let res = ref ""
-	and cont = ref true 
-	in begin
-		while !cont do 
-			let ligne = input_line ic 
-			in begin
-			if ligne = "(objectives" then
-			begin
-				input_line ic |> ignore; (*  (1) *)
-				input_line ic |> ignore; (* )    *)
-			end
-			else
-				res := spf "%s \n%s" !res ligne;
-			if ligne = ")" then
-				cont := false;
-			end;
-		done;
-		aux_out (!res^"\n") out;
-	let lb = Lexing.from_string !res in
-	try 
-		Z3_parser.answer Z3_lexer.next_token lb
-	with
-
-	| Z3_lexer.Lex_err s ->
-	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
-	fpf "lexical error: %s.\n" s;
-	flush_all ();
-	exit 1
-    | Z3_parser.Error ->
-	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
-	fpf "syntax error.\n";
-	flush_all ();
-	exit 1
-	end;
-end
-
-(*--------------------------------------------------------*)
-(*        Fonctions pour le parsing de la preuve          *)
-(*--------------------------------------------------------*)
-
-
-
-
-
-let get_proof oc ic out = 
-begin
-	flush_all ();
-	output_string oc "(get-proof) \n";
-	aux_out  "(get-proof) \n" out ;
-	flush_all ();
-	let res = ref ""
-	and cont = ref true 
-	in begin
-		while !cont do 
-			let ligne = input_line ic 
-			in begin
-			res := spf "%s \n%s" !res ligne;
-			if ligne = "" then
-				cont := false;
-			end;
-		done;
-		aux_out (!res^"\n") out;
-	let lb = Lexing.from_string !res in
-	try 
-		let file = Pparser.s0 Plexer.next_token lb
-		in P.traite file
-	with
-
-	| Plexer.Lex_err s ->
-	report (lexeme_start_p lb, lexeme_end_p lb) "proof";
-	fpf "lexical error: %s.\n" s;
-	flush_all ();
-	exit 1
-    | Pparser.Error ->
-	report (lexeme_start_p lb, lexeme_end_p lb) "proof";
-	fpf "syntax error.\n";
-	flush_all ();
-	exit 1
-	end;
-end
-
-(*--------------------------------------------------------*)
-(*            Fonctions pour le réponse                   *)
-(*--------------------------------------------------------*)
-let get_ans oc ic out = 
-begin
-	output_string oc "(check-sat) \n";
-	aux_out "(check-sat) \n" out;
-	flush_all ();
-	let ans = input_line ic 
-	in begin
-		aux_out (ans^"\n") out;
-		if ans = "unsat" then
-			UNSAT
-		else
-			SAT (get_model oc ic out)
-		end;
-end
 (*--------------------------------------------------------*)
 (*              Fonctions pour les axiomes                *)
 (*--------------------------------------------------------*)
@@ -250,7 +48,7 @@ let get_init_flag axioms =
 		[]
 
 (*--------------------------------------------------------*)
-(*                Fonction de résolution                  *)
+(*               Fonction d'initialisation                *)
 (*--------------------------------------------------------*)
 
 let new_config () = 
@@ -312,23 +110,24 @@ in begin
 	flush_all ();
 end
 
+(*--------------------------------------------------------*)
+(*                    Fonction Core                       *)
+(*--------------------------------------------------------*)
+
 
 let solve f a out = 
 	let config = new_config () in
 	let init_flag = get_init_flag a
 	and dec_proc = axiom_to_dec_proc a in	
-	let fo_box, new_var = init config init_flag [f] in
-	let ic,oc = U.open_process "./z3 -in"
+	let fo_box, new_var = init config init_flag [f] 
 	and cont = ref true 
-	and s = "(set-option :produce-proofs true)\n"
 	in begin
-		output_string oc s;
-		aux_out s out;
-		L.iter (fun v -> dec_const oc v out) new_var; 
-		L.iter (fun fb -> dec_assert oc fb out) fo_box	;
+		SMT.init ();		
+		L.iter (fun v -> SMT.dec_const v ) new_var; 
+		L.iter (fun fb -> SMT.dec_assert fb ) fo_box	;
 		while !cont do
-			match get_ans oc ic out with
-			| UNSAT ->
+			match SMT.get_ans () with
+			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
 				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
@@ -339,7 +138,7 @@ let solve f a out =
 				flush_all ();
 				cont := false; 
 			end
-			| SAT  m ->
+			| SMT.SAT  m ->
 				try begin
 					L.iter (fun d_proc -> d_proc config m) dec_proc;
 					fpf "\027[92mLa formule est satisfiable \027[0m\n";
@@ -352,43 +151,21 @@ let solve f a out =
 				with
 				| Found (new_var,new_bf) ->
 				begin
-					List.iter (fun v -> dec_const oc v out) new_var;
-					dec_assert oc new_bf out;
+					List.iter (fun v -> SMT.dec_const v) new_var;
+					SMT.dec_assert new_bf ;
 				end;
 				| SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
 				begin
-					List.iter (fun v -> dec_const oc v out) new_var1;
-					List.iter (fun v -> dec_const oc v out) new_var2;
-					dec_assert oc new_bf out;
-					dec_asssert_soft oc bf_soft out wght;
+					List.iter (fun v -> SMT.dec_const v ) new_var1;
+					List.iter (fun v -> SMT.dec_const v ) new_var2;
+					SMT.dec_assert new_bf;
+					SMT.dec_assert_soft bf_soft wght;
 				end
 		done;
-		U.close_process (ic,oc) |> ignore;
+		SMT.close ();
 	end
 					
 			
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+end

@@ -13,7 +13,7 @@ module Sy = Sys
 module D = Direct
 module S = String
 
-module So = Solve
+module Sz3 = Solve.Solve(Smtz3.SMTz3)
 
 
 let pf = Printf.printf
@@ -160,7 +160,7 @@ in begin
 			pf "========================= \n";
 			flush_all ();
 	 		t0 := U.gettimeofday () ;
-			So.solve f0 a out;
+			Sz3.solve f0 a out;
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 

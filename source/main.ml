@@ -3,11 +3,10 @@ module A = Array
 module F = Filename
 module U = Unix
 module C = Convertisseur
-module So = Solve 
+module Sz3 = Solve.Solve(Smtz3.SMTz3) 
 module D = Direct
 open Lexing
 
-module Sv = Solving.Solve(Smtz3.SMTz3)
 
 
 let fpf = Printf.printf
@@ -51,10 +50,7 @@ let _ =
 				if L.mem "--direct" argv then
 					D.solve (C.st "w" f) a out
 				else
-					(*
-					So.solve (C.st "w" f) a out
-					*)
-					Sv.solve (C.st "w" f) a out
+					Sz3.solve (C.st "w" f) a out
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
@@ -85,7 +81,7 @@ let _ =
 				begin
 					fpf "Fin du parsing\n";
 					flush_all ();
-					So.solve (C.st "w" f) a out;
+					Sz3.solve (C.st "w" f) a out;
 				end
 			with
 			| Sp_lexer.Lex_err s ->
