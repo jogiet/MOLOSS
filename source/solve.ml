@@ -33,10 +33,19 @@ open Decide
 type ident = string
 
 
+type ans = 
+	| UNSAT 
+	| SAT of (string*bool) list
+
+
+
 
 module BFOSet = Set.Make(BFO)
 
+(*
 type ans = SAT | UNSAT
+*)
+
 
 
 let spf = Format.sprintf
@@ -201,12 +210,13 @@ begin
 		if ans = "unsat" then
 			UNSAT
 		else
-			SAT;
+			SAT (get_model oc ic out)
 		end;
 end
 (*--------------------------------------------------------*)
 (*              Fonctions pour les axiomes                *)
 (*--------------------------------------------------------*)
+
 
 let axiom_to_dec_proc axiom = 
 	let rec aux = function 
@@ -329,7 +339,7 @@ let solve f a out =
 				flush_all ();
 				cont := false; 
 			end
-			| SAT -> let m = get_model oc ic out in
+			| SAT  m ->
 				try begin
 					L.iter (fun d_proc -> d_proc config m) dec_proc;
 					fpf "\027[92mLa formule est satisfiable \027[0m\n";

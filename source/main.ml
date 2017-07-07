@@ -7,6 +7,9 @@ module So = Solve
 module D = Direct
 open Lexing
 
+module Sv = Solving.Solve(Smtz3.SMTz3)
+
+
 let fpf = Printf.printf
 
 let report (b,e) file =
@@ -48,7 +51,10 @@ let _ =
 				if L.mem "--direct" argv then
 					D.solve (C.st "w" f) a out
 				else
+					(*
 					So.solve (C.st "w" f) a out
+					*)
+					Sv.solve (C.st "w" f) a out
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
