@@ -173,7 +173,9 @@ in begin
 			t_msat := !t_msat +. !dt_msat;
 
 	 		t0 := U.gettimeofday () ;
+			(*
 			D.solve f0 a out;
+			*)
 			dt_z3 := (U.gettimeofday () -. !t0); 
 			t_z3 := !t_z3 +. !dt_z3;
 

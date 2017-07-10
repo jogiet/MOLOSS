@@ -1,3 +1,13 @@
+(*###################################################################*)
+(*                     Résolution par minisat                        *)
+(*###################################################################*)
+
+(*
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+Le module minisat n'a pas de fonction clear, il faut donc utilser qu'une
+fois par appel sinon on a des résultats incohérents  
+*)
+
 open Msat
 
 module SMTmsat : Sign.Smt = 
@@ -17,11 +27,6 @@ type ans =
 	| UNSAT
 	| SAT of (string*bool) list
 
-(*
-type env = 
-	{stoa : (string,E.t) H.t;
-	 atos : (E.t,string) H.t}
-*)
 
 let stoa = H.create 42
 
@@ -56,19 +61,24 @@ let dec_assert_soft f w =
 	printbug "assert_soft pas implem'\n"; exit 0
 
 let get_ans () = 
-try
-	match Sat.solve () with
+	match 
+	Sat.solve () 
+	with
 	| Sat.Unsat _ -> UNSAT
 	| Sat.Sat state -> 
 	let model = ref [] in
 	let aux s a = 
 		try 
-			model := (s,state.eval a)::(!model)
+			model := (s,state.Msat.Solver_intf.eval a)::(!model)
 		with _ ->
 			model := (s,false)::(!model)
 	in begin
-		H.iter aux stoa;
-		SAT !model;
+		(try
+		H.iter aux stoa
+		with _ -> begin printbug "H.iter chiale\n"; exit 0 ; end);
+		try 
+		SAT !model
+		with _ -> begin printbug "SAT!model chiale\n"; exit 0; end;
 	end
-with _ -> printbug "get_ans chiale \n"; exit 0
+
 end

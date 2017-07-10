@@ -51,7 +51,12 @@ let _ =
 				if L.mem "--direct" argv then
 					D.solve (C.st "w" f) a out
 				else
-					Sz3.solve (C.st "w" f) a out
+				begin
+					fpf "moloss avec z3 : \n";
+					Sz3.solve (C.st "w" f) a out;
+					fpf "moloss avec msat : \n";
+					Smsat.solve (C.st "w" f) a out;
+				end
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
