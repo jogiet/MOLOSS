@@ -4,6 +4,7 @@ module F = Filename
 module U = Unix
 module C = Convertisseur
 module Sz3 = Solve.Solve(Smtz3.SMTz3) 
+module Smsat = Solve.Solve(Smtmsat.SMTmsat)
 module D = Direct
 open Lexing
 

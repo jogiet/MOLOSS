@@ -3,6 +3,7 @@ Ast_modal
 Parser
 Pparser
 Z3_parser
+Smtz3
 Decide
 Convertisseur
 Solve

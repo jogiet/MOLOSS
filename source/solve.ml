@@ -116,12 +116,15 @@ end
 
 
 let solve f a out = 
+try
 	let config = new_config () in
 	let init_flag = get_init_flag a
 	and dec_proc = axiom_to_dec_proc a in	
 	let fo_box, new_var = init config init_flag [f] 
 	and cont = ref true 
-	in begin
+	in try 
+	begin
+	
 		SMT.init ();		
 		L.iter (fun v -> SMT.dec_const v ) new_var; 
 		L.iter (fun fb -> SMT.dec_assert fb ) fo_box	;
@@ -161,10 +164,13 @@ let solve f a out =
 					SMT.dec_assert new_bf;
 					SMT.dec_assert_soft bf_soft wght;
 				end
+				| Not_found -> fpf "une proc de décision chiale\n"; exit
+				0
 		done;
 		SMT.close ();
 	end
-					
+	with Not_found -> fpf "ca chiale non init \n"; exit 0					
+with Not_found -> fpf "ca chiale \n"; exit 0					
 			
 
 

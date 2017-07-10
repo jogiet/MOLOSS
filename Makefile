@@ -1,6 +1,7 @@
 OCB = ocamlbuild -classic-display \
 			-use-menhir \
-			-libs unix	
+			-libs unix \
+			-package msat
 
 TARGET = native
 
