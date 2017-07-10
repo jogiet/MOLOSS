@@ -204,16 +204,18 @@ let get_model ic oc out =
 let solve fo a out = 
 
 	let ic,oc = U.open_process "./z3 -in"
+	and res = ref true
 	in begin
 		init oc out;
 		p_axiom oc out a;
 		p_prop oc out fo;
 		p_for oc out fo;
-		match check_sat ic oc out with
+		(match check_sat ic oc out with
 		| UNSAT -> 
 			let s = "\027[31mla formule est insatisfiable \027[0m\n"
 			in begin
 				fpf "%s" s;
+				res := false;
 			end
 		| SAT -> 
 			let s = "\027[92mla formule est satisfiable \027[0m\n"
@@ -223,7 +225,9 @@ let solve fo a out =
 				(*
 				fpf "%s" m;
 				*)
-			end
+			end);
+		U.close_process (ic,oc) |> ignore;
+		!res;
 	end
 
 

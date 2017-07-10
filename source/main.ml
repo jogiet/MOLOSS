@@ -49,13 +49,13 @@ let _ =
 			try			
 			let a,f = Parser.file Lexer.next_token lb in
 				if L.mem "--direct" argv then
-					D.solve (C.st "w" f) a out
+					D.solve (C.st "w" f) a out |> ignore
 				else
 				begin
 					fpf "moloss avec z3 : \n";
-					Sz3.solve (C.st "w" f) a out;
+					Sz3.solve (C.st "w" f) a out |> ignore;
 					fpf "moloss avec msat : \n";
-					Smsat.solve (C.st "w" f) a out;
+					Smsat.solve (C.st "w" f) a out |> ignore;
 				end
 			with
 			| Lexer.Lex_err s ->
@@ -82,12 +82,12 @@ let _ =
 			try			
 			let f,a = Sp_parser.problem Sp_lexer.next_token lb in
 				if L.mem "--direct" argv then
-					D.solve (C.st "w" f) a out
+					D.solve (C.st "w" f) a out |> ignore
 				else
 				begin
 					fpf "Fin du parsing\n";
 					flush_all ();
-					Sz3.solve (C.st "w" f) a out;
+					Sz3.solve (C.st "w" f) a out |> ignore;
 				end
 			with
 			| Sp_lexer.Lex_err s ->
