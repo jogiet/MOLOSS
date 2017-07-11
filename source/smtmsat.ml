@@ -2,7 +2,7 @@
 (*                     Résolution par minisat                        *)
 (*###################################################################*)
 
-(*
+(**
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 Le module minisat n'a pas de fonction clear, il faut donc utilser qu'une
 fois par appel sinon on a des résultats incohérents  
