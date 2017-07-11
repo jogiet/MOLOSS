@@ -1,5 +1,5 @@
 (*###################################################################*)
-(*                     Résolution par minisat                        *)
+(*                     Interface pour minisat                        *)
 (*###################################################################*)
 
 (**
@@ -30,7 +30,11 @@ type ans =
 
 let stoa = H.create 42
 
-let init () = H.reset stoa
+let init () = 
+begin
+H.reset stoa;
+end
+
 let close () = H.reset stoa
 
 let dec_const s =
