@@ -3,10 +3,13 @@ module A = Array
 module F = Filename
 module U = Unix
 module C = Convertisseur
+open Lexing
+
+(*          Les différents solveurs            *)
 module Sz3 = Solve.Solve(Smtz3.SMTz3) 
 module Smsat = Solve.Solve(Smtmsat.SMTmsat)
+module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 module D = Direct
-open Lexing
 
 
 
@@ -54,6 +57,8 @@ let _ =
 				begin
 					fpf "moloss avec z3 : \n";
 					Sz3.solve (C.st "w" f) a out |> ignore;
+					fpf "moloss avec minisat : \n";
+					Sminisat.solve (C.st "w" f) a out |> ignore;
 					fpf "moloss avec msat : \n";
 					Smsat.solve (C.st "w" f) a out |> ignore;
 				end

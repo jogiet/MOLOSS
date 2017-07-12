@@ -8,7 +8,7 @@ TARGET = native
 
 PDFLTX = pdflatex -synctex=1 -interaction=nonstopmode
 
-all:  rapport main
+all:  main
 
 tst:
 	$(OCB) source/test.$(TARGET) 
@@ -22,8 +22,8 @@ rapport:
 	mv report/report.pdf ./
 
 doc:
-	$(OCB)-I _build/ source/solve.docdir/dep.dot
-	$(OCB)-I _build/ source/solve.docdir/index.html
+	$(OCB) -I _build/ source/solve.docdir/dep.dot
+	$(OCB) -I _build/ source/solve.docdir/index.html
 	ln -f -s solve.docdir/index.html 
 
 graph:
@@ -36,6 +36,7 @@ clean:
 	rm -f moloss direct
 	rm -f *.native
 	rm -f *.html
+	rm -f *.sh
 	rm -rf solve.docdir
 	cd report; rm -rf *.aux *.log *.out *.toc *.pdf *.bbl *.blg *.gz
 	rm -rf *~
