@@ -15,6 +15,7 @@ module S = String
 
 module Sz3 = Solve.Solve(Smtz3.SMTz3)
 module Smsat = Solve.Solve(Smtmsat.SMTmsat)
+module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 
 
 let pf = Printf.printf
@@ -148,11 +149,14 @@ and t0 = ref 0.
 and t_mol = ref 0.
 and t_z3 = ref 0.
 and t_msat = ref 0.
+and t_minisat = ref 0.
 and dt_mol = ref 0.
 and dt_z3 = ref 0.
 and dt_msat = ref 0.
+and dt_minisat = ref 0.
 and res_mol = ref true
 and res_msat = ref true
+and res_minisat = ref true
 and res_z3 = ref true
 and out = None (* Some (open_out "test.out") *)
 and res = open_out_gen [Open_append] 777 "resultatsz3.csv"
@@ -175,7 +179,12 @@ in begin
 	 		t0 := U.gettimeofday () ;
 			res_msat := Smsat.solve f0 a out;
 			dt_msat:= (U.gettimeofday () -. !t0); 
-			t_msat := !t_msat +. !dt_msat;
+			t_msat := !t_minisat +. !dt_minisat;
+
+	 		t0 := U.gettimeofday () ;
+			res_minisat := Sminisat.solve f0 a out;
+			dt_minisat:= (U.gettimeofday () -. !t0); 
+			t_minisat := !t_msat +. !dt_msat;
 
 	 		t0 := U.gettimeofday () ;
 			res_z3 := D.solve f0 a out;
@@ -184,29 +193,56 @@ in begin
 
 			if !dt_mol < !dt_z3 then incr comp;
 
-			if !res_mol != !res_z3 || !res_z3 != !res_msat then
+			if !res_mol != !res_z3 then
 			begin
 				output_string res "FAIL \n";
 				pf "\027[31m =====>   FAIL !!!!  <=====\027[0m\n";
+				pf "\027[31m =====>      z3      <=====\027[0m\n";
 				exit 1;
-			end
+			end;
+
+			(*
+			if !res_msat != !res_z3 then
+			begin
+				output_string res "FAIL \n";
+				pf "\027[31m =====>   FAIL !!!!  <=====\027[0m\n";
+				pf "\027[31m =====>     msat     <=====\027[0m\n";
+				exit 1;
+			end;
+			*)
+
+			if !res_minisat != !res_z3 then
+			begin
+				output_string res "FAIL \n";
+				pf "\027[31m =====>   FAIL !!!!  <=====\027[0m\n";
+				pf "\027[31m =====>    minisat   <=====\027[0m\n";
+				exit 1;
+			end;
+
 		end;
 	done;
 	let t_mol_f = 	(!t_mol/. (float_of_int nb))
 	and t_z3_f = (!t_z3 /. (float_of_int nb))
 	and t_msat_f = (!t_msat /. (float_of_int nb))
+	and t_minisat_f = (!t_minisat /. (float_of_int nb))
 	and _,logic = get_logic ()
 	and tx = (float_of_int !comp) /. (float_of_int nb)
 	in begin
-		(*
 		pf "Calculs effectués en : \n" ;
 		pf "Pour Moloss : %f \n" t_mol_f;
 		pf "Pour Moloss (msat) : %f \n" t_msat_f;
+		pf "Pour Moloss (minisat) : %f \n" t_minisat_f;
 		pf "Pour z3 : %f \n" t_z3_f;
 		pf "taux : %f \n" tx;
 		flush_all ();
-		*)
-		output_string res (spf "%s, %d,%f,%f,%f \n" logic n t_mol_f t_msat_f t_z3_f);
+		output_string res 
+			(spf "%s, %d,%f,%f,%f,%f \n" 
+				logic 
+				n 
+				t_mol_f 
+				t_msat_f 
+				t_minisat_f
+				t_z3_f);
 	end;
 
 end
