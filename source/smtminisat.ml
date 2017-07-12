@@ -31,9 +31,15 @@ let instance = ref (M.create ())
 
 let assump = Q.create ()
 
+let important = ref true
+
 (*--------------------------------------------------------*)
 (*                 Fonctions  principales                 *)
 (*--------------------------------------------------------*)
+
+let printbug s = 
+	print_string s;
+	flush_all ()
 
 type ans = 
 	| UNSAT
@@ -42,6 +48,8 @@ type ans =
 let init () = 
 begin
 	instance := M.create ();
+	compt := 1;
+	important := true;
 	H.clear stolit;
 	Q.clear assump;
 end
@@ -72,7 +80,7 @@ let tseityn f =
 		and vf2 = aux f2 
 		in begin
 			res := [M.Lit.neg x; vf1]::[M.Lit.neg x; vf2]
-				::[M.Lit.neg vf1; M.Lit.neg vf2; x]
+					::[M.Lit.neg vf1; M.Lit.neg vf2; x]
 					::(!res);
 			x;
 		end
@@ -96,8 +104,10 @@ let tseityn f =
 	
 
 let dec_assert f = 
+	try
 	let cls = tseityn f in
 		List.iter (fun cl -> M.add_clause_l !instance cl) cls
+	with M.Unsat -> important := false
 
 let dec_assert_soft f w = 
 	let cls = tseityn f
@@ -110,6 +120,9 @@ let dec_assert_soft f w =
 	end
 
 let get_ans () = 
+	if not !important then 
+		UNSAT
+	else
 	let cont = ref true
 	and res = ref true 
 	in begin

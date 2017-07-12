@@ -171,28 +171,49 @@ in begin
 			pf "========================= \n";
 			*)
 			flush_all ();
+
+		(*
+		On fait les résolutions avec les différents oracles
+		*)
+
 	 		t0 := U.gettimeofday () ;
 			res_mol := Sz3.solve f0 a out;
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 
+			(*
 	 		t0 := U.gettimeofday () ;
 			res_msat := Smsat.solve f0 a out;
 			dt_msat:= (U.gettimeofday () -. !t0); 
 			t_msat := !t_minisat +. !dt_minisat;
+			*)
+
 
 	 		t0 := U.gettimeofday () ;
 			res_minisat := Sminisat.solve f0 a out;
 			dt_minisat:= (U.gettimeofday () -. !t0); 
-			t_minisat := !t_msat +. !dt_msat;
+			t_minisat := !t_minisat +. !dt_minisat;
 
 	 		t0 := U.gettimeofday () ;
 			res_z3 := D.solve f0 a out;
 			dt_z3 := (U.gettimeofday () -. !t0); 
 			t_z3 := !t_z3 +. !dt_z3;
 
-			if !dt_mol < !dt_z3 then incr comp;
+		(*
+		On regarde si au moins un des solveurs a fait mieux que "direct"
 
+		*)
+
+
+			if !dt_mol < !dt_z3 
+				|| !dt_minisat < !dt_z3
+			then 
+				incr comp;
+
+		(*
+		On vérifie ensuite que les solveurs trouvent bien la même chiose
+		que le mode "direct"
+		*)
 			if !res_mol != !res_z3 then
 			begin
 				output_string res "FAIL \n";
