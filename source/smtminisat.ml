@@ -30,6 +30,7 @@ let stolit = H.create 42
 let instance = ref (M.create ())
 
 let assump = Q.create ()
+let negassump = Q.create ()
 
 let important = ref true
 
@@ -52,6 +53,7 @@ begin
 	important := true;
 	H.clear stolit;
 	Q.clear assump;
+	Q.clear negassump;
 end
 
 
@@ -119,6 +121,16 @@ let dec_assert_soft f w =
 		Q.add g assump;
 	end
 
+let get_assump () = 
+	let res = ref [] in
+	let aux lit = res := lit::(!res)
+	and aux_neg lit = res := (M.Lit.neg lit)::(!res)
+	in begin	
+		Q.iter aux assump;
+		Q.iter aux_neg negassump;
+		Array.of_list !res;
+	end
+
 let get_ans () = 
 	if not !important then 
 		UNSAT
@@ -128,13 +140,13 @@ let get_ans () =
 	in begin
 		while !cont do
 			cont := false;
-			(try M.solve !instance
+			(try M.solve ~assumptions:(get_assump ()) !instance
 			with M.Unsat -> 
 				if Q.is_empty assump then
 					res := false
 				else
 				begin 
-					Q.pop assump |> ignore;
+					Q.push (Q.pop assump) negassump;
 					cont := true;
 				end);
 		done;

@@ -23,11 +23,15 @@ module Sat = Msat.Sat.Make()
 module E = Msat.Sat.Expr
 module F = Msat.Tseitin.Make (E)
 module H = Hashtbl
+module Q = Queue
 module BFO = Ast_fo.BFO
 
 let printbug s = 
 	print_string s;
 	flush_all ()
+
+let assump = Q.create ()
+let negassump = Q.create () 
 
 type ans = 
 	| UNSAT
@@ -38,7 +42,8 @@ let stoa = H.create 42
 
 let init () = 
 begin
-H.reset stoa;
+	Q.clear assump;
+	H.reset stoa;
 end
 
 let close () = H.reset stoa
@@ -68,11 +73,37 @@ try
 with _ -> printbug "dec_assert chiale \n"; exit 0
 
 let dec_assert_soft f w =
-	printbug "assert_soft pas implem'\n"; exit 0
 
-let get_ans () = 
-	match Sat.solve () with
-	| Sat.Unsat _ -> UNSAT
+	let g = E.fresh () in
+	let cls = F.make_cnf (F.make_or [F.make_not (F.make_atom g); 
+									(bfo_to_msat f)])
+	and atomg = match F.make_cnf (F.make_atom g) with
+				| [[x]] -> x
+				| _ -> assert false
+	in begin
+		Q.push atomg assump;		
+		Sat.assume cls;	
+	end
+
+let get_assum () = 
+	let res = ref [] in
+	let aux at = res := at::(!res)
+	in begin
+		Q.iter aux assump;
+		!res;
+	end
+	
+
+let rec get_ans () = 
+	match Sat.solve ~assumptions:(get_assum ()) () with
+	| Sat.Unsat _ -> 
+		if Q.is_empty assump then
+			UNSAT
+		else
+		begin
+			Q.pop assump |> ignore;
+			get_ans ();
+		end
 	| Sat.Sat state -> 
 	let model = ref [] in
 	let aux s a = 
