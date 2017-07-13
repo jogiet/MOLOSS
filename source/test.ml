@@ -48,12 +48,10 @@ begin
 	end
 	| n -> 
 	begin
-		match (R.int 3) +2  with 
-		| 8 -> M.Atom (tire_var ())
-		| 9 -> M.Not (M.Atom (tire_var ()))
-		| 2 -> M.Conj (tire_form (n-1),tire_form (n-1))
-		| 3 -> M.Dij (tire_form (n-1),tire_form (n-1))
-		| 4 -> M.Boxe (tire_form(n-1))
+		match (R.int 4)  with 
+		| 0 -> M.Conj (tire_form (n-1),tire_form (n-1))
+		| 1 -> M.Dij (tire_form (n-1),tire_form (n-1))
+		| 2 -> M.Boxe (tire_form(n-1))
 		| _ -> M.Diamond (tire_form (n-1))
 	end;
 
@@ -209,6 +207,7 @@ in begin
 
 			if !dt_mol < !dt_z3 
 				|| !dt_minisat < !dt_z3
+				|| !dt_msat < !dt_z3
 			then 
 				incr comp;
 
@@ -249,7 +248,6 @@ in begin
 	and _,logic = get_logic ()
 	and tx = (float_of_int !comp) /. (float_of_int nb)
 	in begin
-		(*
 		pf "Calculs effectués en : \n" ;
 		pf "Pour Moloss : %f \n" t_mol_f;
 		pf "Pour Moloss (msat) : %f \n" t_msat_f;
@@ -257,7 +255,6 @@ in begin
 		pf "Pour z3 : %f \n" t_z3_f;
 		pf "taux : %f \n" tx;
 		flush_all ();
-		*)
 		output_string res 
 			(spf "%s, %d,%f,%f,%f,%f \n" 
 				logic 
