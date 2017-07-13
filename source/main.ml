@@ -5,9 +5,12 @@ module U = Unix
 module C = Convertisseur
 open Lexing
 
+module Dummy  = struct let truc = 0 end
+
+
 (*          Les différents solveurs            *)
 module Sz3 = Solve.Solve(Smtz3.SMTz3) 
-module Smsat = Solve.Solve(Smtmsat.SMTmsat)
+module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
 module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 module D = Direct
 

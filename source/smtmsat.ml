@@ -4,13 +4,19 @@
 
 (**
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-Le module minisat n'a pas de fonction clear, il faut donc utilser qu'une
-fois par appel sinon on a des résultats incohérents  
+donc le module de résolution est un foncteur, ce qui permet de le définir 
+plusieurs fois pour faire des tests en cascade
 *)
+
+module type Idiot = 
+(* On définit un module pour faire les appels  *)
+sig
+	val truc : int
+end
 
 open Msat
 
-module SMTmsat : Sign.Smt = 
+module SMTmsat (Dummy : Idiot) : Sign.Smt = 
 struct
 
 module Sat = Msat.Sat.Make()
@@ -65,9 +71,7 @@ let dec_assert_soft f w =
 	printbug "assert_soft pas implem'\n"; exit 0
 
 let get_ans () = 
-	match 
-	Sat.solve () 
-	with
+	match Sat.solve () with
 	| Sat.Unsat _ -> UNSAT
 	| Sat.Sat state -> 
 	let model = ref [] in
@@ -77,12 +81,8 @@ let get_ans () =
 		with _ ->
 			model := (s,false)::(!model)
 	in begin
-		(try
-		H.iter aux stoa
-		with _ -> begin printbug "H.iter chiale\n"; exit 0 ; end);
-		try 
-		SAT !model
-		with _ -> begin printbug "SAT!model chiale\n"; exit 0; end;
+		H.iter aux stoa;
+		SAT !model;
 	end
 
 end

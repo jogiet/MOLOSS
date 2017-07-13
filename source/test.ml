@@ -14,9 +14,12 @@ module D = Direct
 module S = String
 
 module Sz3 = Solve.Solve(Smtz3.SMTz3)
-module Smsat = Solve.Solve(Smtmsat.SMTmsat)
 module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 
+module Dummy = 
+struct 
+	let truc = 1
+end
 
 let pf = Printf.printf
 let spf = Printf.sprintf
@@ -165,7 +168,8 @@ in begin
 	for i = 1 to nb do
 		let f = tire_form n in
 		let f0 = C.st "w" f
-		and a,_ = get_logic ()
+		and a,_ = get_logic () in
+		let module  Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
 		in begin
 			(*
 			pf "========================= \n";
