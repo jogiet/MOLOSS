@@ -186,7 +186,7 @@ in begin
 	 		t0 := U.gettimeofday () ;
 			res_msat := Smsat.solve f0 a out;
 			dt_msat:= (U.gettimeofday () -. !t0); 
-			t_msat := !t_minisat +. !dt_minisat;
+			t_msat := !t_msat +. !dt_msat;
 
 
 	 		t0 := U.gettimeofday () ;
