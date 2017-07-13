@@ -1,6 +1,7 @@
 Ast_fo
 Ast_modal
 Parser
+Sp_parser
 Pparser
 Z3_parser
 Smtz3
