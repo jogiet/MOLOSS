@@ -249,7 +249,7 @@ in begin
 	and tx = (float_of_int !comp) /. (float_of_int nb)
 	in begin
 		pf "Calculs effectués en : \n" ;
-		pf "Pour Moloss : %f \n" t_mol_f;
+		pf "Pour Moloss (z3) : %f \n" t_mol_f;
 		pf "Pour Moloss (msat) : %f \n" t_msat_f;
 		pf "Pour Moloss (minisat) : %f \n" t_minisat_f;
 		pf "Pour z3 : %f \n" t_z3_f;
