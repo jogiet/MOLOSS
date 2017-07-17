@@ -42,6 +42,9 @@ let _ =
 	in begin
 	begin
 		match argv with
+
+
+		(*    pour les fichiers .bml, on teste la satisfiabilité    *)
 		| _ :: filename :: _ when good_suff filename ->
 		begin			
 		let file = open_in filename in
@@ -58,12 +61,30 @@ let _ =
 					D.solve (C.st "w" f) a out |> ignore
 				else
 				begin
+				if L.mem "--all" argv then
+				begin
 					fpf "moloss avec z3 : \n";
 					Sz3.solve (C.st "w" f) a out |> ignore;
 					fpf "moloss avec minisat : \n";
 					Sminisat.solve (C.st "w" f) a out |> ignore;
 					fpf "moloss avec msat : \n";
 					Smsat.solve (C.st "w" f) a out |> ignore;
+				end
+				else if L.mem "--z3" argv then
+				begin
+					fpf "moloss avec z3 : \n";
+					Sz3.solve (C.st "w" f) a out |> ignore;
+				end
+				else if L.mem "--mSAT" argv then
+				begin
+					fpf "moloss avec mSAT : \n";
+					Smsat.solve (C.st "w" f) a out |> ignore;
+				end
+				else
+				begin
+					fpf "moloss avec minisat : \n";
+					Sminisat.solve (C.st "w" f) a out |> ignore;
+				end;
 				end
 			with
 			| Lexer.Lex_err s ->
@@ -77,6 +98,9 @@ let _ =
 			flush_all ();
 			exit 1
 		end					
+
+
+		(*   pour les fichiers .dfg, on teste la validité    *)
 		| _ ::filename ::_ when F.check_suffix filename ".dfg" -> 
 		begin
 			let file = open_in filename in
