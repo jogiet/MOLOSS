@@ -201,9 +201,10 @@ let get_model ic oc out =
 (*--------------------------------------------------------*)
 
 
-let solve fo a out = 
+let solve fo a = 
 
 	let ic,oc = U.open_process "./z3 -in"
+	and out = None
 	and res = ref true
 	in begin
 		init oc out;

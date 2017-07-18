@@ -126,7 +126,12 @@ let _ =
 			let lb = Lexing.from_channel file in
 			try			
 			let a,f = Parser.file Lexer.next_token lb in
-				if L.mem "--get-model" argv then
+				if L.mem "--direct" argv then
+				begin
+					fpf "oracle direct\n";
+					D.solve (C.st "w" f) a |> ignore;
+				end
+				else if L.mem "--get-model" argv then
 					solve_model f a
 				else
 					solve_vanilla f a
@@ -158,7 +163,7 @@ let _ =
 			try			
 			let f,a = Sp_parser.problem Sp_lexer.next_token lb in
 				if L.mem "--direct" argv then
-					D.solve (C.st "w" f) a out |> ignore
+					D.solve (C.st "w" f) a |> ignore
 				else
 				begin
 					fpf "Fin du parsing\n";
@@ -185,6 +190,7 @@ let _ =
 			exit 1;
 		end;
 	end;
+		flush_all ();
 		if L.mem "--time" argv then
 			fpf "Calculs effectués en %f s \n" (U.gettimeofday () -.t0);
 	end

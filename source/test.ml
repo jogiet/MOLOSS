@@ -27,7 +27,7 @@ let spf = Printf.sprintf
 (*--------------------------------------------------------*)
 (*            Génération aléatoire de formule             *)
 (*--------------------------------------------------------*)
-let variables = ["p";"q";"p2";"q2"]
+let variables = ["p";"q";"p2";"q2";"r";"r2";"s";"s2"]
 
 let tire_var () =
 begin
@@ -179,24 +179,22 @@ in begin
 		*)
 
 	 		t0 := U.gettimeofday () ;
-			res_mol := Sz3.solve f0 a out;
+			res_mol := Sz3.solve f0 a ;
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 
-	 		(*
 			t0 := U.gettimeofday () ;
-			res_msat := Smsat.solve f0 a out;
+			res_msat := Smsat.solve f0 a ;
 			dt_msat:= (U.gettimeofday () -. !t0); 
 			t_msat := !t_msat +. !dt_msat;
-			*)
 
 	 		t0 := U.gettimeofday () ;
-			res_minisat := Sminisat.solve f0 a out;
+			res_minisat := Sminisat.solve f0 a ;
 			dt_minisat:= (U.gettimeofday () -. !t0); 
 			t_minisat := !t_minisat +. !dt_minisat;
 
 	 		t0 := U.gettimeofday () ;
-			res_z3 := D.solve f0 a out;
+			res_z3 := D.solve f0 a ;
 			dt_z3 := (U.gettimeofday () -. !t0); 
 			t_z3 := !t_z3 +. !dt_z3;
 
@@ -267,14 +265,12 @@ in begin
 			(*
 			(spf "%s,%s, %d,%f,%f,%f,%f \n" 
 			*)
-			(spf "%s,%s, %d,%f,%f,%f \n" 
+			(spf "%s,%s, %d,%f,%f,%f,%f \n" 
 				logic 
 				result
 				n 
 				t_mol_f 
-				(*
 				t_msat_f 
-				*)
 				t_minisat_f
 				t_z3_f);
 	end;

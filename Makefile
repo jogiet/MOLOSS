@@ -12,6 +12,7 @@ all:  main
 
 tst:
 	$(OCB) source/test.$(TARGET) 
+	$(OCB) source/printformula.$(TARGET) 
 
 main:
 	$(OCB) source/main.$(TARGET) 
