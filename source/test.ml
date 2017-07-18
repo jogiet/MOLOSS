@@ -183,11 +183,12 @@ in begin
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 
-	 		t0 := U.gettimeofday () ;
+	 		(*
+			t0 := U.gettimeofday () ;
 			res_msat := Smsat.solve f0 a out;
 			dt_msat:= (U.gettimeofday () -. !t0); 
 			t_msat := !t_msat +. !dt_msat;
-
+			*)
 
 	 		t0 := U.gettimeofday () ;
 			res_minisat := Sminisat.solve f0 a out;
@@ -223,6 +224,7 @@ in begin
 				exit 1;
 			end;
 
+			(*
 			if !res_msat != !res_z3 then
 			begin
 				output_string res "FAIL \n";
@@ -230,6 +232,7 @@ in begin
 				pf "\027[31m =====>     msat     <=====\027[0m\n";
 				exit 1;
 			end;
+			*)
 
 			if !res_minisat != !res_z3 then
 			begin
@@ -247,20 +250,31 @@ in begin
 	and t_minisat_f = (!t_minisat /. (float_of_int nb))
 	and _,logic = get_logic ()
 	and tx = (float_of_int !comp) /. (float_of_int nb)
+	and result = 
+			if !res_z3 then "SAT"
+					   else "UNSAT"
 	in begin
+		(*
 		pf "Calculs effectués en : \n" ;
 		pf "Pour Moloss (z3) : %f \n" t_mol_f;
 		pf "Pour Moloss (msat) : %f \n" t_msat_f;
 		pf "Pour Moloss (minisat) : %f \n" t_minisat_f;
 		pf "Pour z3 : %f \n" t_z3_f;
 		pf "taux : %f \n" tx;
+		*)
 		flush_all ();
 		output_string res 
-			(spf "%s, %d,%f,%f,%f,%f \n" 
+			(*
+			(spf "%s,%s, %d,%f,%f,%f,%f \n" 
+			*)
+			(spf "%s,%s, %d,%f,%f,%f \n" 
 				logic 
+				result
 				n 
 				t_mol_f 
+				(*
 				t_msat_f 
+				*)
 				t_minisat_f
 				t_z3_f);
 	end;
