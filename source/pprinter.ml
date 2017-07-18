@@ -26,7 +26,7 @@ let rec aux_m = function
 | M.Atom p -> p
 | M.Not f -> spf "~ (%s)" (aux_m f)
 | M.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_m f1) (aux_m f2)
-| M.Dij (f1,f2) -> spf "(%s) || (%s)" (aux_m f1) (aux_m f2)
+| M.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_m f1) (aux_m f2)
 | M.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_m f1) (aux_m f2)
 | M.Boxe f -> spf "[] (%s)" (aux_m f) 
 | M.Diamond f -> spf "<> (%s)" (aux_m f)
