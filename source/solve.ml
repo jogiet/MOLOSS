@@ -2,8 +2,6 @@
 (*                 Foncteur de résolution                 *)
 (*########################################################*)
 
-module Solve (SMT : Sign.Smt) = 
-struct
 
 open Format
 open Ast_fo
@@ -118,8 +116,10 @@ end
 (*                    Fonction Core                       *)
 (*--------------------------------------------------------*)
 
+module Solve (SMT : Sign.Smt) : Sign.Solveur= 
+struct
 
-let solve f a out = 
+let solve f a  = 
 	let config = new_config () in
 	let init_flag = get_init_flag a
 	and dec_proc = axiom_to_dec_proc a in	
@@ -174,6 +174,70 @@ let solve f a out =
 		!res;
 	end
 			
+
+
+end
+
+
+module SolveMod (SMT : Sign.Smt) : Sign.Solveur= 
+struct
+
+
+let solve f a  = 
+	let config = new_config () in
+	let init_flag = get_init_flag a
+	and dec_proc = axiom_to_dec_proc a in	
+	let fo_box, new_var = init config init_flag [f] 
+	and cont = ref true 
+	and res = ref true
+	in 
+	begin
+	
+		SMT.init ();		
+		L.iter (fun v -> SMT.dec_const v ) new_var; 
+		L.iter (fun fb -> SMT.dec_assert fb ) fo_box	;
+		while !cont do
+			match SMT.get_ans () with
+			| SMT.UNSAT ->
+			let p = () (*      get_proof oc ic out*)
+			in begin
+				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
+				(*
+				PP.print_proof config.env p;
+				*)
+				p |> ignore;
+				flush_all ();
+				cont := false; 
+				res := false;
+			end
+			| SMT.SAT  m ->
+				try begin
+					L.iter (fun d_proc -> d_proc config m) dec_proc;
+					fpf "\027[92mLa formule est satisfiable \027[0m\n";
+					print_soluce config m;
+					flush_all ();
+					cont := false; 
+				end
+				with
+				| Found (new_var,new_bf) ->
+				begin
+					List.iter (fun v -> SMT.dec_const v) new_var;
+					SMT.dec_assert new_bf ;
+				end;
+				| SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
+				begin
+					List.iter (fun v -> SMT.dec_const v ) new_var1;
+					List.iter (fun v -> SMT.dec_const v ) new_var2;
+					SMT.dec_assert new_bf;
+					SMT.dec_assert_soft bf_soft wght;
+				end
+		done;
+		SMT.close ();
+		!res;
+	end
+			
+
+
 
 
 end

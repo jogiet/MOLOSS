@@ -35,6 +35,81 @@ let truc bidule =
 	let lb = Lexing.from_channel bidule in
 	Sp_parser.problem Sp_lexer.next_token lb
 	
+let solve_vanilla f a =
+let module Solv = Solve.Solve in
+let argv = A.to_list (Sys.argv) in
+	if L.mem "--out" argv then
+		fpf "pas encore implem'\n"
+	else
+		if L.mem "--all" argv then
+			let module Z3 = Solv(Smtz3.SMTz3) in
+			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
+			let module MiniSAT = Solv(Smtminisat.Smtmini)
+			in begin
+				fpf "oracle z3\n";
+				Z3.solve (C.st "w" f) a |> ignore;
+				fpf "oracle mSAT\n";
+				MSAT.solve (C.st "w" f) a |> ignore;
+				fpf "oracle minisat\n";
+				MiniSAT.solve (C.st "w" f) a |> ignore;
+			end
+		else if L.mem "--z3" argv then
+			let module Z3 = Solv(Smtz3.SMTz3) 
+			in begin
+				fpf "oracle z3\n";
+				Z3.solve (C.st "w" f) a |> ignore;
+			end
+		else if L.mem "--mSAT" argv then
+			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
+			in begin
+				fpf "oracle z3\n";
+				MSAT.solve (C.st "w" f) a |> ignore;
+			end
+		else 
+			let module MiniSAT = Solv(Smtminisat.Smtmini)
+			in begin
+				fpf "oracle z3\n";
+				MiniSAT.solve (C.st "w" f) a |> ignore;
+			end
+			
+
+let solve_model f a =
+let module Solv = Solve.SolveMod in
+let argv = A.to_list (Sys.argv) in
+	if L.mem "--out" argv then
+		fpf "pas encore implem'\n"
+	else
+		if L.mem "--all" argv then
+			let module Z3 = Solv(Smtz3.SMTz3) in
+			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
+			let module MiniSAT = Solv(Smtminisat.Smtmini)
+			in begin
+				fpf "oracle z3\n";
+				Z3.solve (C.st "w" f) a |> ignore;
+				fpf "oracle mSAT\n";
+				MSAT.solve (C.st "w" f) a |> ignore;
+				fpf "oracle minisat\n";
+				MiniSAT.solve (C.st "w" f) a |> ignore;
+			end
+		else if L.mem "--z3" argv then
+			let module Z3 = Solv(Smtz3.SMTz3) 
+			in begin
+				fpf "oracle z3\n";
+				Z3.solve (C.st "w" f) a |> ignore;
+			end
+		else if L.mem "--mSAT" argv then
+			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
+			in begin
+				fpf "oracle z3\n";
+				MSAT.solve (C.st "w" f) a |> ignore;
+			end
+		else 
+			let module MiniSAT = Solv(Smtminisat.Smtmini)
+			in begin
+				fpf "oracle z3\n";
+				MiniSAT.solve (C.st "w" f) a |> ignore;
+			end
+			
 
 let _ = 
 	let argv = A.to_list (Sys.argv) 
@@ -48,44 +123,13 @@ let _ =
 		| _ :: filename :: _ when good_suff filename ->
 		begin			
 		let file = open_in filename in
-			let lb = Lexing.from_channel file 
-			and out = 
-				if L.mem "--out" argv then 
-					Some (open_out (new_suff filename))
-				else
-					None
-			in
+			let lb = Lexing.from_channel file in
 			try			
 			let a,f = Parser.file Lexer.next_token lb in
-				if L.mem "--direct" argv then
-					D.solve (C.st "w" f) a out |> ignore
+				if L.mem "--get-model" argv then
+					solve_model f a
 				else
-				begin
-				if L.mem "--all" argv then
-				begin
-					fpf "moloss avec z3 : \n";
-					Sz3.solve (C.st "w" f) a out |> ignore;
-					fpf "moloss avec minisat : \n";
-					Sminisat.solve (C.st "w" f) a out |> ignore;
-					fpf "moloss avec msat : \n";
-					Smsat.solve (C.st "w" f) a out |> ignore;
-				end
-				else if L.mem "--z3" argv then
-				begin
-					fpf "moloss avec z3 : \n";
-					Sz3.solve (C.st "w" f) a out |> ignore;
-				end
-				else if L.mem "--mSAT" argv then
-				begin
-					fpf "moloss avec mSAT : \n";
-					Smsat.solve (C.st "w" f) a out |> ignore;
-				end
-				else
-				begin
-					fpf "moloss avec minisat : \n";
-					Sminisat.solve (C.st "w" f) a out |> ignore;
-				end;
-				end
+					solve_vanilla f a
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
@@ -119,7 +163,7 @@ let _ =
 				begin
 					fpf "Fin du parsing\n";
 					flush_all ();
-					Sz3.solve (C.st "w" f) a out |> ignore;
+					Sz3.solve (C.st "w" f) a |> ignore;
 				end
 			with
 			| Sp_lexer.Lex_err s ->

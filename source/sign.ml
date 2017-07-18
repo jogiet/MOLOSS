@@ -23,6 +23,12 @@ sig
 
 end
 
+module type Solveur = 
+sig
+
+	val solve : Ast_fo.FO.formula -> string list -> bool
+
+end
 
 
 
