@@ -62,13 +62,13 @@ let argv = A.to_list (Sys.argv) in
 		else if L.mem "--mSAT" argv then
 			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
 			in begin
-				fpf "oracle z3\n";
+				fpf "oracle mSAT\n";
 				MSAT.solve (C.st "w" f) a |> ignore;
 			end
 		else 
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
-				fpf "oracle z3\n";
+				fpf "oracle minisat\n";
 				MiniSAT.solve (C.st "w" f) a |> ignore;
 			end
 			
