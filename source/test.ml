@@ -179,10 +179,12 @@ in begin
 		On fait les résolutions avec les différents oracles
 		*)
 
+			(*
 	 		t0 := U.gettimeofday () ;
 			res_mol := Sz3.solve f0 a ;
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
+			*)
 
 			(*
 			t0 := U.gettimeofday () ;
@@ -203,7 +205,7 @@ in begin
 			t_z3 := !t_z3 +. !dt_z3;
 			*)
 
-			res_z3 := !res_mol;
+			res_z3 := !res_minisat;
 		(*
 		On regarde si au moins un des solveurs a fait mieux que "direct"
 
@@ -220,6 +222,7 @@ in begin
 		On vérifie ensuite que les solveurs trouvent bien la même chiose
 		que le mode "direct"
 		*)
+		(*
 			if !res_mol != !res_z3 then
 			begin
 				output_string res "FAIL \n";
@@ -246,6 +249,7 @@ in begin
 				exit 1;
 			end;
 
+		*)
 		end;
 	done;
 	let t_mol_f = 	(!t_mol/. (float_of_int nb))

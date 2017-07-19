@@ -7,6 +7,7 @@ module S = String
 module F = Format
 
 module FO = Ast_fo.FO
+module BFO = Ast_fo.BFO
 module M = Ast_modal
 module P = Ast_proof.P
 module H = Hashtbl
@@ -55,6 +56,15 @@ let rec aux_fo = function
 let print_fo f =
 (* print la formule sur stdout *)
 	fpf "%s \n" (aux_fo f)
+
+let rec aux_bfo = function
+| BFO.Atom	x -> x
+| BFO.Not f -> spf "~ %s" (aux_bfo f) 
+| BFO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_bfo f1) (aux_bfo f2)
+| BFO.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_bfo f1) (aux_bfo f2)
+
+let print_bfo f = 
+	fpf "%s \n" (aux_bfo f)
 
 (*--------------------------------------------------------*)
 (*            Pour les formules et les preuves            *)

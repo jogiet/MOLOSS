@@ -198,6 +198,7 @@ end
 
 let reflexiv config model = 
 	let aux (eps,b) = 
+	(* renvoie true si le couple est bon pour trigger *)
 		b &&
 		begin
 		match H.find config.env eps with
@@ -211,6 +212,7 @@ let reflexiv config model =
 		end
 	in
  	match L.filter aux model with
+	(*  On recherche ensuite tous les couple qui triggent *)
 	| [] -> ()
 	| (eps,_)::q -> 
 	let fd = L.fold_left

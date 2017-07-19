@@ -23,7 +23,7 @@ let axiom_to_dec_proc axiom =
 	| [] -> []
 	| "-M"::q | "-boxeM"::q ->
 		if L.mem "-5" axiom then
-			softreflexiv::(aux q)
+			reflexiv::(aux q)
 		else 
 			reflexiv::(aux q)
 	| "-4"::q -> transitivity::(aux q)
@@ -192,10 +192,15 @@ let solve f a  =
 	and res = ref true
 	in 
 	begin
-	
 		SMT.init ();		
 		L.iter (fun v -> SMT.dec_const v ) new_var; 
+		List.iter (fun v ->	fpf "%s -> %s \n" 	v 
+						(PP.aux_fo (H.find config.env v))) 
+			new_var;
+		(* on print les variables *)
 		L.iter (fun fb -> SMT.dec_assert fb ) fo_box	;
+		L.iter (fun bf -> fpf "assert : %s \n" (PP.aux_bfo bf)) fo_box;
+		(* on print les formules  *)
 		while !cont do
 			match SMT.get_ans () with
 			| SMT.UNSAT ->
@@ -222,14 +227,34 @@ let solve f a  =
 				| Found (new_var,new_bf) ->
 				begin
 					List.iter (fun v -> SMT.dec_const v) new_var;
+					List.iter (fun v -> 
+						fpf "%s -> %s \n" 
+							v 
+							(PP.aux_fo (H.find config.env v))) 
+						new_var;
 					SMT.dec_assert new_bf ;
+					fpf "assert : %s \n" (PP.aux_bfo new_bf);
 				end;
 				| SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
 				begin
 					List.iter (fun v -> SMT.dec_const v ) new_var1;
 					List.iter (fun v -> SMT.dec_const v ) new_var2;
+					List.iter (fun v -> 
+						fpf "%s -> %s \n" 
+							v 
+							(PP.aux_fo (H.find config.env v))) 
+						new_var1;
+					List.iter (fun v -> 
+						fpf "%s -> %s \n" 
+							v 
+							(PP.aux_fo (H.find config.env v))) 
+						new_var2;
 					SMT.dec_assert new_bf;
+					fpf "assert : %s \n" (PP.aux_bfo new_bf);
 					SMT.dec_assert_soft bf_soft wght;
+					fpf "assert-soft w = %d : %s \n" 
+						wght 
+						(PP.aux_bfo bf_soft);
 				end
 		done;
 		SMT.close ();
