@@ -172,6 +172,7 @@ in begin
 			(*
 			pf "========================= \n";
 			*)
+			PP.print_m f;
 			flush_all ();
 
 		(*
@@ -183,21 +184,26 @@ in begin
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
 
+			(*
 			t0 := U.gettimeofday () ;
 			res_msat := Smsat.solve f0 a ;
 			dt_msat:= (U.gettimeofday () -. !t0); 
 			t_msat := !t_msat +. !dt_msat;
+			*)
 
 	 		t0 := U.gettimeofday () ;
 			res_minisat := Sminisat.solve f0 a ;
 			dt_minisat:= (U.gettimeofday () -. !t0); 
 			t_minisat := !t_minisat +. !dt_minisat;
 
+			(*
 	 		t0 := U.gettimeofday () ;
 			res_z3 := D.solve f0 a ;
 			dt_z3 := (U.gettimeofday () -. !t0); 
 			t_z3 := !t_z3 +. !dt_z3;
+			*)
 
+			res_z3 := !res_mol;
 		(*
 		On regarde si au moins un des solveurs a fait mieux que "direct"
 
