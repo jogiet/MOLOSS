@@ -169,22 +169,20 @@ in begin
 		and a,_ = get_logic () in
 		let module  Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
 		in begin
-			(*
 			pf "========================= \n";
-			*)
+			(*
 			PP.print_m f;
+			*)
 			flush_all ();
 
 		(*
 		On fait les résolutions avec les différents oracles
 		*)
 
-			(*
 	 		t0 := U.gettimeofday () ;
 			res_mol := Sz3.solve f0 a ;
 			dt_mol := (U.gettimeofday () -. !t0); 
 			t_mol := !t_mol +. !dt_mol;
-			*)
 
 			(*
 			t0 := U.gettimeofday () ;
@@ -198,12 +196,10 @@ in begin
 			dt_minisat:= (U.gettimeofday () -. !t0); 
 			t_minisat := !t_minisat +. !dt_minisat;
 
-			(*
 	 		t0 := U.gettimeofday () ;
 			res_z3 := D.solve f0 a ;
 			dt_z3 := (U.gettimeofday () -. !t0); 
 			t_z3 := !t_z3 +. !dt_z3;
-			*)
 
 			res_z3 := !res_minisat;
 		(*
@@ -214,7 +210,9 @@ in begin
 
 			if !dt_mol < !dt_z3 
 				|| !dt_minisat < !dt_z3
+				(*
 				|| !dt_msat < !dt_z3
+				*)
 			then 
 				incr comp;
 
@@ -222,7 +220,6 @@ in begin
 		On vérifie ensuite que les solveurs trouvent bien la même chiose
 		que le mode "direct"
 		*)
-		(*
 			if !res_mol != !res_z3 then
 			begin
 				output_string res "FAIL \n";
@@ -249,7 +246,6 @@ in begin
 				exit 1;
 			end;
 
-		*)
 		end;
 	done;
 	let t_mol_f = 	(!t_mol/. (float_of_int nb))
@@ -262,15 +258,14 @@ in begin
 			if !res_z3 then "SAT"
 					   else "UNSAT"
 	in begin
-		(*
 		pf "Calculs effectués en : \n" ;
 		pf "Pour Moloss (z3) : %f \n" t_mol_f;
 		pf "Pour Moloss (msat) : %f \n" t_msat_f;
 		pf "Pour Moloss (minisat) : %f \n" t_minisat_f;
 		pf "Pour z3 : %f \n" t_z3_f;
 		pf "taux : %f \n" tx;
-		*)
 		flush_all ();
+		(*
 		output_string res 
 			(*
 			(spf "%s,%s, %d,%f,%f,%f,%f \n" 
@@ -283,6 +278,7 @@ in begin
 				t_msat_f 
 				t_minisat_f
 				t_z3_f);
+			*)
 	end;
 
 end

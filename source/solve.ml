@@ -37,11 +37,11 @@ let axiom_to_dec_proc axiom =
 	end
 	in let res = aux axiom in
 	if L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
-		forall::res
+		res@[forall]
 	else if L.mem "-4" axiom || L.mem "-5" axiom then
-		forall::softexist::res
+		res@[forall;softexist]
 	else
-		forall::res@[exist]
+		res@[forall;exist]
 
 let get_init_flag axioms = 
 	if L.mem  "-M" axioms then
@@ -182,6 +182,7 @@ end
 module SolveMod (SMT : Sign.Smt) : Sign.Solveur= 
 struct
 
+(* Pour l'option --get-model    *)
 
 let solve f a  = 
 	let config = new_config () in

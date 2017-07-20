@@ -202,10 +202,11 @@ let reflexiv config model =
 		b &&
 		begin
 		match H.find config.env eps with
-		| FO.Forall (_,(FO.Dij (_,f)) )
+		| FO.Forall (_,(FO.Dij (FO.Not (FO.Relation (c,_)),f)) )
 		when not (H.mem config.reflex eps) -> 
 		begin
 			H.add config.reflex eps ();
+			H.add config.forall (eps,c) ();
 			true;
 		end
 		| _ -> false
