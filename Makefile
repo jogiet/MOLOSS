@@ -1,4 +1,4 @@
-OCB = ocamlbuild -classic-display \
+OCB = ocamlbuild\
 			-use-menhir \
 			-libs unix \
 			-package msat \
@@ -18,7 +18,7 @@ main:
 	$(OCB) source/main.$(TARGET) 
 	mv main.native moloss
 
-rapport: 
+raprt: 
 	cd report; dot -Tpdf dep.dot -o dep.pdf
 	cd report; $(PDFLTX) report.tex; bibtex report.aux; $(PDFLTX) report.tex
 	mv report/report.pdf ./
