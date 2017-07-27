@@ -1,4 +1,5 @@
 OCB = ocamlbuild\
+	  		-classic-display \
 			-use-menhir \
 			-libs unix \
 			-package msat \
