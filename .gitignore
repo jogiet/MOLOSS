@@ -1,0 +1,17 @@
+*.native
+*.ods
+_build/*
+*~
+*.sh
+*.html
+*.docdir
+*.swp
+*.log
+*.aux
+*.out
+*.bbl
+*.blg
+*.gz
+*.toc
+moloss
+.nfs*
