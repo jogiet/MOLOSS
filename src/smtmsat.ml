@@ -2,7 +2,7 @@
 (*                     Interface pour minisat                        *)
 (*###################################################################*)
 
-(**
+(*
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 donc le module de résolution est un foncteur, ce qui permet de le définir 
 plusieurs fois pour faire des tests en cascade
