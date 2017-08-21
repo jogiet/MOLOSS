@@ -39,8 +39,9 @@ logic.
 
    - (for the moment) MOLOSS uses UNIX system calls, so you must be on
      a UNIX/Linux system to use it
-   - MOLOSS uses [[https://github.com/Z3Prover/z3][Z3]], a SMT solver. You must have Z3 installed on your
-     system if you want to use it as an oracle or directly (see
+   - MOLOSS uses [[https://github.com/Z3Prover/z3][Z3]], a SMT solver.
+	 You must have a Z3 executable installed on the same directory
+	 if you want to use it as an oracle or directly (see
      further).
 
 ** Usage
