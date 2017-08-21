@@ -10,16 +10,16 @@ clean:
 
 # build executable
 native: sanity
-	$(OCB) src/main.native
+	$(OCB) src/moloss.native
 
 byte: sanity
-	$(OCB) src/main.byte
+	$(OCB) src/moloss.byte
 
 profile: sanity
-	$(OCB) -tag profile src/main.native
+	$(OCB) -tag profile src/moloss.native
 
 debug: sanity
-	$(OCB) -tag debug src/main.byte
+	$(OCB) -tag debug src/moloss.byte
 
 # tests
 various_tests: native
