@@ -1,0 +1,9 @@
+# colors
+true: bin_annot, color(always)
+
+# use menhir
+true: use_menhir
+
+# dependencies
+true: package(unix), package(minisat), package(msat)
+<src/smtminisat.ml>: package(minisat)
