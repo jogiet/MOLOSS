@@ -50,4 +50,4 @@ sanity:
 	ocamlfind query msat
 
 graph:
-	dot -Tpdf solve.docdir/dep.dot -o dep.pdf
+	dot -Tpdf moloss.docdir/moloss.dot -o dep.pdf
