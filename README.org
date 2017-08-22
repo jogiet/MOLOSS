@@ -68,5 +68,5 @@ logic.
      unsatisfiable (Z3 only)
    - ~--soft~: use ~assert-soft~ constraints, even if not needed by
      the considered modal logic
-   - ~--soft-ignore~~: do not use ~assert-soft~ constraits, even if
+   - ~--soft-ignore~: do not use ~assert-soft~ constraits, even if
      needed (beware, infinite loop possible in this case!)
