@@ -9,7 +9,7 @@ module Dummy  = struct let truc = 0 end
 
 
 (*          Les différents solveurs            *)
-module Sz3 = Solve.Solve(Smtz3.SMTz3) 
+module Sz3 = Solve.Solve(Smtz3.SMTz3)
 module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
 module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 module D = Direct
@@ -25,16 +25,16 @@ let report (b,e) file =
 fpf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 
 
-let good_suff s = 
+let good_suff s =
 	F.check_suffix s ".bml"
-let new_suff s = 
+let new_suff s =
 	(F.chop_suffix s ".bml")^".out"
 
 
-let truc bidule = 
+let truc bidule =
 	let lb = Lexing.from_channel bidule in
 	Sp_parser.problem Sp_lexer.next_token lb
-	
+
 let solve_vanilla f a =
 let module Solv = Solve.Solve in
 let argv = A.to_list (Sys.argv) in
@@ -54,7 +54,7 @@ let argv = A.to_list (Sys.argv) in
 				MiniSAT.solve (C.st "w" f) a |> ignore;
 			end
 		else if L.mem "--z3" argv then
-			let module Z3 = Solv(Smtz3.SMTz3) 
+			let module Z3 = Solv(Smtz3.SMTz3)
 			in begin
 				fpf "oracle z3\n";
 				Z3.solve (C.st "w" f) a |> ignore;
@@ -65,13 +65,13 @@ let argv = A.to_list (Sys.argv) in
 				fpf "oracle mSAT\n";
 				MSAT.solve (C.st "w" f) a |> ignore;
 			end
-		else 
+		else
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
 				fpf "oracle minisat\n";
 				MiniSAT.solve (C.st "w" f) a |> ignore;
 			end
-			
+
 
 let solve_model f a =
 let module Solv = Solve.SolveMod in
@@ -92,7 +92,7 @@ let argv = A.to_list (Sys.argv) in
 				MiniSAT.solve (C.st "w" f) a |> ignore;
 			end
 		else if L.mem "--z3" argv then
-			let module Z3 = Solv(Smtz3.SMTz3) 
+			let module Z3 = Solv(Smtz3.SMTz3)
 			in begin
 				fpf "oracle z3\n";
 				Z3.solve (C.st "w" f) a |> ignore;
@@ -103,16 +103,16 @@ let argv = A.to_list (Sys.argv) in
 				fpf "oracle z3\n";
 				MSAT.solve (C.st "w" f) a |> ignore;
 			end
-		else 
+		else
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
 				fpf "oracle z3\n";
 				MiniSAT.solve (C.st "w" f) a |> ignore;
 			end
-			
 
-let _ = 
-	let argv = A.to_list (Sys.argv) 
+
+let _ =
+	let argv = A.to_list (Sys.argv)
 	and t0 = U.gettimeofday ()
 	in begin
 	begin
@@ -121,10 +121,10 @@ let _ =
 
 		(*    pour les fichiers .bml, on teste la satisfiabilité    *)
 		| _ :: filename :: _ when good_suff filename ->
-		begin			
+		begin
 		let file = open_in filename in
 			let lb = Lexing.from_channel file in
-			try			
+			try
 			let a,f = Parser.file Lexer.next_token lb in
 				if L.mem "--direct" argv then
 				begin
@@ -146,21 +146,21 @@ let _ =
 			fpf "syntax error.\n";
 			flush_all ();
 			exit 1
-		end					
+		end
 
 
 		(*   pour les fichiers .dfg, on teste la validité    *)
-		| _ ::filename ::_ when F.check_suffix filename ".dfg" -> 
+		| _ ::filename ::_ when F.check_suffix filename ".dfg" ->
 		begin
 			let file = open_in filename in
-			let lb = Lexing.from_channel file 
-			and out = 
-				if L.mem "--out" argv then 
+			let lb = Lexing.from_channel file
+			(* and out =
+				if L.mem "--out" argv then
 					Some (open_out (new_suff filename))
 				else
-					None
+                                        None *)
 			in
-			try			
+			try
 			let f,a = Sp_parser.problem Sp_lexer.next_token lb in
 				if L.mem "--direct" argv then
 					D.solve (C.st "w" f) a |> ignore
@@ -181,11 +181,11 @@ let _ =
 			fpf "syntax error.\n";
 			flush_all ();
 			exit 1
-			
+
 		end
 		| _ ->
 		begin
-			fpf 
+			fpf
 			"Donner le nom du fichier avec une extension .bmli ou .dfg\n";
 			exit 1;
 		end;
@@ -194,37 +194,3 @@ let _ =
 		if L.mem "--time" argv then
 			fpf "Calculs effectués en %f s \n" (U.gettimeofday () -.t0);
 	end
-			 
-
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

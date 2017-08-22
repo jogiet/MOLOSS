@@ -27,13 +27,13 @@ let report (b,e) file =
   let lc = e.pos_cnum - b.pos_bol + 1 in
 fpf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 
-let good_suff s = 
+let good_suff s =
 	F.check_suffix s ".bml"
-let new_suff s = 
+let new_suff s =
 	(F.chop_suffix s ".bml")^".out"
 
 let init oc out =
-	let header = 
+	let header =
 	"(set-option :produce-proofs true) \n\
 	(declare-sort W 0) \n\
 	(declare-fun r (W W) Bool) \n\
@@ -48,7 +48,7 @@ let init oc out =
 (*                Gestion des axiomes                     *)
 (*--------------------------------------------------------*)
 
-let assoc = 
+let assoc =
 [("-M",";axiome de réfléxivité \n\
 	(assert (forall ((w0 W)) (r w0 w0)))");
  ("-4",";axiome de trasitivité \n\
@@ -71,20 +71,20 @@ let rec p_axiom oc out = function
 | t::q ->
 begin
 	if L.mem_assoc t assoc then
-		let ax = L.assoc t assoc 
+		let ax = L.assoc t assoc
 		in begin
 			output_string oc ax;
 			p_out ax out;
 		end
 	else
-	begin	
+	begin
 		fpf "Erreur : axiome inconnu : %s \n" t;
 		flush_all () ;
 		exit 0;
 	end;
 	p_axiom oc out q;
 end
-	
+
 
 (*--------------------------------------------------------*)
 (*               fonctions d'écriture                     *)
@@ -93,41 +93,41 @@ end
 (* ====>      Pour les propriétés (ensemble P)      <==== *)
 
 
-let extract_p f = 
+let extract_p f =
 (* extrait l'ensemble P des propoitions *)
 	let rec aux env = function
 	| FO.Atom (p,_) ->
 		if H.mem env p then ()
 				   	   else H.add env p ()
 	| FO.Not f -> aux env f
-	| FO.Conj (f1,f2) | FO.Dij (f1,f2) -> 
+	| FO.Conj (f1,f2) | FO.Dij (f1,f2) ->
 	begin
 		aux env f1;
 		aux env f2;
 	end
 	| FO.Relation _ -> ()
-	| FO.Exists (i,f) | FO.Forall (i,f) -> 
+	| FO.Exists (i,f) | FO.Forall (i,f) ->
 		aux env f
 	and env = H.create 42
 	and res = ref []
-	in begin	
+	in begin
 		aux env f;
 		H.iter (fun p h -> res := p::(!res))  env;
 		!res;
 	end
 
-let p_prop oc out f = 
+let p_prop oc out f =
 	(* déclare les propositions comme des fonctions prenant en argument
 	un monde *)
-	let aux p = 
+	let aux p =
 		let s = spf "(declare-fun %s (W) Bool)\n" p
 		in begin
 			output_string oc s;
 			p_out s out;
 		end
-	in 
+	in
 	L.iter aux (extract_p f)
-	
+
 (* ====>            Gestion des formules            <==== *)
 
 let assert_of_for f =
@@ -143,7 +143,7 @@ let assert_of_for f =
 	in
 	spf "(assert (%s))\n" (aux_fo f)
 
-let p_for oc out f = 
+let p_for oc out f =
 	let s = assert_of_for f
 	in begin
 		output_string oc s;
@@ -157,7 +157,7 @@ let p_for oc out f =
 
 type ret = |SAT |UNSAT
 
-let check_sat ic oc out = 
+let check_sat ic oc out =
 	let s = "(check-sat)\n"
 	in begin
 		output_string oc s;
@@ -165,17 +165,17 @@ let check_sat ic oc out =
 		flush_all ();
 		if (input_line ic = "unsat") then
 		begin
-			p_out "unsat\n" out; 
+			p_out "unsat\n" out;
 			UNSAT;
 		end
 		else
 		begin
-			p_out "sat\n" out; 
+			p_out "sat\n" out;
 			SAT;
 		end;
 	end
 
-let get_model ic oc out = 
+let get_model ic oc out =
 	let s = "(get-model)\n"
 	and res = ref ""
 	and cont = ref true
@@ -183,8 +183,8 @@ let get_model ic oc out =
 		output_string oc s;
 		p_out s out;
 		flush_all ();
-		while !cont do 
-			let l = input_line ic 
+		while !cont do
+			let l = input_line ic
 			in begin
 				res := spf "%s\n%s" !res l;
 				if l = ")" then
@@ -201,7 +201,7 @@ let get_model ic oc out =
 (*--------------------------------------------------------*)
 
 
-let solve fo a = 
+let solve fo a =
 
 	let ic,oc = U.open_process "./z3 -in"
 	and out = None
@@ -212,15 +212,15 @@ let solve fo a =
 		p_prop oc out fo;
 		p_for oc out fo;
 		(match check_sat ic oc out with
-		| UNSAT -> 
+		| UNSAT ->
 			let s = "\027[31mla formule est insatisfiable \027[0m\n"
 			in begin
 				fpf "%s" s;
 				res := false;
 			end
-		| SAT -> 
+		| SAT ->
 			let s = "\027[92mla formule est satisfiable \027[0m\n"
-			and m = get_model ic oc out 
+                        (* and m = get_model ic oc out *)
 			in begin
 				fpf "%s" s;
 				(*
@@ -230,15 +230,3 @@ let solve fo a =
 		U.close_process (ic,oc) |> ignore;
 		!res;
 	end
-
-
-
-
-
-
-
-
-
-
-
-
