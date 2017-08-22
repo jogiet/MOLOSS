@@ -58,7 +58,7 @@ logic.
    - ~--time~: print the total execution time (including parsing)
    - ~--get-model~: print the assertions deduced by the solver and the
      Kripke model if the formula is satisfiable
-   - ~--direct~~: use Z3 as a first-order solver on the translation of
+   - ~--direct~: use Z3 as a first-order solver on the translation of
      modal formulas into first-order formulas (no instanciation
      procedures)
 
@@ -68,5 +68,5 @@ logic.
      unsatisfiable (Z3 only)
    - ~--soft~: use ~assert-soft~ constraints, even if not needed by
      the considered modal logic
-   - ~--soft-ignore~: do not use ~assert-soft~ constraits, even if
+   - ~--soft-ignore~: do not use ~assert-soft~ constraints, even if
      needed (beware, infinite loop possible in this case!)
