@@ -3,7 +3,7 @@
 (*########################################################*)
 
 
-module SMTz3 : Sign.Smt = 
+module SMTz3 : Sign.Smt =
 struct
 
 module BFO = Ast_fo.BFO
@@ -20,21 +20,21 @@ and oc = ref stdout
 
 
 
-let init () = 
-	let ic_aux,oc_aux = U.open_process "./z3 -in"
+let init () =
+	let ic_aux,oc_aux = U.open_process "z3 -in"
 	in begin
 		ic := ic_aux;
 		oc := oc_aux;
 	end
 
-let close () = 
+let close () =
 	U.close_process (!ic,!oc) |> ignore
 
 (*--------------------------------------------------------*)
 (*       Fonctions de conversion FO <-> SMT-LIB           *)
 (*--------------------------------------------------------*)
 
-type ans = 
+type ans =
 	| UNSAT
 	| SAT of (string*bool) list
 
@@ -49,25 +49,25 @@ let rec bfo_to_smtlib = function
 | BFO.Dij (f1,f2) ->
 	spf "(or %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
 
-let dec_const v = 
-	let s = spf "(declare-const %s Bool) \n" v 
+let dec_const v =
+	let s = spf "(declare-const %s Bool) \n" v
 	in begin
 		output_string !oc s;
 		flush_all ();
 	end
 
 
-let dec_assert bf = 
+let dec_assert bf =
 	let f_smt = bfo_to_smtlib bf in
-	let s = spf "(assert %s) \n" f_smt 
+	let s = spf "(assert %s) \n" f_smt
 	in begin
 		output_string !oc s;
 		flush_all ();
 	end
-	
-let dec_assert_soft bf weight = 
+
+let dec_assert_soft bf weight =
 	let f_smt = bfo_to_smtlib bf in
-	let s = spf "(assert-soft %s :weight %d)" f_smt weight 
+	let s = spf "(assert-soft %s :weight %d)" f_smt weight
 	in begin
 		output_string !oc s;
 		flush_all ();
@@ -83,19 +83,19 @@ let report (b,e) f =
   let fc = b.pos_cnum - b.pos_bol + 1 in
   let lc = e.pos_cnum - b.pos_bol + 1 in
   fpf "File \"%s\", line %d, characters %d-%d:\n" f l fc lc
- 
 
 
-let get_model () = 
+
+let get_model () =
 begin
 	flush_all ();
 	output_string !oc "(get-model) \n";
 	flush_all ();
 	let res = ref ""
-	and cont = ref true 
+	and cont = ref true
 	in begin
-		while !cont do 
-			let ligne = input_line !ic 
+		while !cont do
+			let ligne = input_line !ic
 			in begin
 			if ligne = "(objectives" then
 			begin
@@ -109,7 +109,7 @@ begin
 			end;
 		done;
 	let lb = Lexing.from_string !res in
-	try 
+	try
 		Z3_parser.answer Z3_lexer.next_token lb
 	with
 
@@ -134,16 +134,16 @@ end
 
 
 
-let get_proof oc ic out = 
+let get_proof oc ic out =
 begin
 	flush_all ();
 	output_string oc "(get-proof) \n";
 	flush_all ();
 	let res = ref ""
-	and cont = ref true 
+	and cont = ref true
 	in begin
-		while !cont do 
-			let ligne = input_line ic 
+		while !cont do
+			let ligne = input_line ic
 			in begin
 			res := spf "%s \n%s" !res ligne;
 			if ligne = "" then
@@ -151,7 +151,7 @@ begin
 			end;
 		done;
 	let lb = Lexing.from_string !res in
-	try 
+	try
 		let file = Pparser.s0 Plexer.next_token lb
 		in P.traite file
 	with
@@ -172,11 +172,11 @@ end
 (*--------------------------------------------------------*)
 (*            Fonctions pour la réponse                   *)
 (*--------------------------------------------------------*)
-let get_ans () = 
+let get_ans () =
 begin
 	output_string !oc "(check-sat) \n";
 	flush_all ();
-	let ans = input_line !ic 
+	let ans = input_line !ic
 	in begin
 		if ans = "unsat" then
 			UNSAT
