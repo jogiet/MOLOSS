@@ -37,7 +37,7 @@ let rec st x = function
 (*
 Cette fonction assure une transformation en NNF
 *)
-| M.Atom p -> FO.Atom (S.uppercase p,x) 
+| M.Atom p -> FO.Atom (String.uppercase_ascii p,x) 
 | M.Not f -> 
 begin
 	match f with
@@ -62,7 +62,7 @@ end
 					
 let rec st_inv f0 =
 match f0 with
-| FO.Atom (p,x) -> (M.Atom (S.lowercase p),x)
+| FO.Atom (p,x) -> (M.Atom (String.lowercase_ascii p),x)
 | FO.Not f -> 
 	let fm,x = st_inv f in 
 	(M.Not fm,x)
