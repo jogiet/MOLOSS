@@ -70,3 +70,9 @@ logic.
      the considered modal logic
    - ~--soft-ignore~: do not use ~assert-soft~ constraints, even if
      needed (beware, infinite loop possible in this case!)
+
+** Acknowledgments
+
+    MOLOSS has been partly developed during an internship at
+    [[https://www.isae-supaero.fr/en/][ISAE-SUPAERO]] and
+    [[http://www.onera.fr/en][ONERA]].

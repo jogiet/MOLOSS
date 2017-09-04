@@ -12,7 +12,7 @@
 module Smap = Map.Make(String)
 module Sset = Set.Make(String)
 
-
+(** module for the first-order formula *)
 module FO  = struct 
 
 type ident = string
@@ -128,6 +128,7 @@ end
 (*           Formules du 1er ordre "encadrées"            *)
 (*--------------------------------------------------------*)
 
+(** module for the boxed first-order formula *)
 module BFO = struct
 
 type atom = string
