@@ -1,4 +1,4 @@
-.PHONY: all clean native byte profile debug various_tests doc sanity
+.PHONY: all clean native byte profile debug various_tests doc_html doc_man doc_tex doc_texinfo doc_dot sanity
 
 OCBFLAGS = -I src -I tests
 OCB = ocamlbuild -use-ocamlfind $(OCBFLAGS)
@@ -48,6 +48,3 @@ sanity:
 	ocamlfind query unix
 	ocamlfind query minisat
 	ocamlfind query msat
-
-graph:
-	dot -Tpdf moloss.docdir/moloss.dot -o dep.pdf
