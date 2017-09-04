@@ -2,6 +2,9 @@
 (*              Procédures de décisions                   *)
 (*########################################################*)
 
+(**These are the decision procedures for the basic modal logic (see
+Pascal Fontaine et al.) and for the epistemic logic *)
+
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO
 open Ast_fo
@@ -23,31 +26,37 @@ module H = Hashtbl
 module L = List
 
 type env = (string,FO.formula) H.t 
+(** An atom from BFO is bind to the FO formula it represents *) 
 (* Un atome de BFO (de type string) est bind à la formule qu'il encadre *)
 
 type thetex = (string,unit) H.t
+(** Represents the ensemble \Theta_\exists *)
 (* représente \Theta_\exists *)
 
 
 
 type thetfor = (string*string,unit) H.t
+(** Represents the ensemble \Theta_\forall *)
 (* représente \Theta_\forall *)
 
 type thetsym = (string*string,unit) H.t
-(* représente \Theta_sym  
-/!\ : comme l'ordre ne compte pas (i.e. on stocke des ensembles de string
-et non des couples ), on rentre les strings en ordre croissant 
-(+ facile pour retrouver) *)
+(** Represents the ensemble \Theta_\forall.
+Warning : since we store ensembles, worlds (i.e. strings) are put in
+alphabetical order *)
 
 type thetrans = (string*string*string,unit) H.t
+(** Represents the ensemble \Theta_T *)
 
 type theteuc = (string*(string*string),unit) H.t
+(** Represents the ensemble \Theta_e.
+Same remark for thetsym *)
 (*
 Même remarque que pour thetsym pour les deux derniers éléments de la
 clef
 *)
 
 type thetfonc = (string,string) H.t
+(** Represents the ensemble \Theta_f *)
 
 type config = 
 	{mutable cardw : int;
@@ -61,9 +70,15 @@ type config =
 	 trans : thetrans;
 	 euc : theteuc;
 	 fonc : thetfonc}
+(** The type for a configuration *)
 
 exception Found of (string list*BFO.formula)
+(** When a decision prcedures is applied, it raises an exception whith
+the new boxed atoms and the new formula *)
 exception SoftFound of 
+(** When \exists_{soft} applies, it raises an exception with a list of
+axioms for the new formula, a new FO formula, a list of atoms for the
+"soft" formula, the soft formula and its weight*)
 	(string list*
 	 BFO.formula*
 	 string list*
@@ -88,8 +103,9 @@ Les fonctions de décisions changent l'environnement par effet de bord
 et la config de manière générale
 *)
 
-type init_flag = 
-	| Reflexiv
+type init_flag = | Reflexiv
+(** Type for initialisation, @deprecated : not necessary with the new
+reflexivity decision procedure *)
 
 (*--------------------------------------------------------*)
 (*               Fonctions de décision                    *)
@@ -97,6 +113,7 @@ type init_flag =
 
 
 (*  ===========>  règle exists  <=========== *)
+(** Decision procedure for the \exists rule *)
 let rec exist config = function 
 | [] -> ()
 | (eps,b)::q when b ->
@@ -123,6 +140,7 @@ end
 
 
 (*  ===========>  règle forall  <=========== *)
+(** Decision procedure for the \forall rule *)
 let rec forall config model  = 
 	let rec make_rel config  = function
 	(* D'abord on extrait les realtions du modèle *)
@@ -162,11 +180,10 @@ let rec forall config model  =
 		| _ -> aux config rel q
 	end
 	| _::q ->  aux config rel q
-
 	in aux config (make_rel config model) model
 
-(*  ===========>  Réflexivité  <=========== *)
 (*
+(*  ===========>  Réflexivité  <=========== *)
 let rec reflexiv config = function
 (* Il s'agit d'une réécriture de la fonction exists *)
 | [] -> ()
@@ -196,6 +213,8 @@ end
 
 *)
 
+(** Decision procedure for the reflexivity rule (use the modal axiom :
+W\R w, is implictt in the frame *)
 let reflexiv config model = 
 	let aux (eps,b) = 
 	(* renvoie true si le couple est bon pour trigger *)
@@ -241,6 +260,7 @@ let reflexiv config model =
 
 
 (*  ===========>  Fonctionnelle  <=========== *)
+(** Decision procedure for the fonctionnal rule *)
 let rec functionnal config = function 
 | [] -> ()
 | (eps,b)::q when b ->
@@ -278,6 +298,7 @@ end
 
 
 (*  ===========>  Symétrie  <=========== *)
+(** Decision procedure for the symmetrical rule *)
 let rec symmetric config = function
 | [] -> ()
 | (eps,b)::q  when b ->
@@ -307,6 +328,7 @@ end
 
 
 (*  ===========> Transitivité  <=========== *)
+(** Decision procedure for the transitivity rule *)
 let transitivity config model = 
 	let rec aux rel = function 
 	| [] -> ()
@@ -354,6 +376,7 @@ let transitivity config model =
 	aux [] model 
 
 (* ===========> Euclidienne  <=========== *)
+(** Decision procedure for the euclidian rule *)
 let euclidean config model = 
 	let rec aux rel = function 
 	| [] -> ()
@@ -399,6 +422,7 @@ let euclidean config model =
 
 
 (* ===========> règle exists <=========== *)
+(** Decision procedure for the \exists_soft rule *)
 let rec softexist config = function
 | [] -> ()
 | (eps,b)::q when b ->
@@ -447,6 +471,8 @@ end
 	
 
 (* ===========>   symetrique   <=========== *)
+(** Decision procedure for the symmetric rule with assert-soft 
+@deprecated : not used *)
 let rec softreflexiv config = function
 | [] -> ()
 | (eps,b)::q when b ->
