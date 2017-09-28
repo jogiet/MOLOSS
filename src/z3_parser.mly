@@ -17,7 +17,7 @@
 %%
 
 answer :
-|  m = model ; 
+|  m = model ; EOF
 	{ m}
 
 model :
