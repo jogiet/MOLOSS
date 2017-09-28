@@ -36,6 +36,7 @@ rule next_token = parse
 | "(" { LPAR}
 | ")" { RPAR}
 | ident as id {check_kwd id}
+| eof {EOF}
 | _ as s { raise (Lex_err  ("illegal character: " ^ (String.make 1 s))) }
 
 and comment = parse

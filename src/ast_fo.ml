@@ -30,7 +30,11 @@ type formula =
 	| Quantified of quantifier*ident*formula
 	*)
 
+(** In order to use the Hashtbl module *)
 type t = formula
+
+
+(** In order to use the Hashtbl module *)
 let compare = compare
 (* Pour pouvoir donner une structure de Map *)
 
@@ -39,8 +43,13 @@ les fonctions suivantes servent à gérer les variables libres et
 notamment la question des variables quantifiées 
 *)
 
+(** The following functions and exceptions are used to handle free
+variables and variables change *)
+
+
 exception NotSameFV of (string*string)
 
+(** return the free variable of a formula *)
 let rec extractfv f =
 (* renvoie la liste de variables libres dans f *)
 match f with
@@ -59,6 +68,8 @@ match f with
 | Exists (new_fv,f) | Forall (new_fv,f) -> 
 	List.filter (fun x -> x <> new_fv) (extractfv f) 
 
+(** return true iff the two formulas are the same modulo the free
+variable *)
 let equalmodvquant f1 f2 =
 (*
 cette fonction renvoie vrai ssi :
@@ -96,7 +107,8 @@ cette fonction renvoie vrai ssi :
 	in aux f1 f2 []
 			
 
-
+(** return a formula equal to the one given in argument but with the
+given in argument free variable *)
 let rec changefv fv = function
 (* remplace la variable libre dans f par fv *)
 | Atom (p,_) -> Atom (p,fv)
@@ -131,6 +143,7 @@ end
 (** module for the boxed first-order formula *)
 module BFO = struct
 
+(** This type for atom in boxed first order formulae *)
 type atom = string
 
 type formula = 
@@ -139,7 +152,10 @@ type formula =
 	| Conj of formula *formula
 	| Dij of formula *formula
 
+(** In order to use *.Make functors *)
 type t = formula 
+
+(** In order to use *.Make functors *)
 let compare = compare
 
 	type value = bool
@@ -181,6 +197,9 @@ Fonction pour créer de nouveaux noms pour les formules
 
 type env = FO.formula Smap.t
 
+(** An abstraction function : Tansforms the given formula into a boxed 
+formula and add the atom in
+the envirronment by side effect *)
 let rec abs env f = 
 (*
 transforme f en une formule encadrée et enrichit env si besoin
@@ -216,6 +235,7 @@ match f with
 	let bf2,new_var2 = abs env f2 in
 		(BFO.Dij (bf1,bf2),new_var1@new_var2)
 
+(** A concretisation function : The inverse function of abs *)
 let rec conc env bf = 
 match bf with 
 | BFO.Atom i -> 
@@ -231,6 +251,8 @@ match bf with
 (*
 On met ça la car les dépendances ....
 *)
+(** The type for the model returned by the oracle, here for the
+dependancies *)
 type model = (BFO.atom*BFO.value) list
 
 
