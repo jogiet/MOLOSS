@@ -18,3 +18,5 @@ before_install:
     - opam install menhir msat minisat
 install:
     - make
+script:
+    - echo "OK !"
