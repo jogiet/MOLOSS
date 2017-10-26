@@ -1,11 +1,10 @@
 language: c
 env:
     OCAML_VERSION=4.04.2
-
 addons:
     apt:
         packages:
-            -opam
+            - opam
 before_install:
     - opam init
     - opam switch ${OCAML_VERSION}
@@ -13,4 +12,4 @@ before_install:
     - opam install ocamlfind ocamlbuild
     - opam install menhir msat minisat
 install:
-    make
+    - make
