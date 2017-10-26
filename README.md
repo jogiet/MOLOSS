@@ -25,15 +25,15 @@ logic.
    All these tools can be easily installed using the [OPAM](https://opam.ocaml.org/) OCaml
    Package Manager:
 
-   #+BEGIN_SRC shell
+   ```shell
    opam install menhir msat minisat
-   #+END_SRC
+   ```
 
    You can then build the system with
 
-   #+BEGIN_SRC shell
+   ```shell
    make
-   #+END_SRC
+   ```
 
    Notice also that:
 
