@@ -1,8 +1,5 @@
-module L = List
-module A = Array
-module F = Filename
-module U = Unix
-module C = Convertisseur
+
+
 open Lexing
 
 module Dummy  = struct let truc = 0 end
@@ -15,105 +12,103 @@ module Sminisat = Solve.Solve(Smtminisat.Smtmini)
 module D = Direct
 
 
-
-let fpf = Printf.printf
-
+(** A basic function to report parsing/lexing bug *)
 let report (b,e) file =
   let l = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
   let lc = e.pos_cnum - b.pos_bol + 1 in
-fpf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
+Printf.printf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 
 
+(** Returns true if the string given in argument as suffix ".bml" *)
 let good_suff s =
-	F.check_suffix s ".bml"
+  Filename.check_suffix s ".bml"
+
+(** Returns the filename with the .out suffix insteadof .bml suffix *)
 let new_suff s =
-	(F.chop_suffix s ".bml")^".out"
+	(Filename.chop_suffix s ".bml")^".out"
 
-
-let truc bidule =
-	let lb = Lexing.from_channel bidule in
-	Sp_parser.problem Sp_lexer.next_token lb
-
+(** Main function in the solver for vanilla solving
+    It's the used function when no option is called (except the solver)*)
 let solve_vanilla f a =
 let module Solv = Solve.Solve in
-let argv = A.to_list (Sys.argv) in
-	if L.mem "--out" argv then
-		fpf "pas encore implem'\n"
+let argv = Array.to_list (Sys.argv) in
+	if List.mem "--out" argv then
+		Printf.printf "pas encore implem'\n"
 	else
-		if L.mem "--all" argv then
+		if List.mem "--all" argv then
 			let module Z3 = Solv(Smtz3.SMTz3) in
 			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
-				fpf "oracle z3\n";
-				Z3.solve (C.st "w" f) a |> ignore;
-				fpf "oracle mSAT\n";
-				MSAT.solve (C.st "w" f) a |> ignore;
-				fpf "oracle minisat\n";
-				MiniSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle z3\n";
+				Z3.solve (Convertisseur.st "w" f) a |> ignore;
+				Printf.printf "oracle mSAT\n";
+				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
+				Printf.printf "oracle minisat\n";
+				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
-		else if L.mem "--z3" argv then
+		else if List.mem "--z3" argv then
 			let module Z3 = Solv(Smtz3.SMTz3)
 			in begin
-				fpf "oracle z3\n";
-				Z3.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle z3\n";
+				Z3.solve (Convertisseur.st "w" f) a |> ignore;
 			end
-		else if L.mem "--mSAT" argv then
+		else if List.mem "--mSAT" argv then
 			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
 			in begin
-				fpf "oracle mSAT\n";
-				MSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle mSAT\n";
+				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
-				fpf "oracle minisat\n";
-				MiniSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle minisat\n";
+				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 
-
+(** This function solve the formula and ouputs a model *)
 let solve_model f a =
 let module Solv = Solve.SolveMod in
-let argv = A.to_list (Sys.argv) in
-	if L.mem "--out" argv then
-		fpf "pas encore implem'\n"
+let argv = Array.to_list (Sys.argv) in
+	if List.mem "--out" argv then
+		Printf.printf "pas encore implem'\n"
 	else
-		if L.mem "--all" argv then
+		if List.mem "--all" argv then
 			let module Z3 = Solv(Smtz3.SMTz3) in
 			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
-				fpf "oracle z3\n";
-				Z3.solve (C.st "w" f) a |> ignore;
-				fpf "oracle mSAT\n";
-				MSAT.solve (C.st "w" f) a |> ignore;
-				fpf "oracle minisat\n";
-				MiniSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle z3\n";
+				Z3.solve (Convertisseur.st "w" f) a |> ignore;
+				Printf.printf "oracle mSAT\n";
+				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
+				Printf.printf "oracle minisat\n";
+				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
-		else if L.mem "--z3" argv then
+		else if List.mem "--z3" argv then
 			let module Z3 = Solv(Smtz3.SMTz3)
 			in begin
-				fpf "oracle z3\n";
-				Z3.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle z3\n";
+				Z3.solve (Convertisseur.st "w" f) a |> ignore;
 			end
-		else if L.mem "--mSAT" argv then
+		else if List.mem "--mSAT" argv then
 			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
 			in begin
-				fpf "oracle mSAT\n";
-				MSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle mSAT\n";
+				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else
 			let module MiniSAT = Solv(Smtminisat.Smtmini)
 			in begin
-				fpf "oracle minisat\n";
-				MiniSAT.solve (C.st "w" f) a |> ignore;
+				Printf.printf "oracle minisat\n";
+				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 
 
 let _ =
-	let argv = A.to_list (Sys.argv)
-	and t0 = U.gettimeofday ()
+	let argv = Array.to_list (Sys.argv)
+	and t0 = Unix.gettimeofday ()
 	in begin
 	begin
 		match argv with
@@ -126,71 +121,71 @@ let _ =
 			let lb = Lexing.from_channel file in
 			try
 			let a,f = Parser.file Lexer.next_token lb in
-				if L.mem "--direct" argv then
+				if List.mem "--direct" argv then
 				begin
-					fpf "oracle direct\n";
-					D.solve (C.st "w" f) a |> ignore;
+					Printf.printf "oracle direct\n";
+					Direct.solve (Convertisseur.st "w" f) a |> ignore;
 				end
-				else if L.mem "--get-model" argv then
+				else if List.mem "--get-model" argv then
 					solve_model f a
 				else
 					solve_vanilla f a
 			with
 			| Lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "lexical error: %s.\n" s;
+			Printf.printf "lexical error: %s.\n" s;
 			flush_all ();
 			exit 1
   			| Parser.Error ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "syntax error.\n";
+			Printf.printf "syntax error.\n";
 			flush_all ();
 			exit 1
 		end
 
 
 		(*   pour les fichiers .dfg, on teste la validité    *)
-		| _ ::filename ::_ when F.check_suffix filename ".dfg" ->
+		| _ ::filename ::_ when Filename.check_suffix filename ".dfg" ->
 		begin
 			let file = open_in filename in
 			let lb = Lexing.from_channel file
 			(* and out =
-				if L.mem "--out" argv then
+				if List.mem "--out" argv then
 					Some (open_out (new_suff filename))
 				else
                                         None *)
 			in
 			try
 			let f,a = Sp_parser.problem Sp_lexer.next_token lb in
-				if L.mem "--direct" argv then
-					D.solve (C.st "w" f) a |> ignore
+				if List.mem "--direct" argv then
+					Direct.solve (Convertisseur.st "w" f) a |> ignore
 				else
 				begin
-					fpf "Fin du parsing\n";
+					Printf.printf "Fin du parsing\n";
 					flush_all ();
-					Sz3.solve (C.st "w" f) a |> ignore;
+					Sz3.solve (Convertisseur.st "w" f) a |> ignore;
 				end
 			with
 			| Sp_lexer.Lex_err s ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "lexical error: %s.\n" s;
+			Printf.printf "lexical error: %s.\n" s;
 			flush_all ();
 			exit 1
   			| Sp_parser.Error ->
 			report (lexeme_start_p lb, lexeme_end_p lb) filename;
-			fpf "syntax error.\n";
+			Printf.printf "syntax error.\n";
 			flush_all ();
 			exit 1
 
 		end
 		| _ ->
 		begin
-			fpf
+			Printf.printf
 			"Donner le nom du fichier avec une extension .bml ou .dfg\n";
 			exit 1;
 		end;
 	end;
 		flush_all ();
-		if L.mem "--time" argv then
-			fpf "Calculs effectués en %f s \n" (U.gettimeofday () -.t0);
+		if List.mem "--time" argv then
+			Printf.printf "Calculs effectués en %f s \n" (Unix.gettimeofday () -.t0);
 	end
