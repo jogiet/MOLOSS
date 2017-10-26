@@ -1,4 +1,4 @@
-* MOLOSS, a MOdal LOgic Solver via SMT
+* MOLOSS, a MOdal LOgic Solver via SMT [![Build Status](https://travis-ci.org/Meleagant/MOLOSS.svg?branch=master)](https://travis-ci.org/Meleagant/MOLOSS)
 
 MOLOSS is a satisfiability solver for modal logics. It is an
 implementation (and more) of C. Aceres, P. Fontaine and S. Merz paper
@@ -40,7 +40,7 @@ logic.
    - (for the moment) MOLOSS uses UNIX system calls, so you must be on
      a UNIX/Linux system to use it
    - MOLOSS uses [[https://github.com/Z3Prover/z3][Z3]], a SMT solver.
-	 You must have a Z3 installed 
+	 You must have a Z3 installed
 	 if you want to use it as an oracle or directly (see
      further).
 

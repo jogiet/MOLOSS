@@ -3,6 +3,8 @@ env:
     OCAML_VERSION=4.04.2
 addons:
     apt:
+        sources:
+            - avsm
         packages:
             - opam
 before_install:
