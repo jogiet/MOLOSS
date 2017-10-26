@@ -2,7 +2,7 @@
 
 MOLOSS is a satisfiability solver for modal logics. It is an
 implementation (and more) of C. Aceres, P. Fontaine and S. Merz paper
-"[[https://doi.org/10.1007/978-3-319-15545-6_5][Modal Satisfiability via SMT solving]]" in which the authors use a
+"[Modal Satisfiability via SMT solving](https://doi.org/10.1007/978-3-319-15545-6_5)" in which the authors use a
 translation of propositional modal logic to first-order
 logic.
 
@@ -16,13 +16,13 @@ logic.
    For the moment, you can only install MOLOSS manually. To install
    MOLOSS, you need:
 
-   - an [[http://ocaml.org/][OCaml]] compiler (version >= 4.0.3)
-   - the [[http://gallium.inria.fr/`fpottier/menhir/][Menhir]] parser generator
-   - the OCaml library [[https://github.com/Gbury/mSAT][mSat]]
-   - the OCaml library [[https://github.com/c-cube/ocaml-minisat][ocaml-minisat]] to interact with the MiniSat
+   - an [OCaml](http://ocaml.org/) compiler (version >= 4.0.3)
+   - the [Menhir](http://gallium.inria.fr/`fpottier/menhir/) parser generator
+   - the OCaml library [mSat](https://github.com/Gbury/mSAT)
+   - the OCaml library [ocaml-minisat](https://github.com/c-cube/ocaml-minisat) to interact with the MiniSat
      solver
 
-   All these tools can be easily installed using the [[https://opam.ocaml.org/][OPAM]] OCaml
+   All these tools can be easily installed using the [OPAM](https://opam.ocaml.org/) OCaml
    Package Manager:
 
    #+BEGIN_SRC shell
@@ -39,7 +39,7 @@ logic.
 
    - (for the moment) MOLOSS uses UNIX system calls, so you must be on
      a UNIX/Linux system to use it
-   - MOLOSS uses [[https://github.com/Z3Prover/z3][Z3]], a SMT solver.
+   - MOLOSS uses [Z3](https://github.com/Z3Prover/z3), a SMT solver.
 	 You must have a Z3 installed
 	 if you want to use it as an oracle or directly (see
      further).
@@ -74,5 +74,5 @@ logic.
 ## Acknowledgments
 
     MOLOSS has been partly developed during an internship at
-    [[https://www.isae-supaero.fr/en/][ISAE-SUPAERO]] and
-    [[http://www.onera.fr/en][ONERA]].
+    [ISAE-SUPAERO](https://www.isae-supaero.fr/en/) and
+    [ONERA](http://www.onera.fr/en).
