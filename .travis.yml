@@ -1,4 +1,5 @@
-language: c
+language: c    sources:
+- avsm
 env:
     OCAML_VERSION=4.04.2
 addons:
