@@ -6,6 +6,8 @@ addons:
         packages:
             - opam
 before_install:
+    - export OPAMYES=1
+    - export OPAMVERBOSE=1
     - opam init
     - opam switch ${OCAML_VERSION}
     - eval `opam config env`
