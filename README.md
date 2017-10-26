@@ -73,6 +73,6 @@ logic.
 
 ## Acknowledgments
 
-    MOLOSS has been partly developed during an internship at
+   MOLOSS has been partly developed during an internship at
     [ISAE-SUPAERO](https://www.isae-supaero.fr/en/) and
     [ONERA](http://www.onera.fr/en).
