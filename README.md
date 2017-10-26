@@ -73,10 +73,6 @@ logic.
 
 ## Acknowledgments
 
-<<<<<<< HEAD
-      MOLOSS has been partly developed during an internship at
-=======
    MOLOSS has been partly developed during an internship at
->>>>>>> 6c735a4b812bd194790e273dd7e543e7087d1301
-    [ISAE-SUPAERO](https://www.isae-supaero.fr/en/) and
-    [ONERA](http://www.onera.fr/en).
+   [ISAE-SUPAERO](https://www.isae-supaero.fr/en/) and
+   [ONERA](http://www.onera.fr/en).

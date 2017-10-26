@@ -1,4 +1,4 @@
-language: c    
+language: c
 env:
     OCAML_VERSION=4.04.2
 addons:
@@ -16,4 +16,6 @@ before_install:
     - opam install ocamlfind ocamlbuild
     - opam install menhir msat minisat
 install:
+    - make
+script:
     - make
