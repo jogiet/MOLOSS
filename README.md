@@ -1,4 +1,4 @@
-# MOLOSS, a MOdal LOgic Solver via SMT [![Build Status](https://travis-ci.org/Meleagant/MOLOSS.svg?branch=master)](https://travis-ci.org/Meleagant/MOLOSS)
+   # MOLOSS, a MOdal LOgic Solver via SMT [![Build Status](https://travis-ci.org/Meleagant/MOLOSS.svg?branch=master)](https://travis-ci.org/Meleagant/MOLOSS)
 
 MOLOSS is a satisfiability solver for modal logics. It is an
 implementation (and more) of C. Aceres, P. Fontaine and S. Merz paper
@@ -53,23 +53,24 @@ logic.
 
    Options:
 
-   - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
-   - `--z3`, `--mSAT`: only the corresponding oracle is used
-   - `--time`: print the total execution time (including parsing)
-   - `--get-model`: print the assertions deduced by the solver and the
+    - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
+    - `--z3`, `--mSAT`: only the corresponding oracle is used
+    - `--time`: print the total execution time (including parsing)
+    - `--get-model`: print the assertions deduced by the solver and the
      Kripke model if the formula is satisfiable
-   - `--direct`: use Z3 as a first-order solver on the translation of
+    - `--direct`: use Z3 as a first-order solver on the translation of
      modal formulas into first-order formulas (no instanciation
      procedures)
+    - `--soft`: use `assert-soft` constraints, even if not needed by
+      the considered modal logic
+    - `--soft-ignore`: do not use `assert-soft` constraints, even if
+      needed (beware, infinite loop possible in this case!)
 
-   Not yet avaible options:
+    Not yet avaible options:
 
-   - `--get-proof`: print a proof unsatisfiability if the formula is
+    - `--get-proof`: print a proof unsatisfiability if the formula is
      unsatisfiable (Z3 only)
-   - `--soft`: use `assert-soft` constraints, even if not needed by
-     the considered modal logic
-   - `--soft-ignore`: do not use `assert-soft` constraints, even if
-     needed (beware, infinite loop possible in this case!)
+
 
 ## Acknowledgments
 
