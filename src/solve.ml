@@ -39,7 +39,7 @@ let solve f a  =
 			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
-				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
+				fpf "\027[31mUNSAT\027[0m\n";
 				p |> ignore;
 				flush_all ();
 				cont := false;
@@ -48,7 +48,7 @@ let solve f a  =
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "\027[92mLa formule est satisfiable \027[0m\n";
+					fpf "\027[92mSAT\027[0m\n";
 					(*
 					print_soluce config m;
 					*)
@@ -99,7 +99,7 @@ begin
 			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
-				fpf "\027[31mLa formule est insatisfiable \027[0m\n";
+				fpf "\027[31mUNSAT\027[0m\n";
 				p |> ignore;
 				flush_all ();
 				cont := false;
@@ -108,7 +108,7 @@ begin
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "\027[92mLa formule est satisfiable \027[0m\n";
+					fpf "\027[92mSAT\027[0m\n";
 					D.print_model config m;
 					flush_all ();
 					cont := false;

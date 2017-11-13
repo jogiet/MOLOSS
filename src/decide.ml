@@ -600,7 +600,8 @@ let axiom_to_dec_proc axiom =
   in let res = aux axiom in
   if L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
     res@[forall]
-  else if L.mem "-4" axiom || L.mem "-5" axiom then
+  else if (L.mem "-4" axiom || L.mem "-5" axiom || L.mem "--soft" axiom)
+    && not (L.mem "--soft-ignore" axiom) then
     res@[forall;softexist]
   else
     res@[forall;exist]
