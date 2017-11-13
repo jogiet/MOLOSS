@@ -1,14 +1,25 @@
-
+(** Solveur's main module  *)
 
 open Lexing
 
 module Dummy  = struct let truc = 0 end
 
+module DecisionArg : Sign.DecideArg =
+struct
+  let argument = match (Array.to_list (Sys.argv)) with
+    | _ :: _ :: q ->
+      q
+    | _  ->
+      Printf.printf "Give a formula to solve\n";
+      exit 0
+end
+
+module Decision = Decide.GetDecide(DecisionArg)
 
 (*          Les différents solveurs            *)
-module Sz3 = Solve.Solve(Smtz3.SMTz3)
-module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
-module Sminisat = Solve.Solve(Smtminisat.Smtmini)
+module Sz3 = Solve.Solve(Smtz3.SMTz3)(Decision)
+module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))(Decision)
+module Sminisat = Solve.Solve(Smtminisat.Smtmini)(Decision)
 module D = Direct
 
 
@@ -21,11 +32,11 @@ Printf.printf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 
 
 (** Returns true if the string given in argument as suffix ".bml" *)
-let good_suff s =
+let good_suffixe s =
   Filename.check_suffix s ".bml"
 
 (** Returns the filename with the .out suffix insteadof .bml suffix *)
-let new_suff s =
+let new_suffixe s =
 	(Filename.chop_suffix s ".bml")^".out"
 
 (** Main function in the solver for vanilla solving
@@ -37,9 +48,9 @@ let argv = Array.to_list (Sys.argv) in
 		Printf.printf "pas encore implem'\n"
 	else
 		if List.mem "--all" argv then
-			let module Z3 = Solv(Smtz3.SMTz3) in
-			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
-			let module MiniSAT = Solv(Smtminisat.Smtmini)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision) in
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "oracle z3\n";
 				Z3.solve (Convertisseur.st "w" f) a |> ignore;
@@ -49,19 +60,19 @@ let argv = Array.to_list (Sys.argv) in
 				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else if List.mem "--z3" argv then
-			let module Z3 = Solv(Smtz3.SMTz3)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
 				Printf.printf "oracle z3\n";
 				Z3.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
-			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
 				Printf.printf "oracle mSAT\n";
 				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else
-			let module MiniSAT = Solv(Smtminisat.Smtmini)
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
@@ -75,9 +86,9 @@ let argv = Array.to_list (Sys.argv) in
 		Printf.printf "pas encore implem'\n"
 	else
 		if List.mem "--all" argv then
-			let module Z3 = Solv(Smtz3.SMTz3) in
-			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy)) in
-			let module MiniSAT = Solv(Smtminisat.Smtmini)
+      let module Z3 = Solv(Smtz3.SMTz3)(Decision) in
+      let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
+      let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "oracle z3\n";
 				Z3.solve (Convertisseur.st "w" f) a |> ignore;
@@ -87,19 +98,19 @@ let argv = Array.to_list (Sys.argv) in
 				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else if List.mem "--z3" argv then
-			let module Z3 = Solv(Smtz3.SMTz3)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
 				Printf.printf "oracle z3\n";
 				Z3.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
-			let module MSAT = Solv(Smtmsat.SMTmsat(Dummy) )
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
 				Printf.printf "oracle mSAT\n";
 				MSAT.solve (Convertisseur.st "w" f) a |> ignore;
 			end
 		else
-			let module MiniSAT = Solv(Smtminisat.Smtmini)
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st "w" f) a |> ignore;
@@ -115,7 +126,7 @@ let _ =
 
 
 		(*    pour les fichiers .bml, on teste la satisfiabilité    *)
-		| _ :: filename :: _ when good_suff filename ->
+		| _ :: filename :: _ when good_suffixe filename ->
 		begin
 		let file = open_in filename in
 			let lb = Lexing.from_channel file in

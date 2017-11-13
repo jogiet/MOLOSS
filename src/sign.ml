@@ -1,4 +1,4 @@
-(*
+(**
 	Module for generic signatures
 *)
 
@@ -36,12 +36,68 @@ sig
 
 end
 
+module type Decide =
+sig
+
+  (** Type for a configuration. Should contains :
+      - the worlds
+      - the environnement, i.e relation between FO formula and ground formulas
+      - set \Theta_something
+
+      Question : do we hide the configuration in the module ?
+
+      ++ Can be more generic
+
+      -- We might need it in the future !
+  *)
+  type config
+
+  val new_config : unit -> config
+
+  type model = (string*bool) list
+
+  val decide : config -> model -> unit
+
+  val init : config -> Ast_fo.FO.formula list -> Ast_fo.BFO.formula list * string list
+
+  exception Found of (string list*BFO.formula)
+  (** When a decision prcedures is applied, it raises an exception with :
+      - the new boxed atoms
+      - the new formula
+  *)
+  exception SoftFound of
+      (string list*
+       BFO.formula*
+       string list*
+       BFO.formula*
+       int)
+      (** When \exists_soft applies, it raises an exception with :
+          - a list of axioms for the new formula,
+          - a new FO formula,
+          - a list of atoms for the "soft" formula,
+          - the soft formula and its weight.
+      *)
+
+  val print_model : config -> model -> unit
+
+end
+
+module type DecideArg =
+sig
+		val argument : string list
+end
+
+
    (** This is the signature for a solver module *)
 module type Solveur =
 sig
 
   (** You give a formula and the list of axioms,
-      this function returns you the satifiability of this formula *)
+      this function returns you the satifiability of this formula
+
+      After the refactoring, we won't need the axioms list in the Solveur module,
+      but in the Decide one.
+  *)
 	val solve : Ast_fo.FO.formula -> string list -> bool
 
 end

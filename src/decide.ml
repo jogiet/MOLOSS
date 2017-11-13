@@ -5,10 +5,12 @@
 (**These are the decision procedures for the basic modal logic (see
 Pascal Fontaine et al.) and for the epistemic logic *)
 
+module GetDecide (A : Sign.DecideArg) : Sign.Decide = struct
+
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO
 open Ast_fo
-
+let fpf = Printf.printf
 
 (*--------------------------------------------------------*)
 (*               Quelques modules utils                   *)
@@ -24,31 +26,35 @@ TODO : trouver une structure mutable équivalente aux Set !!
 
 module H = Hashtbl
 module L = List
+module PP = Pprinter
+
+
+
 
 type env = (string,FO.formula) H.t
 (** An atom from BFO is bind to the FO formula it represents *)
 (* Un atome de BFO (de type string) est bind à la formule qu'il encadre *)
 
 type thetex = (string,unit) H.t
-(** Represents the ensemble \Theta_\exists *)
+(** Represents the set \Theta_\exists *)
 (* représente \Theta_\exists *)
 
 
 
 type thetfor = (string*string,unit) H.t
-(** Represents the ensemble \Theta_\forall *)
+(** Represents the set \Theta_\forall *)
 (* représente \Theta_\forall *)
 
 type thetsym = (string*string,unit) H.t
-(** Represents the ensemble \Theta_\forall.
-Warning : since we store ensembles, worlds (i.e. strings) are put in
+(** Represents the set \Theta_\forall.
+Warning : since we store sets, worlds (i.e. strings) are put in
 alphabetical order *)
 
 type thetrans = (string*string*string,unit) H.t
-(** Represents the ensemble \Theta_T *)
+(** Represents the set \Theta_T *)
 
 type theteuc = (string*(string*string),unit) H.t
-(** Represents the ensemble \Theta_e.
+(** Represents the set \Theta_e.
 Same remark for thetsym *)
 (*
 Même remarque que pour thetsym pour les deux derniers éléments de la
@@ -56,7 +62,7 @@ clef
 *)
 
 type thetfonc = (string,string) H.t
-(** Represents the ensemble \Theta_f *)
+(** Represents the set \Theta_f *)
 
 type config =
 	{mutable cardw : int;
@@ -72,6 +78,40 @@ type config =
 	 fonc : thetfonc}
 (** The type for a configuration *)
 
+let new_config () =
+  let config =
+    {cardw = 1;
+     w = ["w"];
+     env = H.create 10;
+     s = ();
+     exists = H.create 10;
+     forall = H.create 10;
+     reflex = H.create 10;
+     sym = H.create 10;
+     trans = H.create 10;
+
+     euc = H.create 10;
+     fonc = H.create 10}
+  in begin
+    config;
+  end
+
+type model = (string*bool) list
+(** Type of a model returned by SMT-solver  *)
+
+let rec init (config : config) = function
+(*
+renvoie la liste des fonctions encadrées, et les nouvelles variables
+et enrichit la config au fur et à mesure ...
+*)
+| [] ->
+		[],[]
+| f::q ->
+	let f_box,new_var = abs config.env f in
+	let f_rest,new_var_rest = init config q in
+		f_box::f_rest, new_var@new_var_rest
+
+
 exception Found of (string list*BFO.formula)
 (** When a decision prcedures is applied, it raises an exception whith
 the new boxed atoms and the new formula *)
@@ -84,6 +124,8 @@ axioms for the new formula, a new FO formula, a list of atoms for the
 	 string list*
 	 BFO.formula*
 	 int)
+
+
 
 (*
 Le résultat des fonctions de décision se fera par des exceptions ...
@@ -103,10 +145,11 @@ Les fonctions de décisions changent l'environnement par effet de bord
 et la config de manière générale
 *)
 
+   (*
 type init_flag = | Reflexiv
 (** Type for initialisation, @deprecated : not necessary with the new
 reflexivity decision procedure *)
-
+  *)
 (*--------------------------------------------------------*)
 (*               Fonctions de décision                    *)
 (*--------------------------------------------------------*)
@@ -520,3 +563,83 @@ else
 	| _ -> softreflexiv config q
 end
 | _::q -> softreflexiv config q
+
+
+
+
+
+let axiom_to_dec_proc axiom =
+  let rec aux = function
+    | [] -> []
+    | "-S"::q | "-M"::q | "-boxeM"::q ->
+      if L.mem "-5" axiom then
+        reflexiv::(aux q)
+      else
+        reflexiv::(aux q)
+    | "-K"::q -> aux q
+    | "-4"::q -> transitivity::(aux q)
+    | "-B"::q -> symmetric::(aux q)
+    | "-5"::q -> euclidean::(aux q)
+    | "-CD"::q -> functionnal::(aux q)
+    | t::q ->
+    begin
+      if String.length t <= 1
+      then begin
+        Printf.printf "argument inconnu : %s\n" t;
+        exit 0
+      end
+      else if String.get t 0 = '-' && String.get t 1 != '-'
+      then
+      begin
+        fpf "Axiome inconne : %s \n" t;
+        exit 1
+      end
+      else
+        aux q
+    end
+  in let res = aux axiom in
+  if L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
+    res@[forall]
+  else if L.mem "-4" axiom || L.mem "-5" axiom then
+    res@[forall;softexist]
+  else
+    res@[forall;exist]
+
+      (*
+let get_init_flag axioms =
+  if L.mem  "-M" axioms then
+    [Reflexiv]
+  else
+        []
+      *)
+
+
+let print_model config model =
+  let aux (k,b) =
+    let f = H.find config.env k in
+    match f with
+    | FO.Atom _ | FO.Relation _ | FO.Not _ ->
+      begin
+        match b with
+        | true -> PP.print_fo f
+        | false -> PP.print_fo (FO.Not f)
+      end
+    | FO.Exists _ | FO.Forall _ -> ()
+    | _ -> assert false
+  in begin
+    fpf "liste des mondes : \n";
+    L.iter (fun k  -> fpf "%s \n" k) config.w;
+    flush_all ();
+    fpf "\nPropriétés à vérifier :\n";
+    List.iter aux model;
+    flush_all ();
+  end
+
+let decisions = axiom_to_dec_proc A.argument
+
+let decide config m = L.iter (fun d_proc -> d_proc config m) decisions
+
+
+
+
+end
