@@ -7,6 +7,7 @@ addons:
             - avsm
         packages:
             - opam
+            - z3
 before_install:
     - export OPAMYES=1
     - export OPAMVERBOSE=1

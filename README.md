@@ -71,7 +71,6 @@ logic.
     - `--get-proof`: print a proof unsatisfiability if the formula is
      unsatisfiable (Z3 only)
 
-
 ## Acknowledgments
 
    MOLOSS has been partly developed during an internship at
