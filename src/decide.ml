@@ -99,11 +99,13 @@ let new_config () =
 type model = (string*bool) list
 (** Type of a model returned by SMT-solver  *)
 
+
+(** returns :
+    - the list of the boxed formula corresponding to the FO formula
+    - the variables in the boxed formula
+
+    and add the formula in the config by side effect. *)
 let rec init (config : config) = function
-(*
-renvoie la liste des fonctions encadrées, et les nouvelles variables
-et enrichit la config au fur et à mesure ...
-*)
 | [] ->
 		[],[]
 | f::q ->
@@ -113,12 +115,17 @@ et enrichit la config au fur et à mesure ...
 
 
 exception Found of (string list*BFO.formula)
-(** When a decision prcedures is applied, it raises an exception whith
-the new boxed atoms and the new formula *)
+(** When a decision prcedures is applied, it raises an exception with :
+    - the new boxed atoms,
+    - the new formula *)
+
+(** When \exists_soft applies, it raises an exception with :
+    - a list of atoms for the new formula,
+    - a new FO formula,
+    - a list of atoms for the "soft" formula,
+    - the soft formula,
+    - its weight *)
 exception SoftFound of
-(** When \exists_{soft} applies, it raises an exception with a list of
-axioms for the new formula, a new FO formula, a list of atoms for the
-"soft" formula, the soft formula and its weight*)
 	(string list*
 	 BFO.formula*
 	 string list*
@@ -126,30 +133,6 @@ axioms for the new formula, a new FO formula, a list of atoms for the
 	 int)
 
 
-
-(*
-Le résultat des fonctions de décision se fera par des exceptions ...
-Le type renvoyé par les fonctions est unit (parce que L.iter ^^ )
-*)
-
-(*
-Une exception prend comme arguement :
--> La liste des nouvelle variables à rajouter au modèle
-	(Elles correspondent aux nouvelles variables des formules encadrées
-	(ci-dessous
--> Une nouvelle formule à rajouter
-Dans le cas de Soft, il y a en plus :
--> Une formule à mettre en assert soft
--> et le poids de la formule
-Les fonctions de décisions changent l'environnement par effet de bord
-et la config de manière générale
-*)
-
-   (*
-type init_flag = | Reflexiv
-(** Type for initialisation, @deprecated : not necessary with the new
-reflexivity decision procedure *)
-  *)
 (*--------------------------------------------------------*)
 (*               Fonctions de décision                    *)
 (*--------------------------------------------------------*)
@@ -225,40 +208,10 @@ let rec forall config model  =
 	| _::q ->  aux config rel q
 	in aux config (make_rel config model) model
 
-(*
-(*  ===========>  Réflexivité  <=========== *)
-let rec reflexiv config = function
-(* Il s'agit d'une réécriture de la fonction exists *)
-| [] -> ()
-| (eps,b)::q when b ->
-begin
-if H.mem config.exists eps then
-	reflexiv config q
-else
-	let f = H.find config.env eps in
-	match f with
-	| FO.Exists (y,FO.Conj (FO.Relation (c,y0),fy)) ->
-	let w = get_fw () in
-	let fd =
-	FO.Dij (FO.Not f,
-			FO.Conj (FO.Conj (FO.Relation (c,w),
-				          	  FO.Relation (w,w)),
-			     	 FO.changefv w fy)) in
-	let f_tot,new_var = abs config.env fd
-	in begin
-		config.w <- w::config.w;
-		H.add config.exists eps () ;
-		raise (Found (new_var,f_tot));
-	end
-	| _ -> reflexiv config q
-end
-| _::q -> reflexiv config q
-(*This is the former implementation of the Reflexivity rule
-it's based on the axiom's FO version*)
-*)
 
+(*  ===========>  Réflexivité  <=========== *)
 (** Decision procedure for the reflexivity rule (use the modal axiom :
-W\R w, is implictt in the frame *)
+W\R w, is implicit in the frame *)
 let reflexiv config model =
 	let aux (eps,b) =
 	(* renvoie true si le couple est bon pour trigger *)
@@ -568,6 +521,7 @@ end
 
 
 
+(** Returns the list of the decision procdures for the formula  *)
 let axiom_to_dec_proc axiom =
   let rec aux = function
     | [] -> []
@@ -606,16 +560,8 @@ let axiom_to_dec_proc axiom =
   else
     res@[forall;exist]
 
-      (*
-let get_init_flag axioms =
-  if L.mem  "-M" axioms then
-    [Reflexiv]
-  else
-        []
-      *)
-
-
 let print_model config model =
+  (** prints the model in the standard output *)
   let aux (k,b) =
     let f = H.find config.env k in
     match f with
@@ -636,8 +582,10 @@ let print_model config model =
     flush_all ();
   end
 
+  (** the list of decision procedures used to solve a formula  *)
 let decisions = axiom_to_dec_proc A.argument
 
+  (** a function that applies all decision procedures  *)
 let decide config m = L.iter (fun d_proc -> d_proc config m) decisions
 
 

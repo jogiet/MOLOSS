@@ -59,6 +59,11 @@ sig
   val decide : config -> model -> unit
 
   val init : config -> Ast_fo.FO.formula list -> Ast_fo.BFO.formula list * string list
+  (** This function  returns :
+      - the list of the boxed formula corresponding to the FO formula
+      - the variables in the boxed formula
+
+      and add the formula in the config by side effect.   *)
 
   exception Found of (string list*BFO.formula)
   (** When a decision prcedures is applied, it raises an exception with :
@@ -84,6 +89,8 @@ end
 
 module type DecideArg =
 sig
+  (** Basically : this argument is the argument in the command line. it contains :
+    - the axioms : -S, -K, -4, -5 *)
 		val argument : string list
 end
 

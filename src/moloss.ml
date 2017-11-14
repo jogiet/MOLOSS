@@ -126,7 +126,7 @@ let _ =
 
 
 		(*    pour les fichiers .bml, on teste la satisfiabilité    *)
-		| _ :: filename :: _ when good_suffixe filename ->
+		| _ :: filename :: _ when Filename.check_suffix filename ".bml" ->
 		begin
 		let file = open_in filename in
 			let lb = Lexing.from_channel file in
@@ -152,7 +152,35 @@ let _ =
 			Printf.printf "syntax error.\n";
 			flush_all ();
 			exit 1
-		end
+	end
+
+  	| _ :: filename :: _ when Filename.check_suffix filename ".InToHyLo" ->
+    begin
+      let file = open_in filename in
+      let lb = Lexing.from_channel file in
+      try
+        let a,f = InToHyLoParser.file InToHyLoLexer.next_token lb in
+        if List.mem "--direct" argv then
+          begin
+            Printf.printf "oracle direct\n";
+            Direct.solve (Convertisseur.st "w" f) a |> ignore;
+          end
+        else if List.mem "--get-model" argv then
+          solve_model f a
+        else
+          solve_vanilla f a
+      with
+      | InToHyLoLexer.Lex_err s ->
+        report (lexeme_start_p lb, lexeme_end_p lb) filename;
+        Printf.printf "lexical error: %s.\n" s;
+        flush_all ();
+        exit 1
+      | InToHyLoParser.Error ->
+        report (lexeme_start_p lb, lexeme_end_p lb) filename;
+        Printf.printf "syntax error.\n";
+        flush_all ();
+        exit 1
+    end
 
 
 		(*   pour les fichiers .dfg, on teste la validité    *)

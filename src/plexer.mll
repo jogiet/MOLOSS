@@ -4,13 +4,13 @@
 
 	exception Lex_err of string
 
-	let newline lexbuf = 
+	let newline lexbuf =
 		let pos = lexbuf.lex_curr_p in
 		lexbuf.lex_curr_p <-
 			{pos with pos_lnum = pos.pos_lnum +1;
 			          pos_bol = pos.pos_cnum}
 
-	let kwd_tbl = 
+	let kwd_tbl =
 	[("and",Conj);
 	 ("or",Dij);
 	 ("not",Not);
@@ -29,13 +29,13 @@
 	 ("true",TRUE);
 	 ("false",FALSE)]
 
-	let check_kwd s = 
+	let check_kwd s =
 		if List.mem_assoc s kwd_tbl then
-			List.assoc s kwd_tbl			
+			List.assoc s kwd_tbl
 		else
 			Ident s
 
-	
+
 }
 
 
