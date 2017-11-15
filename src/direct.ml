@@ -120,7 +120,7 @@ let p_prop oc out f =
 	(* déclare les propositions comme des fonctions prenant en argument
 	un monde *)
 	let aux p =
-		let s = spf "(declare-fun %s (W) Bool)\n" p
+		let s = spf "(declare-fun w%d (W) Bool)\n" p
 		in begin
 			output_string oc s;
 			p_out s out;
@@ -133,13 +133,13 @@ let p_prop oc out f =
 let assert_of_for f =
 	let rec aux_fo = function
 	(* Les parnthèses sont géreés par l'appelant *)
-	| FO.Atom (p,x) -> spf "%s %s" p x
+	| FO.Atom (p,x) -> spf "P%d w%d" p x
 	| FO.Not f -> spf "not (%s)" (aux_fo f)
 	| FO.Conj (f1,f2) -> spf "and (%s) (%s)" (aux_fo f1) (aux_fo f2)
 	| FO.Dij (f1,f2) -> spf "or (%s) (%s)" (aux_fo f1) (aux_fo f2)
-	| FO.Relation (x,y) -> spf "r %s %s" x y
-	| FO.Exists (i,f) -> spf "exists ((%s W)) (%s)" i (aux_fo f)
-	| FO.Forall (i,f) -> spf "forall ((%s W)) (%s)" i (aux_fo f)
+	| FO.Relation (x,y) -> spf "r w%d w%d" x y
+	| FO.Exists (i,f) -> spf "exists ((w%d W)) (%s)" i (aux_fo f)
+	| FO.Forall (i,f) -> spf "forall ((w%d W)) (%s)" i (aux_fo f)
 	in
 	spf "(assert (%s))\n" (aux_fo f)
 

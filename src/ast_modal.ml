@@ -8,8 +8,8 @@
 
 type ident = string
 
-type formula = 
-	| Atom of ident
+type formula =
+	| Atom of int
 	| Not of formula
 	| Conj of (formula*formula)
 	| Dij of (formula*formula)

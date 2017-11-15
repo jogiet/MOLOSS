@@ -13,7 +13,7 @@
 }
 
 let chiffre = ['0'-'9']
-let ident = chiffre*
+let ident = chiffre+
 let proposition  = 'p' ident
 let relation = 'r' ident
 let boxe = '[' relation ']'
@@ -36,5 +36,5 @@ rule next_token = parse
 | "begin" {BEGIN}
 | "end" {END}
 | eof {EOF}
-| proposition as p {Prop p}
+| proposition as p {Prop (int_of_string (String.sub p 1 (String.length p -1)))}
 | _ as s { raise (Lex_err  ("illegal character: " ^ (String.make 1 s))) }

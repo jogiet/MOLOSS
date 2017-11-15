@@ -41,19 +41,19 @@ type thetex = (string,unit) H.t
 
 
 
-type thetfor = (string*string,unit) H.t
+type thetfor = (string*int,unit) H.t
 (** Represents the set \Theta_\forall *)
 (* représente \Theta_\forall *)
 
-type thetsym = (string*string,unit) H.t
+type thetsym = (int*int,unit) H.t
 (** Represents the set \Theta_\forall.
 Warning : since we store sets, worlds (i.e. strings) are put in
 alphabetical order *)
 
-type thetrans = (string*string*string,unit) H.t
+type thetrans = (int*int*int,unit) H.t
 (** Represents the set \Theta_T *)
 
-type theteuc = (string*(string*string),unit) H.t
+type theteuc = (int*(int*int),unit) H.t
 (** Represents the set \Theta_e.
 Same remark for thetsym *)
 (*
@@ -61,12 +61,12 @@ Même remarque que pour thetsym pour les deux derniers éléments de la
 clef
 *)
 
-type thetfonc = (string,string) H.t
+type thetfonc = (int,int) H.t
 (** Represents the set \Theta_f *)
 
 type config =
 	{mutable cardw : int;
-	 mutable w : string list;
+	 mutable w : int list;
 	 env : env;
 	 s : unit; (* a priori, S est inutile algiorithmiquement *)
 	 exists : thetex;
@@ -81,7 +81,7 @@ type config =
 let new_config () =
   let config =
     {cardw = 1;
-     w = ["w"];
+     w = [0];
      env = H.create 10;
      s = ();
      exists = H.create 10;
@@ -168,8 +168,8 @@ end
 (*  ===========>  règle forall  <=========== *)
 (** Decision procedure for the \forall rule *)
 let rec forall config model  =
-	let rec make_rel config  = function
 	(* D'abord on extrait les realtions du modèle *)
+	let rec make_rel config  = function
 	| [] -> []
 	| (eps,b)::q when b ->
 	begin
@@ -178,8 +178,8 @@ let rec forall config model  =
 		| _ -> make_rel config q
 	end
 	| _::q -> make_rel config q
-	and aux config rel = function
 	(* Puis on parcourt le modèle pour trouver un epsilon qui convient *)
+	and aux config rel = function
 	| [] -> ()
 	| (eps,b)::q when b ->
 	begin
@@ -205,7 +205,8 @@ let rec forall config model  =
 		end
 		| _ -> aux config rel q
 	end
-	| _::q ->  aux config rel q
+  | _::q ->  aux config rel q
+  (* On Combine les deux *)
 	in aux config (make_rel config model) model
 
 
@@ -562,24 +563,22 @@ let axiom_to_dec_proc axiom =
 
 let print_model config model =
   (** prints the model in the standard output *)
+  let prop = ref []
+  and cardProp = ref 0 in
+  let relation = ref [] in
   let aux (k,b) =
     let f = H.find config.env k in
     match f with
-    | FO.Atom _ | FO.Relation _ | FO.Not _ ->
-      begin
-        match b with
-        | true -> PP.print_fo f
-        | false -> PP.print_fo (FO.Not f)
-      end
+    | FO.Relation (w1,w2) ->
+      if b then relation := (w1,w2)::!relation
+    | FO.Atom (p,w)  | FO.Not (FO.Atom (p,w)) ->
+      ()
     | FO.Exists _ | FO.Forall _ -> ()
-    | _ -> assert false
+    |  _ -> assert false
   in begin
-    fpf "liste des mondes : \n";
-    L.iter (fun k  -> fpf "%s \n" k) config.w;
-    flush_all ();
-    fpf "\nPropriétés à vérifier :\n";
     List.iter aux model;
-    flush_all ();
+    fpf "%d %d %d %d\n" !cardProp config.cardw 1 (List.length !relation);
+    List.iter (fun (w1,w2) -> fpf "r1 w%d w%d\n" w1 w2) !relation
   end
 
   (** the list of decision procedures used to solve a formula  *)

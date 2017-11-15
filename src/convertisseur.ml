@@ -16,7 +16,7 @@ and y0 = "y"
 exception WrongFormat of string
 
 (** When Free Variables don't match *)
-exception FreeVDontMatch of string*string*string
+exception FreeVDontMatch of int*int*string
 
 
 (*--------------------------------------------------------*)
@@ -39,7 +39,7 @@ This function translates the modal logic formula into FO formula
 in the world x. It also puts the formula in NNF.
 *)
 let rec st x = function
-| M.Atom p -> FO.Atom (String.uppercase_ascii p,x)
+| M.Atom p -> FO.Atom (p,x)
 | M.Not f ->
 begin
 	match f with
@@ -50,14 +50,12 @@ end
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
 | M.Impl (f1,f2) -> st x (M.Dij (prop_neg f1,f2))
 | M.Boxe f ->
-		let y = if x = x0 then y0
-						  else x0 in
+		let y = 0 in
 		FO.Forall (y,FO.Dij
 			(FO.Not (FO.Relation (x,y)),
 			 st y f))
 | M.Diamond f ->
-		let y = if x = x0 then y0
-						  else x0 in
+		let y = 0 in
 		FO.Exists (y,FO.Conj
 			(FO.Relation (x,y),
 			 st y f))
@@ -66,7 +64,7 @@ end
 (** Inverse function of the st one.  *)
 let rec st_inv f0 =
 match f0 with
-| FO.Atom (p,x) -> (M.Atom (String.lowercase_ascii p),x)
+| FO.Atom (p,x) -> (M.Atom (p),x)
 | FO.Not f ->
 	let fm,x = st_inv f in
 	(M.Not fm,x)

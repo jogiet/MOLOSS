@@ -13,7 +13,7 @@ open Ast_modal
 %token Equiv
 %token Not
 %token BEGIN END
-%token <string> Prop
+%token <int> Prop
 
 %right Conj
 %right Dij
@@ -30,8 +30,8 @@ file :
 | BEGIN; f = formula ;END; EOF {[],f}
 
 formula:
-| TRUE {Ast_modal.Dij (Ast_modal.Atom "p1",Ast_modal.Not (Ast_modal.Atom "p1"))}
-| FALSE {Ast_modal.Conj (Ast_modal.Atom "p1",Ast_modal.Not (Ast_modal.Atom "p1"))}
+| TRUE {Ast_modal.Dij (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
+| FALSE {Ast_modal.Conj (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
 | f = atom {f}
 | Not; f = formula {f}
 | f1 = formula; Conj; f2 = formula {Ast_modal.Conj (f1,f2)}
