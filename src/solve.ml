@@ -22,7 +22,7 @@ struct
 
 
 
-let solve f a  =
+let solve f =
 	let config = D.new_config () in
 	(* let init_flag = get_init_flag a in *)
 	(* and dec_proc = axiom_to_dec_proc a in	 *)
@@ -80,7 +80,7 @@ struct
 (** For option --get-model    *)
 
 
-let solve f a  =
+let solve f  =
 let config = D.new_config () in
 let fo_box, new_var = D.init config [f]
 and cont = ref true

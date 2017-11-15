@@ -105,6 +105,6 @@ sig
       After the refactoring, we won't need the axioms list in the Solveur module,
       but in the Decide one.
   *)
-	val solve : Ast_fo.FO.formula -> string list -> bool
+	val solve : Ast_fo.FO.formula -> bool
 
 end
