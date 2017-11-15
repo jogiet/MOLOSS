@@ -30,15 +30,6 @@ let report (b,e) file =
   let lc = e.pos_cnum - b.pos_bol + 1 in
 Printf.printf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
 
-
-(** Returns true if the string given in argument as suffix ".bml" *)
-let good_suffixe s =
-  Filename.check_suffix s ".bml"
-
-(** Returns the filename with the .out suffix insteadof .bml suffix *)
-let new_suffixe s =
-	(Filename.chop_suffix s ".bml")^".out"
-
 (** Main function in the solver for vanilla solving
     It's the used function when no option is called (except the solver)*)
 let solve_vanilla f =
@@ -132,7 +123,7 @@ let _ =
         if List.mem "--direct" argv then
           begin
             Printf.printf "oracle direct\n";
-            Direct.solve (Convertisseur.st 0 f) |> ignore;
+            (Direct.solve (Convertisseur.st 0 f) argv) |> ignore;
           end
         else if List.mem "--get-model" argv then
           solve_model f

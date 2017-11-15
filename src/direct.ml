@@ -78,10 +78,20 @@ begin
 		end
 	else
 	begin
-		fpf "Erreur : axiome inconnu : %s \n" t;
-		flush_all () ;
-		exit 0;
-	end;
+    if String.length t <= 1
+    then begin
+      Printf.printf "argument inconnu : %s\n" t;
+      exit 1
+    end
+    else if String.get t 0 = '-' && String.get t 1 != '-'
+    then
+    begin
+      fpf "Axiome inconne : %s \n" t;
+      exit 1
+    end
+    else
+      p_axiom oc out q
+	 end;
 	p_axiom oc out q;
 end
 
@@ -213,13 +223,13 @@ let solve fo a =
 		p_for oc out fo;
 		(match check_sat ic oc out with
 		| UNSAT ->
-			let s = "\027[31mla formule est insatisfiable \027[0m\n"
+			let s = "\027[31mUNSAT\027[0m\n"
 			in begin
 				fpf "%s" s;
 				res := false;
 			end
 		| SAT ->
-			let s = "\027[92mla formule est satisfiable \027[0m\n"
+			let s = "\027[92mSAT\027[0m\n"
                         (* and m = get_model ic oc out *)
 			in begin
 				fpf "%s" s;
