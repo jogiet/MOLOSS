@@ -561,9 +561,11 @@ let axiom_to_dec_proc axiom =
   else
     res@[forall;exist]
 
+
+
 let print_model config model =
   (** prints the model in the standard output *)
-  let prop = ref []
+  let prop = H.create 42
   and cardProp = ref 0 in
   let relation = ref [] in
   let aux (k,b) =
@@ -571,13 +573,33 @@ let print_model config model =
     match f with
     | FO.Relation (w1,w2) ->
       if b then relation := (w1,w2)::!relation
-    | FO.Atom (p,w)  | FO.Not (FO.Atom (p,w)) ->
-      ()
+    | FO.Atom (p,w)   ->
+    begin
+      if p > !cardProp then cardProp := p;
+      H.add prop (p,w) b;
+    end
+    | FO.Not (FO.Atom (p,w)) ->
+    begin
+      if p > !cardProp then cardProp := p;
+      H.add prop (p,w) (not b);
+    end
     | FO.Exists _ | FO.Forall _ -> ()
     |  _ -> assert false
+  and print_world wi =
+    for pj = 1 to !cardProp do
+      if H.mem prop (pj,wi) then
+        if H.find prop (pj,wi) then
+          fpf "%d " pj
+        else
+          fpf "-%d " pj
+      else
+        fpf "-%d " pj
+    done;
+    fpf "0\n"
   in begin
     List.iter aux model;
     fpf "%d %d %d %d\n" !cardProp config.cardw 1 (List.length !relation);
+    for wi = 0 to config.cardw do print_world wi done;
     List.iter (fun (w1,w2) -> fpf "r1 w%d w%d\n" w1 w2) !relation
   end
 

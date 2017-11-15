@@ -22,12 +22,12 @@ open Ast_modal
 %nonassoc Boxe Diamond Not
 
 %start file
-%type <(string list)*Ast_modal.formula> file
+%type <Ast_modal.formula> file
 
 %%
 
 file :
-| BEGIN; f = formula ;END; EOF {[],f}
+| BEGIN; f = formula ;END; EOF {f}
 
 formula:
 | TRUE {Ast_modal.Dij (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}

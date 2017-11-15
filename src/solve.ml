@@ -39,7 +39,7 @@ let solve f a  =
 			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
-				fpf "\027[31mUNSAT\027[0m\n";
+				fpf "c \027[31mUNSAT\027[0m\n";
 				p |> ignore;
 				flush_all ();
 				cont := false;
@@ -48,7 +48,7 @@ let solve f a  =
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "\027[92mSAT\027[0m\n";
+					fpf "c \027[92mSAT\027[0m\n";
 					(*
 					print_soluce config m;
 					*)
@@ -77,8 +77,8 @@ end
 
 module SolveMod (SMT : Sign.Smt)(D : Sign.Decide) : Sign.Solveur=
 struct
+(** For option --get-model    *)
 
-(* Pour l'option --get-model    *)
 
 let solve f a  =
 let config = D.new_config () in
@@ -99,7 +99,7 @@ begin
 			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
-				fpf "\027[31mUNSAT\027[0m\n";
+				fpf "c \027[31mUNSAT\027[0m\n";
 				p |> ignore;
 				flush_all ();
 				cont := false;
@@ -108,7 +108,7 @@ begin
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "\027[92mSAT\027[0m\n";
+					fpf "c \027[92mSAT\027[0m\n";
 					D.print_model config m;
 					flush_all ();
 					cont := false;
