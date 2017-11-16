@@ -47,17 +47,18 @@ logic.
 ## Usage
 
    The `moloss` executable takes as an argument a file containing the
-   frame axioms of the logic and the formula to be checked the (see
-   examples in the `data` directory). MOLOSS then output `SAT` or
-   `UNSAT`. Be default, MiniSat is used as an oracle.
+   formula to be checked in InToHyLo format (see examples in the `data` directory or 
+   [4.1](http://cs.ru.nl/paar16/paper-07.pdf)). 
+   MOLOSS then output `SAT` or `UNSAT`. 
+   By default, MiniSat is used as an oracle.
 
    Options:
 
     - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
     - `--z3`, `--mSAT`: only the corresponding oracle is used
     - `--time`: print the total execution time (including parsing)
-    - `--get-model`: print the assertions deduced by the solver and the
-     Kripke model if the formula is satisfiable
+    - `--get-model`: print the
+     Kripke model if the formula is satisfiable in the DIMACS CNF format.
     - `--direct`: use Z3 as a first-order solver on the translation of
      modal formulas into first-order formulas (no instanciation
      procedures)
