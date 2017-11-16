@@ -586,6 +586,7 @@ let print_model config model =
     | FO.Exists _ | FO.Forall _ -> ()
     |  _ -> assert false
   and print_world wi =
+    print_string "v ";
     for pj = 1 to !cardProp do
       if H.mem prop (pj,wi) then
         if H.find prop (pj,wi) then
@@ -598,9 +599,9 @@ let print_model config model =
     fpf "0\n"
   in begin
     List.iter aux model;
-    fpf "%d %d %d %d\n" !cardProp config.cardw 1 (List.length !relation);
+    fpf "v %d %d %d %d\n" !cardProp config.cardw 1 (List.length !relation);
     for wi = 0 to config.cardw do print_world wi done;
-    List.iter (fun (w1,w2) -> fpf "r1 w%d w%d\n" w1 w2) !relation
+    List.iter (fun (w1,w2) -> fpf "v r1 w%d w%d\n" w1 w2) !relation
   end
 
   (** the list of decision procedures used to solve a formula  *)

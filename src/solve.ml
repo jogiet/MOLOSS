@@ -108,9 +108,10 @@ begin
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "c \027[92mSAT\027[0m\n";
+          print_string "s SATISFIABLE\n";
+          flush_all ();
 					D.print_model config m;
-					flush_all ();
+					(* flush_all (); *)
 					cont := false;
 				end
 				with
