@@ -615,9 +615,9 @@ let printDecVar v config =
   fpf "c #%s -> %s\n" v (PP.aux_fo (Hashtbl.find config.env v))
 
 let printAssert bfo config =
-  fpf "c assert : %s\n" (PP.aux_bfo bfo)
+  fpf "c \027[92massert\027[0m : %s\n" (PP.aux_bfo bfo)
 
 let printAssertSoft bfoSoft config =
-  fpf "c assert-soft : %s\n" (PP.aux_bfo bfoSoft)
+  fpf "c \027[94m assert-soft\027[0m : %s\n" (PP.aux_bfo bfoSoft)
 
 end

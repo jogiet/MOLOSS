@@ -27,7 +27,6 @@ logic.
 
    ```shell
    opam install menhir msat minisat
-
    eval $(opam config env)
    ```
 
@@ -56,25 +55,25 @@ logic.
 
    Options:
 
-    - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
-    - `--z3`, `--mSAT`: only the corresponding oracle is used
-    - `--time`: print the total execution time (including parsing)
-    - `--get-model`: print the Kripke model if the formula is satisfiable
-      in the Flat Kripke Model (FKM) format.
-    - `--get-assert`: print the assertionsmade by the solver and the
-      final model if the formule is satisfiable.
-    - `--direct`: use Z3 as a first-order solver on the translation of
-     modal formulas into first-order formulas (no instanciation
-     procedures)
-    - `--soft`: use `assert-soft` constraints, even if not needed by
-      the considered modal logic
-    - `--soft-ignore`: do not use `assert-soft` constraints, even if
-      needed (beware, infinite loop possible in this case!)
+   - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
+   - `--z3`, `--mSAT`: only the corresponding oracle is used
+   - `--time`: print the total execution time (including parsing)
+   - `--get-model`: print the Kripke model if the formula is satisfiable
+   in the Flat Kripke Model (FKM) format.
+   - `--get-assert`: print the assertionsmade by the solver and the
+   final model if the formule is satisfiable.
+   - `--direct`: use Z3 as a first-order solver on the translation of
+   modal formulas into first-order formulas (no instanciation
+   procedures)
+   - `--soft`: use `assert-soft` constraints, even if not needed by
+   the considered modal logic
+   - `--soft-ignore`: do not use `assert-soft` constraints, even if
+   needed (beware, infinite loop possible in this case!)
 
     Not yet avaible options:
 
-    - `--get-proof`: print a proof unsatisfiability if the formula is
-     unsatisfiable (Z3 only)
+   - `--get-proof`: print a proof unsatisfiability if the formula is
+   unsatisfiable (Z3 only)
 
 ## Acknowledgments
 
