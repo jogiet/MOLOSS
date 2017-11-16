@@ -611,7 +611,13 @@ let decisions = axiom_to_dec_proc A.argument
   (** a function that applies all decision procedures  *)
 let decide config m = L.iter (fun d_proc -> d_proc config m) decisions
 
+let printDecVar v config =
+  fpf "c #%s -> %s\n" v (PP.aux_fo (Hashtbl.find config.env v))
 
+let printAssert bfo config =
+  fpf "c assert : %s\n" (PP.aux_bfo bfo)
 
+let printAssertSoft bfoSoft config =
+  fpf "c assert-soft : %s\n" (PP.aux_bfo bfoSoft)
 
 end

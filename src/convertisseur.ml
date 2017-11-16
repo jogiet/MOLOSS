@@ -50,7 +50,7 @@ end
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
 | M.Impl (f1,f2) -> st x (M.Dij (prop_neg f1,f2))
 | M.Boxe f ->
-		let y = 0 in
+    let y = 0 in
 		FO.Forall (y,FO.Dij
 			(FO.Not (FO.Relation (x,y)),
 			 st y f))

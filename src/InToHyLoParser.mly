@@ -33,7 +33,7 @@ formula:
 | TRUE {Ast_modal.Dij (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
 | FALSE {Ast_modal.Conj (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
 | f = atom {f}
-| Not; f = formula {f}
+| Not; f = formula {Ast_modal.Not f}
 | f1 = formula; Conj; f2 = formula {Ast_modal.Conj (f1,f2)}
 | f1 = formula; Dij; f2 = formula {Ast_modal.Dij (f1,f2)}
 | f1 = formula; Impl; f2 = formula {Ast_modal.Impl (f1,f2)}

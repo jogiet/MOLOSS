@@ -85,6 +85,12 @@ sig
 
   val print_model : config -> model -> unit
 
+  val printDecVar : string -> config -> unit
+
+  val printAssert : Ast_fo.BFO.formula -> config -> unit
+
+  val printAssertSoft : Ast_fo.BFO.formula -> config -> unit
+
 end
 
 module type DecideArg =

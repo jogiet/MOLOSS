@@ -24,13 +24,13 @@ let fpf  = Printf.printf
 
 let rec aux_m = function
 (* Renvoie seulement la chaine de la formule *)
-| M.Atom p -> spf "P%d" p
+| M.Atom p -> spf "p%d" p
 | M.Not f -> spf "~ (%s)" (aux_m f)
 | M.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_m f1) (aux_m f2)
 | M.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_m f1) (aux_m f2)
 | M.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_m f1) (aux_m f2)
-| M.Boxe f -> spf "[] (%s)" (aux_m f)
-| M.Diamond f -> spf "<> (%s)" (aux_m f)
+| M.Boxe f -> spf "[r1] (%s)" (aux_m f)
+| M.Diamond f -> spf "<r1> (%s)" (aux_m f)
 
 let print_m f =
 (* print la formule sur stdout *)
