@@ -27,6 +27,8 @@ logic.
 
    ```shell
    opam install menhir msat minisat
+
+   eval $(opam config env)
    ```
 
    You can then build the system with
@@ -47,29 +49,30 @@ logic.
 ## Usage
 
    The `moloss` executable takes as an argument a file containing the
-   formula to be checked in InToHyLo format (see examples in the `data` directory or 
-   [4.1](http://cs.ru.nl/paar16/paper-07.pdf)). 
-   MOLOSS then output `SAT` or `UNSAT`. 
+   formula to be checked in InToHyLo format (see examples in the `data` directory or
+   [4.1](http://cs.ru.nl/paar16/paper-07.pdf)).
+   MOLOSS then output `SAT` or `UNSAT`.
    By default, MiniSat is used as an oracle.
 
    Options:
 
-    - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
-    - `--z3`, `--mSAT`: only the corresponding oracle is used
-    - `--time`: print the total execution time (including parsing)
-    - `--get-model`: print the
-     Kripke model if the formula is satisfiable in the DIMACS CNF format.
-    - `--direct`: use Z3 as a first-order solver on the translation of
+    * `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
+    * `--z3`, `--mSAT`: only the corresponding oracle is used
+    * `--time`: print the total execution time (including parsing)
+    * `--get-model`: print the
+     Kripke model if the formula is satisfiable in the Flat Kripke Model (FKM)
+     format.
+    * `--direct`: use Z3 as a first-order solver on the translation of
      modal formulas into first-order formulas (no instanciation
      procedures)
-    - `--soft`: use `assert-soft` constraints, even if not needed by
+    * `--soft`: use `assert-soft` constraints, even if not needed by
       the considered modal logic
-    - `--soft-ignore`: do not use `assert-soft` constraints, even if
+    * `--soft-ignore`: do not use `assert-soft` constraints, even if
       needed (beware, infinite loop possible in this case!)
 
     Not yet avaible options:
 
-    - `--get-proof`: print a proof unsatisfiability if the formula is
+    * `--get-proof`: print a proof unsatisfiability if the formula is
      unsatisfiable (Z3 only)
 
 ## Acknowledgments

@@ -43,29 +43,29 @@ let argv = Array.to_list (Sys.argv) in
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
-				Printf.printf "oracle z3\n";
+				Printf.printf "c oracle z3\n";
 				Z3.solve (Convertisseur.st 0 f) |> ignore;
-				Printf.printf "oracle mSAT\n";
+				Printf.printf "c oracle mSAT\n";
 				MSAT.solve (Convertisseur.st 0 f) |> ignore;
-				Printf.printf "oracle minisat\n";
+				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else if List.mem "--z3" argv then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
-				Printf.printf "oracle z3\n";
+				Printf.printf "c oracle z3\n";
 				Z3.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
-				Printf.printf "oracle mSAT\n";
+				Printf.printf "c oracle mSAT\n";
 				MSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
-				Printf.printf "oracle minisat\n";
+				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 
@@ -81,29 +81,29 @@ let argv = Array.to_list (Sys.argv) in
       let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
       let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
-				Printf.printf "oracle z3\n";
+				Printf.printf "c oracle z3\n";
 				Z3.solve (Convertisseur.st 0 f) |> ignore;
-				Printf.printf "oracle mSAT\n";
+				Printf.printf "c oracle mSAT\n";
 				MSAT.solve (Convertisseur.st 0 f) |> ignore;
-				Printf.printf "oracle minisat\n";
+				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else if List.mem "--z3" argv then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
-				Printf.printf "oracle z3\n";
+				Printf.printf "c oracle z3\n";
 				Z3.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
-				Printf.printf "oracle mSAT\n";
+				Printf.printf "c oracle mSAT\n";
 				MSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 		else
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
-				Printf.printf "oracle minisat\n";
+				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
 			end
 
@@ -122,7 +122,7 @@ let _ =
         let f = InToHyLoParser.file InToHyLoLexer.next_token lb in
         if List.mem "--direct" argv then
           begin
-            Printf.printf "oracle direct\n";
+            Printf.printf "c oracle direct\n";
             (Direct.solve (Convertisseur.st 0 f) argv) |> ignore;
           end
         else if List.mem "--get-model" argv then
