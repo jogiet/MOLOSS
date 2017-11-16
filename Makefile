@@ -21,6 +21,9 @@ profile: sanity
 debug: sanity
 	$(OCB) -tag debug src/moloss.byte
 
+custom: sanity
+	$(OCB) -tag custom src/moloss.byte
+
 # tests
 various_tests: native
 	$(OCB) tests/various_tests.native
