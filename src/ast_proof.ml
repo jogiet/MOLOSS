@@ -2,7 +2,7 @@ module H= Hashtbl
 
 module All = struct
 
-type all = 
+type all =
 	| TRUE | FALSE
 	| Atom of string
 	| Reff of string (* e.g. : $x12 *)
@@ -24,7 +24,7 @@ type all =
 	| Hyp of all
 	| Lemma of all*all
 
-type file = 
+type file =
 	| Declf of string*all*file
 	| Declp of string*all*file
 	| Proof of all
@@ -33,7 +33,7 @@ end
 
 module Proof = struct
 
-type formula = 
+type formula =
 	| TRUE | FALSE
 	| Atom of string
 	| Reff of string (* e.g. : $x12 *)
@@ -44,7 +44,7 @@ type formula =
 	| Dij of formula*formula
 	| Equal of formula*formula
 
-type proof = 
+type proof =
 	| Refp of string (* e.g. : @x21 *)
 	| Axiom of formula
 	| Asserted of formula
@@ -58,13 +58,13 @@ type proof =
 	| Lemma of proof*formula
 
 
-let rec con = function 
+let rec con = function
 | Refp _ -> assert false
 | Axiom f -> f
 | Asserted f -> f
 | AndElim (_,f) -> f
 | MP (_,_,f) -> f
-| Rewrite f -> f 
+| Rewrite f -> f
 | Unit (_,_,f) -> f
 | Monotonicity (_,f) -> f
 | Trans (_,_,f) -> f
@@ -80,14 +80,14 @@ let rec inlinef fenv = function
 	| FALSE -> FALSE
 	| Atom a -> Atom a
 	| Reff s -> H.find fenv s
-	| Impl (f1,f2) -> Impl (inlinef fenv f1,inlinef fenv f2)  
-	| Equiv (f1,f2) -> Equiv (inlinef fenv f1,inlinef fenv f2)  
-	| Conj (f1,f2) -> Conj (inlinef fenv f1,inlinef fenv f2)  
-	| Dij (f1,f2) -> Dij (inlinef fenv f1,inlinef fenv f2)  
+	| Impl (f1,f2) -> Impl (inlinef fenv f1,inlinef fenv f2)
+	| Equiv (f1,f2) -> Equiv (inlinef fenv f1,inlinef fenv f2)
+	| Conj (f1,f2) -> Conj (inlinef fenv f1,inlinef fenv f2)
+	| Dij (f1,f2) -> Dij (inlinef fenv f1,inlinef fenv f2)
 	| Not f -> Not (inlinef fenv f)
-	| Equal (f1,f2) -> Equal (inlinef fenv f1,inlinef fenv f2)  
+	| Equal (f1,f2) -> Equal (inlinef fenv f1,inlinef fenv f2)
 
-let rec inlinep penv fenv = function 
+let rec inlinep penv fenv = function
 	| Refp s -> H.find penv s
 	| Axiom f -> Axiom (inlinef fenv f)
 	| Asserted f -> Asserted (inlinef fenv f)
@@ -101,7 +101,7 @@ let rec inlinep penv fenv = function
 	| Monotonicity (pl,f) ->
 			Monotonicity (List.map (fun p -> inlinep penv fenv p) pl,
 						  inlinef fenv f)
-	| Trans (p,q,r) -> 
+	| Trans (p,q,r) ->
 			Trans (inlinep penv fenv p,
 				   inlinep penv fenv q,
 				   inlinef fenv r)
@@ -110,23 +110,23 @@ let rec inlinep penv fenv = function
 						    inlinef fenv f)
 
 
-type file = 
+type file =
 	| DeclF of string*formula*file
 	| DeclP of string*proof*file
 	| Proof of proof
 
-let extract p = 
+let extract p =
 	(* Renvoie une preuve sans les varaibles $x.. et @x.. *)
 	let rec aux penv fenv = function
 	| Proof p -> inlinep penv fenv p
-	| DeclF (s,f,p) -> 
-		let f_tot = inlinef fenv f 
+	| DeclF (s,f,p) ->
+		let f_tot = inlinef fenv f
 		in begin
 			H.add fenv s f_tot;
 			aux penv fenv p;
 		end
-	| DeclP (s,p0,p) -> 
-		let p_tot = inlinep penv fenv p0 
+	| DeclP (s,p0,p) ->
+		let p_tot = inlinep penv fenv p0
 		in begin
 			H.add penv s p_tot;
 			aux penv fenv p;
@@ -146,17 +146,17 @@ let rec conv_form = function
 | A.Reff s -> P.Reff s
 | A.Atom s -> P.Atom s
 | A.Not f -> P.Not (conv_form f)
-| A.Impl (f1,f2) -> P.Impl (conv_form f1,conv_form f2) 
-| A.Equiv (f1,f2) -> P.Equiv (conv_form f1,conv_form f2) 
-| A.Conj (f1,f2) -> P.Conj (conv_form f1,conv_form f2) 
-| A.Dij (f1,f2) -> P.Dij (conv_form f1,conv_form f2) 
-| A.Equal (f1,f2) -> P.Equal (conv_form f1,conv_form f2) 
+| A.Impl (f1,f2) -> P.Impl (conv_form f1,conv_form f2)
+| A.Equiv (f1,f2) -> P.Equiv (conv_form f1,conv_form f2)
+| A.Conj (f1,f2) -> P.Conj (conv_form f1,conv_form f2)
+| A.Dij (f1,f2) -> P.Dij (conv_form f1,conv_form f2)
+| A.Equal (f1,f2) -> P.Equal (conv_form f1,conv_form f2)
 | _ -> assert false
 
 and aux_unit = function
 | [] -> assert false
 | [x] -> [],(conv_form x)
-| t::q -> 
+| t::q ->
 	let pl,f = aux_unit q in
 	(conv_proof t)::pl,f
 
@@ -168,11 +168,11 @@ and conv_proof = function
 | A.AndElim (p,f) -> P.AndElim (conv_proof p,conv_form f)
 | A.MP (p1,p2,f) ->P.MP (conv_proof p1,conv_proof p2,conv_form f)
 | A.Rewrite (f) -> P.Rewrite (conv_form f)
-| A.Unit (p,pl) -> 
+| A.Unit (p,pl) ->
 	let p = conv_proof p
 	and pl,f = aux_unit pl in
 		(P.Unit (p,pl,f))
-| A.Monotonicity pl -> 
+| A.Monotonicity pl ->
 	let pl,f = aux_unit pl in
 	P.Monotonicity (pl,f)
 | A.Trans (p,q,r) ->
@@ -192,9 +192,3 @@ and conv_file = function
 
 
 let traite file = conv_file file |> P.extract
-
-
-
-
-
-

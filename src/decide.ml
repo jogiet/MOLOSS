@@ -156,6 +156,7 @@ else
 				FO.Conj (FO.Relation (c,w),FO.changefv w fy)) in
 	let f_tot,new_var = abs config.env fd
 	in begin
+		config.cardw <- config.cardw + 1;
 		config.w <- w::config.w;
 		H.add config.exists eps () ;
 		raise (Found (new_var,f_tot));
@@ -276,6 +277,7 @@ else
 		else
 		let res = get_fw ()
 		in begin
+			config.cardw <- config.cardw + 1;
 			config.w <- res::config.w;
 			H.add config.fonc c res;
 			res;
