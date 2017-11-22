@@ -9,6 +9,9 @@ true: use_menhir
 <src/smtmsat.ml>: package(msat)
 <**/moloss.*>: package(unix), package(minisat), package(msat)
 
+# compiler options
+true: ccopt(-static)
+
 # Local Variables:
 # mode: conf
 # End:
