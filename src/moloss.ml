@@ -198,5 +198,5 @@ let _ =
 	end;
 		flush_all ();
 		if List.mem "--time" argv then
-    Printf.printf "Calculs done in %f s \n" (Unix.gettimeofday () -.t0);
+    Printf.printf "c Done in %f s \n" (Unix.gettimeofday () -.t0);
 	end
