@@ -22,7 +22,7 @@ debug: sanity
 	$(OCB) -tag debug src/moloss.byte
 
 static: sanity
-	$(OCB) -tag custom src/moloss.native
+	STATIC=true $(OCB) -tag custom src/moloss.native
 
 # tests
 various_tests: native
