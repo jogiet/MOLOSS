@@ -36,6 +36,14 @@ logic.
    make
    ```
 
+   The previous command will build a native and byte code
+   executable. You may also use more specific targets:
+
+   - `profile` for native code executable with profiling
+   - `debug` for byte code executable with debug
+   - `static` for static native code executable with no dynamic
+     libraries (even libc)
+
    Notice also that:
 
    - (for the moment) MOLOSS uses UNIX system calls, so you must be on
