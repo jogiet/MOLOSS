@@ -603,7 +603,7 @@ let print_model config model =
     List.iter aux model;
     fpf "c #propositions #worlds #relations #edges\n";
     fpf "v %d %d %d %d\n" !cardProp config.cardw 1 (List.length !relation);
-    for wi = 0 to config.cardw do print_world wi done;
+    for wi = 0 to (config.cardw -1)  do print_world wi done;
     List.iter (fun (w1,w2) -> fpf "v r1 w%d w%d\n" w1 w2) !relation
   end
 
