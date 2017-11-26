@@ -78,7 +78,7 @@ logic.
    - `--soft-ignore`: do not use `assert-soft` constraints, even if
    needed (beware, infinite loop possible in this case!)
 
-    Not yet avaible options:
+   Not yet avaible options:
 
    - `--get-proof`: print a proof unsatisfiability if the formula is
    unsatisfiable (Z3 only)
