@@ -39,7 +39,7 @@ let solve f =
 			| SMT.UNSAT ->
 			let p = () (*      get_proof oc ic out*)
 			in begin
-				fpf "c \027[31mUNSAT\027[0m\n";
+				fpf "s UNSATISFIABLE\n";
 				p |> ignore;
 				flush_all ();
 				cont := false;
@@ -48,7 +48,7 @@ let solve f =
 			| SMT.SAT  m ->
 				try begin
 					D.decide config m;
-					fpf "c \027[92mSAT\027[0m\n";
+					fpf "s SATISFIABLE\n";
 					(*
 					print_soluce config m;
 					*)
