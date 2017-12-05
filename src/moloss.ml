@@ -11,7 +11,7 @@ struct
       q
     | _  ->
       Printf.printf "Give a formula to solve\n";
-      exit 0
+      exit 1
 end
 
 module Decision = Decide.GetDecide(DecisionArg)
