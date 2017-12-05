@@ -31,6 +31,8 @@ let rec aux_m = function
 | M.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_m f1) (aux_m f2)
 | M.Boxe f -> spf "[r1] (%s)" (aux_m f)
 | M.Diamond f -> spf "<r1> (%s)" (aux_m f)
+| M.True -> "true"
+| M.False -> "false"
 
 let print_m f =
 (* print la formule sur stdout *)

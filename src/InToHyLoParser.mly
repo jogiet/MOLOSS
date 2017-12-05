@@ -30,8 +30,8 @@ file :
 | BEGIN; f = formula ;END; EOF {f}
 
 formula:
-| TRUE {Ast_modal.Dij (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
-| FALSE {Ast_modal.Conj (Ast_modal.Atom 1,Ast_modal.Not (Ast_modal.Atom 1))}
+| TRUE {Ast_modal.True}
+| FALSE {Ast_modal.False}
 | f = atom {f}
 | Not; f = formula {Ast_modal.Not f}
 | f1 = formula; Conj; f2 = formula {Ast_modal.Conj (f1,f2)}

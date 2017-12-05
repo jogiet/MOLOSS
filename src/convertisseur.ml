@@ -32,6 +32,7 @@ let rec prop_neg = function
 | M.Impl (f1,f2) -> M.Conj (f1,prop_neg f2)
 | M.Boxe f -> M.Diamond (prop_neg f)
 | M.Diamond f -> M.Boxe (prop_neg f)
+| M.True | M.False -> assert false
 
 
 (**
@@ -58,7 +59,8 @@ end
   let y = (min (-1) (x-1)) in
 		FO.Exists (y,FO.Conj
 			(FO.Relation (x,y),
-			 st y f))
+    st y f))
+| M.True | M.False -> assert false
 
 
 (** Inverse function of the st one.  *)
