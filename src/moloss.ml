@@ -160,7 +160,7 @@ let _ =
 	in begin
 	begin
 		match argv with
-  	| _ :: filename :: _ when Filename.check_suffix filename ".InToHyLo" ->
+  	| _ :: filename :: _ when Filename.check_suffix filename ".intohylo" ->
     begin
       let file = open_in filename in
       let lb = Lexing.from_channel file in
@@ -192,7 +192,7 @@ let _ =
 		| _ ->
 		begin
 			Printf.printf
-			"Give a filename with extension .InToHyLo\n";
+			"Give a filename with extension .intohylo\n";
 			exit 1;
 		end;
 	end;
