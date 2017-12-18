@@ -23,7 +23,8 @@ exception FreeVDontMatch of int*int*string
 (*                       Modal -> FO                      *)
 (*--------------------------------------------------------*)
 
-(** Returns the NNF of the formula *)
+(** This function propagate a negation in a modal formula.
+   Helps to compute the NNF of the formula *)
 let rec prop_neg = function
 | M.Atom p -> M.Not (M.Atom p)
 | M.Not f -> f (* Tertium non datur *)
