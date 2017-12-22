@@ -44,29 +44,29 @@ let argv = Array.to_list (Sys.argv) in
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "c oracle z3\n";
-				Z3.solve (Convertisseur.st 0 f) |> ignore;
+				Z3.solve f |> ignore;
 				Printf.printf "c oracle mSAT\n";
-				MSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MSAT.solve f |> ignore;
 				Printf.printf "c oracle minisat\n";
-				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MiniSAT.solve f |> ignore;
 			end
 		else if List.mem "--z3" argv then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
 				Printf.printf "c oracle z3\n";
-				Z3.solve (Convertisseur.st 0 f) |> ignore;
+				Z3.solve f |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
 				Printf.printf "c oracle mSAT\n";
-				MSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MSAT.solve f |> ignore;
 			end
 		else
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
 				Printf.printf "c oracle minisat\n";
-				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MiniSAT.solve f |> ignore;
 			end
 
 (** This function solve the formula and ouputs a model *)
@@ -83,32 +83,32 @@ let argv = Array.to_list (Sys.argv) in
       in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle z3\n";
-				Z3.solve (Convertisseur.st 0 f) |> ignore;
+				Z3.solve f |> ignore;
 				Printf.printf "c oracle mSAT\n";
-				MSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MSAT.solve f |> ignore;
 				Printf.printf "c oracle minisat\n";
-				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MiniSAT.solve f |> ignore;
 			end
 		else if List.mem "--z3" argv then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle z3\n";
-				Z3.solve (Convertisseur.st 0 f) |> ignore;
+				Z3.solve f |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle mSAT\n";
-				MSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MSAT.solve f |> ignore;
 			end
 		else
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle minisat\n";
-				MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+				MiniSAT.solve f |> ignore;
 			end
 
 (** This function solve the formula and ouputs the assertions *)
@@ -125,32 +125,32 @@ let solve_assert f =
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle z3\n";
-      Z3.solve (Convertisseur.st 0 f) |> ignore;
+      Z3.solve f |> ignore;
       Printf.printf "c oracle mSAT\n";
-      MSAT.solve (Convertisseur.st 0 f) |> ignore;
+      MSAT.solve f |> ignore;
       Printf.printf "c oracle minisat\n";
-      MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+      MiniSAT.solve f |> ignore;
     end
   else if List.mem "--z3" argv then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle z3\n";
-      Z3.solve (Convertisseur.st 0 f) |> ignore;
+      Z3.solve f |> ignore;
     end
   else if List.mem "--mSAT" argv then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle mSAT\n";
-      MSAT.solve (Convertisseur.st 0 f) |> ignore;
+      MSAT.solve f |> ignore;
     end
   else
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle minisat\n";
-      MiniSAT.solve (Convertisseur.st 0 f) |> ignore;
+      MiniSAT.solve f |> ignore;
     end
 
 

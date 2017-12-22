@@ -39,6 +39,8 @@ end
 module type Decide =
 sig
 
+  val simplify : Ast_modal.formula -> Ast_modal.formula
+
   (** Type for a configuration. Should contains :
       - the worlds
       - the environnement, i.e relation between FO formula and ground formulas
@@ -111,6 +113,6 @@ sig
       After the refactoring, we won't need the axioms list in the Solveur module,
       but in the Decide one.
   *)
-	val solve : Ast_fo.FO.formula -> bool
+	val solve : Ast_modal.formula -> bool
 
 end
