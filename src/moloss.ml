@@ -176,13 +176,15 @@ let _ =
           let l = Ast_modal.formLength f
           and d = Ast_modal.modDegree f
           and ls = Ast_modal.formLength fs
-          and ds = Ast_modal.modDegree fs
-					in  begin
-       			Printf.printf "%d,%d,%d,%d" l d ls ds;
-          	if ls < l || ds < d
-          	then Printf.printf " -> On a simpifié\n"
-          	else Printf.printf " -> Fail\n";
-        end
+          and ds = Ast_modal.modDegree fs in
+          let cls = if ls < l
+            then "\027[32m"
+            else "\027[31m"
+          and cds = if ds < d
+						then "\027[32m"
+						else "\027[31m"
+          in
+            Printf.printf "%d,%d,%s%d\027[0m,%s%d\027[0m\n" l d cls ls cds ds
         else if List.mem "--get-assert" argv then
           solve_assert f
         else if List.mem "--get-model" argv then
