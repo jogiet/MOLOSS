@@ -23,17 +23,6 @@ exception FreeVDontMatch of int*int*string
 (*                       Modal -> FO                      *)
 (*--------------------------------------------------------*)
 
-(** This function propagate a negation in a modal formula.
-   Helps to compute the NNF of the formula *)
-let rec prop_neg = function
-| M.Atom p -> M.Not (M.Atom p)
-| M.Not f -> f (* Tertium non datur *)
-| M.Conj (f1,f2) -> M.Dij (prop_neg f1,prop_neg f2)
-| M.Dij (f1,f2) -> M.Conj (prop_neg f1,prop_neg f2)
-| M.Impl (f1,f2) -> M.Conj (f1,prop_neg f2)
-| M.Boxe f -> M.Diamond (prop_neg f)
-| M.Diamond f -> M.Boxe (prop_neg f)
-| M.True | M.False -> assert false
 
 
 (**
@@ -42,15 +31,11 @@ in the world x. It also puts the formula in NNF.
 *)
 let rec st x = function
 | M.Atom p -> FO.Atom (p,x)
-| M.Not f ->
-begin
-	match f with
-	| M.Atom _  -> FO.Not (st x f)
-	| _ ->(st x (prop_neg f))
-end
+| M.Not  (M.Atom p) -> FO.Not (FO.Atom (p,x))
+| M.Not _ -> assert false
 | M.Conj (f1,f2) -> FO.Conj (st x f1,st x f2)
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
-| M.Impl (f1,f2) -> st x (M.Dij (prop_neg f1,f2))
+| M.Impl (f1,f2) -> assert false
 | M.Boxe f ->
   let y = (min (-1) (x-1)) in
 		FO.Forall (y,FO.Dij

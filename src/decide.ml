@@ -60,7 +60,10 @@ let rec simplifyK = function
   | M.Atom x -> M.Atom x
   | M.Not M.True -> M.False
   | M.Not M.False -> M.True
-  | M.Not f -> M.Not f
+  | M.Not (M.Atom x) -> M.Not (M.Atom x)
+  | M.Not f ->
+    let f = M.prop_neg f in
+    simplifyK f
   | M.Conj (f1, f2) ->
     begin
       match simplifyK f1, simplifyK f2 with
@@ -103,7 +106,10 @@ let rec simplifyS = function
   | M.Atom x -> M.Atom x
   | M.Not M.True -> M.False
   | M.Not M.False -> M.True
-  | M.Not f -> M.Not f
+  | M.Not (M.Atom x) -> M.Not (M.Atom x)
+  | M.Not f ->
+    let f = M.prop_neg f in
+    simplifyK f
   | M.Conj (f1, f2) ->
     begin
       match simplifyS f1, simplifyS f2 with
