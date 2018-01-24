@@ -1,4 +1,4 @@
-   # MOLOSS, a MOdal LOgic Solver via SMT [![Build Status](https://travis-ci.org/Meleagant/MOLOSS.svg?branch=master)](https://travis-ci.org/Meleagant/MOLOSS)
+   # MOLOSS, a MOdal LOgic Satisfiability Solver [![Build Status](https://travis-ci.org/Meleagant/MOLOSS.svg?branch=master)](https://travis-ci.org/Meleagant/MOLOSS)
 
 MOLOSS is a satisfiability solver for modal logics. It is an
 implementation (and more) of C. Aceres, P. Fontaine and S. Merz paper
