@@ -160,7 +160,7 @@ let _ =
 	in begin
 	begin
 		match argv with
-  	| _ :: filename :: _ when Filename.check_suffix filename ".intohylo" ->
+  	| _ :: filename :: _ when Filename.check_suffix filename ".InToHyLo" ->
     begin
       let file = open_in filename in
       let lb = Lexing.from_channel file in
