@@ -24,8 +24,10 @@ struct
 
 
 let solve f =
-  let f = C.st 0 (D.simplify f) in
-	let config = D.new_config () in
+  let f = D.simplify f in
+  (* let _ = PP.print_m f in *)
+	let f = C.st 0 f in
+  let config = D.new_config () in
 	(* let init_flag = get_init_flag a in *)
 	(* and dec_proc = axiom_to_dec_proc a in	 *)
 	let fo_box, new_var = D.init config [f]
@@ -83,7 +85,8 @@ struct
 
 
 let solve f  =
-  let f = C.st 0 (D.simplify f) in
+  let f = D.simplify f in
+  let f = C.st 0 f in
 	let config = D.new_config () in
 	let fo_box, new_var = D.init config [f]
 	and cont = ref true
@@ -144,7 +147,8 @@ struct
 
 
   let solve f  =
-    let f = C.st 0 (D.simplify f) in
+    let f = D.simplify f in
+    let f = C.st 0 f in
     let config = D.new_config () in
     let fo_box, new_var = D.init config [f]
     and cont = ref true
