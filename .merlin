@@ -1,0 +1,3 @@
+S src/
+B build/
+pkg msat minisat
