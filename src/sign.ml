@@ -36,10 +36,15 @@ sig
 
 end
 
-module type Decide =
+module type Simplify =
 sig
 
   val simplify : Ast_modal.formula -> Ast_modal.formula
+
+end
+
+module type Decide =
+sig
 
   (** Type for a configuration. Should contains :
       - the worlds

@@ -15,11 +15,12 @@ struct
 end
 
 module Decision = Decide.GetDecide(DecisionArg)
+module Simplify = Simplify.GetSimplify(DecisionArg)
 
 (*          Les différents solveurs            *)
-module Sz3 = Solve.Solve(Smtz3.SMTz3)(Decision)
-module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))(Decision)
-module Sminisat = Solve.Solve(Smtminisat.Smtmini)(Decision)
+module Sz3 = Solve.Solve(Smtz3.SMTz3)(Decision)(Simplify)
+module Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
+module Sminisat = Solve.Solve(Smtminisat.Smtmini)(Decision)(Simplify)
 module D = Direct
 
 
@@ -39,9 +40,9 @@ let argv = Array.to_list (Sys.argv) in
 		Printf.printf "pas encore implem'\n"
 	else
 		if List.mem "--all" argv then
-    let module Z3 = Solv(Smtz3.SMTz3)(Decision) in
-    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
-    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle z3\n";
 				Z3.solve f |> ignore;
@@ -51,19 +52,19 @@ let argv = Array.to_list (Sys.argv) in
 				MiniSAT.solve f |> ignore;
 			end
 		else if List.mem "--z3" argv then
-    let module Z3 = Solv(Smtz3.SMTz3)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle z3\n";
 				Z3.solve f |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
-    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle mSAT\n";
 				MSAT.solve f |> ignore;
 			end
 		else
-    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve f |> ignore;
@@ -77,9 +78,9 @@ let argv = Array.to_list (Sys.argv) in
 		Printf.printf "pas encore implem'\n"
 	else
 		if List.mem "--all" argv then
-      let module Z3 = Solv(Smtz3.SMTz3)(Decision) in
-      let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
-      let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
       in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle z3\n";
@@ -90,21 +91,21 @@ let argv = Array.to_list (Sys.argv) in
 				MiniSAT.solve f |> ignore;
 			end
 		else if List.mem "--z3" argv then
-    let module Z3 = Solv(Smtz3.SMTz3)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle z3\n";
 				Z3.solve f |> ignore;
 			end
 		else if List.mem "--mSAT" argv then
-    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle mSAT\n";
 				MSAT.solve f |> ignore;
 			end
 		else
-    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle minisat\n";
@@ -119,9 +120,9 @@ let solve_assert f =
     Printf.printf "pas encore implem'\n"
   else
   if List.mem "--all" argv then
-    let module Z3 = Solv(Smtz3.SMTz3)(Decision) in
-    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision) in
-    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle z3\n";
@@ -132,21 +133,21 @@ let solve_assert f =
       MiniSAT.solve f |> ignore;
     end
   else if List.mem "--z3" argv then
-    let module Z3 = Solv(Smtz3.SMTz3)(Decision)
+    let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle z3\n";
       Z3.solve f |> ignore;
     end
   else if List.mem "--mSAT" argv then
-    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)
+    let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle mSAT\n";
       MSAT.solve f |> ignore;
     end
   else
-    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)
+    let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle minisat\n";
@@ -172,7 +173,7 @@ let _ =
             (Direct.solve (Convertisseur.st 0 f) argv) |> ignore;
           end
         else if List.mem "--get-simplify" argv then
-          let fs = Decision.simplify f in
+          let fs = Simplify.simplify f in
           let l = Ast_modal.formLength f
           and d = Ast_modal.modDegree f
           and ls = Ast_modal.formLength fs

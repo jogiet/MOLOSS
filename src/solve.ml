@@ -18,13 +18,14 @@ let fpf = printf
 (*                    Fonction Core                       *)
 (*--------------------------------------------------------*)
 
-module Solve (SMT : Sign.Smt)(D : Sign.Decide) : Sign.Solveur =
+module Solve
+    (SMT : Sign.Smt)
+    (D : Sign.Decide)
+    (S : Sign.Simplify) : Sign.Solveur =
 struct
 
-
-
 let solve f =
-  let f = D.simplify f in
+  let f = S.simplify f in
   (* let _ = PP.print_m f in *)
 	let f = C.st 0 f in
   let config = D.new_config () in
@@ -79,13 +80,17 @@ let solve f =
 end
 
 
-module SolveMod (SMT : Sign.Smt)(D : Sign.Decide) : Sign.Solveur=
+module SolveMod
+    (SMT : Sign.Smt)
+    (D : Sign.Decide)
+    (S : Sign.Simplify)
+  : Sign.Solveur=
 struct
 (** For option --get-model    *)
 
 
 let solve f  =
-  let f = D.simplify f in
+  let f = S.simplify f in
   let f = C.st 0 f in
 	let config = D.new_config () in
 	let fo_box, new_var = D.init config [f]
@@ -140,14 +145,18 @@ let solve f  =
 	end
 end
 
-module SolveAssert (SMT : Sign.Smt)(D : Sign.Decide) : Sign.Solveur=
+module SolveAssert
+    (SMT : Sign.Smt)
+    (D : Sign.Decide)
+    (S : Sign.Simplify)
+  : Sign.Solveur=
 struct
   (** For option --get-assert    *)
 
 
 
   let solve f  =
-    let f = D.simplify f in
+    let f = S.simplify f in
     let f = C.st 0 f in
     let config = D.new_config () in
     let fo_box, new_var = D.init config [f]
