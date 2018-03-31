@@ -3,6 +3,7 @@ open Ast_modal
 
 %}
 
+%token SEMICOLON
 %token LPAR RPAR
 %token Diamond Boxe
 %token TRUE FALSE
@@ -27,7 +28,11 @@ open Ast_modal
 %%
 
 file :
-| BEGIN; f = formula ;END; EOF {f}
+| BEGIN; f = formulas ;END; EOF {f}
+
+formulas:
+| f1 = formula; SEMICOLON; f2 = formulas {Ast_modal.Conj (f1, f2)}
+| f = formula {f}
 
 formula:
 | TRUE {Ast_modal.True}
