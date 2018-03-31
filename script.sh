@@ -1,5 +1,8 @@
 for filename in ./data/InToHyLo/test*; do
 	echo " "
 	echo "$filename"
-	./moloss.native "$filename" $* #--get-simplify
+	./moloss.native "$filename" $*
+	if [ $? != 0 ]
+		then exit 1
+	fi
 done
