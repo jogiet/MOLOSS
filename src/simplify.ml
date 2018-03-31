@@ -122,11 +122,13 @@ let rec simplifyS = function
     end
 
 let getSimplify arg =
-  if L.mem "-S" arg
-  then simplifyS
-  else simplifyK
+  if L.mem "--no-simplify" arg then
+    (fun x -> x)
+  else if L.mem "-S" arg  || L.mem "--S4" arg || L.mem "--S5" arg
+    then simplifyS
+    else simplifyK
 
-let simplify = (*getSimplify A.argument*)
-  fun x -> x
+let simplify = getSimplify A.argument
+
 
 end
