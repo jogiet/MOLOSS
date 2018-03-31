@@ -20,14 +20,26 @@ type formula =
      Helps to compute the NNF of the formula *)
 let rec prop_neg = function
   | Atom p -> Not (Atom p)
-  | Not f -> f (* Tertium non datur *)
+  | Not f -> getNNF f
   | Conj (f1,f2) -> Dij (prop_neg f1,prop_neg f2)
   | Dij (f1,f2) -> Conj (prop_neg f1,prop_neg f2)
-  | Impl (f1,f2) -> Conj (f1,prop_neg f2)
+  | Impl (f1,f2) -> Conj (getNNF f1,prop_neg f2)
   | Boxe f -> Diamond (prop_neg f)
   | Diamond f -> Boxe (prop_neg f)
   | True -> False
   | False -> True
+
+and getNNF = function
+  | Atom p -> Atom p
+  | Not (Atom p) -> Not (Atom p)
+  | Not f -> prop_neg f
+  | Conj (f1, f2) -> Conj (getNNF f1, getNNF f2)
+  | Dij (f1, f2) -> Dij (getNNF f1, getNNF f2)
+  | Impl (f1, f2) -> getNNF (Dij (Not f1, f2))
+  | Boxe f -> Boxe (getNNF f)
+  | Diamond f -> Diamond(getNNF f)
+  | True -> True
+  | False -> False
 
 let rec formLength = function
     (** Returns the length of the Modal logic formula *)

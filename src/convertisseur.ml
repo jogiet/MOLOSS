@@ -32,7 +32,8 @@ in the world x. It also puts the formula in NNF.
 let rec st x = function
 | M.Atom p -> FO.Atom (p,x)
 | M.Not  (M.Atom p) -> FO.Not (FO.Atom (p,x))
-| M.Not _ -> assert false
+| M.Not f ->
+  M.prop_neg f |> st x;
 | M.Conj (f1,f2) -> FO.Conj (st x f1,st x f2)
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
 | M.Impl (f1,f2) -> assert false
@@ -46,7 +47,8 @@ let rec st x = function
 		FO.Exists (y,FO.Conj
 			(FO.Relation (x,y),
     st y f))
-| M.True | M.False -> assert false
+| M.True -> st x (M.Dij (M.Atom 1, M.Not (M.Atom 1)))
+| M.False -> st x (M.Conj (M.Atom 1, M.Not (M.Atom 1)))
 
 
 (** Inverse function of the st one.  *)
