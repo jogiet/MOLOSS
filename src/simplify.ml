@@ -33,7 +33,6 @@ let rec isNegation f1 f2 =
   | M.Impl (f1g,f1d), M.Impl (f2g,f2d) -> assert false
   | _ -> false
 
-(** We assume that formulas are already in NNF *)
 let rec simplifyK = function
   | M.True -> M.True
   | M.False -> M.False
@@ -41,9 +40,7 @@ let rec simplifyK = function
   | M.Not M.True -> M.False
   | M.Not M.False -> M.True
   | M.Not (M.Atom x) -> M.Not (M.Atom x)
-  | M.Not f ->
-    let f = M.prop_neg f in
-    simplifyK f
+  | M.Not f -> M.Not(simplifyK f)
   | M.Conj (f1, f2) ->
     begin
       match simplifyK f1, simplifyK f2 with
@@ -87,9 +84,7 @@ let rec simplifyS = function
   | M.Not M.True -> M.False
   | M.Not M.False -> M.True
   | M.Not (M.Atom x) -> M.Not (M.Atom x)
-  | M.Not f ->
-    let f = M.prop_neg f in
-    simplifyK f
+  | M.Not f -> M.Not (simplifyS f)
   | M.Conj (f1, f2) ->
     begin
       match simplifyS f1, simplifyS f2 with
