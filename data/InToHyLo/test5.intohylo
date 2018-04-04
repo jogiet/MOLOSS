@@ -1,0 +1,5 @@
+begin
+true -> false; true <-> [r1] p0
+end
+% whenever I try a formula involving the constants "true", "false"
+% or an implication, MOLOSS fails...
