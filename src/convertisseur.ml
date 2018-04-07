@@ -36,7 +36,7 @@ let rec st x = function
   M.prop_neg f |> st x;
 | M.Conj (f1,f2) -> FO.Conj (st x f1,st x f2)
 | M.Dij (f1,f2) -> FO.Dij (st x f1,st x f2)
-| M.Impl (f1,f2) -> assert false
+| M.Impl (f1,f2) -> st x (M.Dij (M.Not f1, f2))
 | M.Boxe f ->
   let y = (min (-1) (x-1)) in
 		FO.Forall (y,FO.Dij
