@@ -68,7 +68,7 @@ logic.
    - `--time`: print the total execution time (including parsing)
    - `--get-model`: print the Kripke model if the formula is satisfiable
    in the Flat Kripke Model (FKM) format.
-   - `--get-assert`: print the assertionsmade by the solver and the
+   - `--get-assert`: print the assertions made by the solver and the
    final model if the formule is satisfiable.
    - `--direct`: use Z3 as a first-order solver on the translation of
    modal formulas into first-order formulas (no instanciation
