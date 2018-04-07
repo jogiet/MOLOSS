@@ -73,6 +73,8 @@ logic.
    - `--direct`: use Z3 as a first-order solver on the translation of
    modal formulas into first-order formulas (no instanciation
    procedures)
+   - `--get-log`: print the log of interaction with the z3 SMT solver
+   (only for `direct` mode)
    - `--soft`: use `assert-soft` constraints, even if not needed by
    the considered modal logic
    - `--soft-ignore`: do not use `assert-soft` constraints, even if

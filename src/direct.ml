@@ -7,6 +7,7 @@ module A = Array
 module F = Filename
 module U = Unix
 module FO = Ast_fo.FO
+module PP = Pprinter
 open Lexing
 
 
@@ -34,10 +35,11 @@ let new_suff s =
 
 let init oc out =
 	let header =
-	"(set-option :produce-proofs true) \n\
+  "(set-option :produce-proofs true) \n\
+	(set-option :produce-models true) \n\
 	(declare-sort W 0) \n\
 	(declare-fun r (W W) Bool) \n\
-	(declare-const w W) \n"
+	(declare-const w0 W) \n"
 	in begin
 		output_string oc header;
 		p_out header out;
@@ -45,9 +47,19 @@ let init oc out =
 
 
 (*--------------------------------------------------------*)
+(*               Code pour des UniqueId                   *)
+(*--------------------------------------------------------*)
+
+let index = ref 0
+let getUniqueId () =
+  let _  = incr index in
+  	!index
+
+(*--------------------------------------------------------*)
 (*                Gestion des axiomes                     *)
 (*--------------------------------------------------------*)
 
+(** An association liste between the axioms and their FO translation *)
 let assoc =
 [("-M",";axiome de réfléxivité \n\
 	(assert (forall ((w0 W)) (r w0 w0)))");
@@ -66,6 +78,7 @@ let assoc =
  			(=> (and (r w0 w1) (r w0 w2)) \
 				(= w1 w2))))\n")]
 
+(** Give the z3 sover the frame axioms *)
 let rec p_axiom oc out = function
 | [] -> ()
 | t::q ->
@@ -130,7 +143,7 @@ let p_prop oc out f =
 	(* déclare les propositions comme des fonctions prenant en argument
 	un monde *)
 	let aux p =
-		let s = spf "(declare-fun w%d (W) Bool)\n" p
+		let s = spf "(declare-fun P%d (W) Bool)\n" p
 		in begin
 			output_string oc s;
 			p_out s out;
@@ -141,17 +154,30 @@ let p_prop oc out f =
 (* ====>            Gestion des formules            <==== *)
 
 let assert_of_for f =
-	let rec aux_fo = function
+  let print_world env x =
+    if x >= 0 then
+      spf "w%d" x
+    else
+      spf "w%s" (H.find env x) in
+	let rec aux_fo env = function
 	(* Les parnthèses sont géreés par l'appelant *)
-	| FO.Atom (p,x) -> spf "P%d w%d" p x
-	| FO.Not f -> spf "not (%s)" (aux_fo f)
-	| FO.Conj (f1,f2) -> spf "and (%s) (%s)" (aux_fo f1) (aux_fo f2)
-	| FO.Dij (f1,f2) -> spf "or (%s) (%s)" (aux_fo f1) (aux_fo f2)
-	| FO.Relation (x,y) -> spf "r w%d w%d" x y
-	| FO.Exists (i,f) -> spf "exists ((w%d W)) (%s)" i (aux_fo f)
-	| FO.Forall (i,f) -> spf "forall ((w%d W)) (%s)" i (aux_fo f)
+  | FO.Atom (p,x) ->
+    spf "P%d %s" p (print_world env x)
+	| FO.Not f -> spf "not (%s)" (aux_fo env f)
+	| FO.Conj (f1,f2) -> spf "and (%s) (%s)" (aux_fo env f1) (aux_fo env f2)
+	| FO.Dij (f1,f2) -> spf "or (%s) (%s)" (aux_fo env f1) (aux_fo env f2)
+ 	| FO.Relation (x,y) ->
+    spf "r %s %s" (print_world env x) (print_world env y)
+ 	| FO.Exists (i,f) ->
+   	let index = getUniqueId () in
+   	let _ = H.add env i (spf "k%d" index) in
+   		spf "exists ((wk%d W)) (%s)" index (aux_fo env f)
+ 	| FO.Forall (i,f) ->
+		let index = getUniqueId () in
+   	let _ = H.add env i (spf "k%d" index) in
+   		spf "forall ((wk%d W)) (%s)" index (aux_fo env f)
 	in
-	spf "(assert (%s))\n" (aux_fo f)
+ 	spf "(assert (%s))\n" (aux_fo (H.create 17) f)
 
 let p_for oc out f =
 	let s = assert_of_for f
@@ -167,6 +193,7 @@ let p_for oc out f =
 
 type ret = |SAT |UNSAT
 
+(** Asks the z3 SMT solver if the formula is SATISFIABLE *)
 let check_sat ic oc out =
 	let s = "(check-sat)\n"
 	in begin
@@ -185,6 +212,7 @@ let check_sat ic oc out =
 		end;
 	end
 
+(** Asks the z3 SMT solver for a kripke model if the formula is SATISFIABLE *)
 let get_model ic oc out =
 	let s = "(get-model)\n"
 	and res = ref ""
@@ -202,7 +230,7 @@ let get_model ic oc out =
 			end;
 		done;
 		res := !res^"\n";
-		p_out !res out;
+		(* p_out !res out; *)
 		!res;
 	end
 
@@ -211,31 +239,32 @@ let get_model ic oc out =
 (*--------------------------------------------------------*)
 
 
+    (** This function solve the formula *)
 let solve fo a =
 
 	let ic,oc = U.open_process "z3 -in"
-	and out = None
+ 	and out = if A.mem "--get-log" Sys.argv then Some stdout else None
 	and res = ref true
 	in begin
 		init oc out;
-		p_axiom oc out a;
+  	p_axiom oc out a;
 		p_prop oc out fo;
 		p_for oc out fo;
-		(match check_sat ic oc out with
+  	(match check_sat ic oc out with
 		| UNSAT ->
-			let s = "\027[31mUNSAT\027[0m\n"
+			let s = "s UNSATISFIABLE\n"
 			in begin
 				fpf "%s" s;
 				res := false;
 			end
 		| SAT ->
-			let s = "\027[92mSAT\027[0m\n"
+			let s = "s SATISFIABLE\n"
                         (* and m = get_model ic oc out *)
 			in begin
-				fpf "%s" s;
-				(*
-				fpf "%s" m;
-				*)
+     		fpf "%s" s;
+       	if Array.mem "--get-model" Sys.argv then
+          let m = get_model ic oc out in
+          print_string m;
 			end);
 		U.close_process (ic,oc) |> ignore;
 		!res;
