@@ -14,7 +14,7 @@ sig
       or SAT and the ground model satisfaying the formula *)
 	type ans =
 	| UNSAT
-	| SAT of (string*bool) list
+	| SAT of (BFO.atom*bool) list
 
     (** Function to launch a solver. Only used for z3*)
  	val init : unit -> unit
@@ -23,7 +23,7 @@ sig
 	val close : unit -> unit
 
 		(** Function to declare a new ground constant *)
-	val dec_const : string -> unit
+	val dec_const : BFO.atom -> unit
 
 		(** Function to declare a new assertion *)
 	val dec_assert : BFO.formula -> unit
@@ -61,26 +61,26 @@ sig
 
   val new_config : unit -> config
 
-  type model = (string*bool) list
+  type model = (BFO.atom*bool) list
 
   val decide : config -> model -> unit
 
-  val init : config -> Ast_fo.FO.formula list -> Ast_fo.BFO.formula list * string list
+  val init : config -> Ast_fo.FO.formula list -> Ast_fo.BFO.formula list * BFO.atom list
   (** This function  returns :
       - the list of the boxed formula corresponding to the FO formula
       - the variables in the boxed formula
 
       and add the formula in the config by side effect.   *)
 
-  exception Found of (string list*BFO.formula)
+  exception Found of (BFO.atom list*BFO.formula)
   (** When a decision prcedures is applied, it raises an exception with :
       - the new boxed atoms
       - the new formula
   *)
   exception SoftFound of
-      (string list*
+      (BFO.atom list*
        BFO.formula*
-       string list*
+       BFO.atom list*
        BFO.formula*
        int)
       (** When \exists_soft applies, it raises an exception with :
@@ -92,7 +92,7 @@ sig
 
   val print_model : config -> model -> unit
 
-  val printDecVar : string -> config -> unit
+  val printDecVar : BFO.atom -> config -> unit
 
   val printAssert : Ast_fo.BFO.formula -> config -> unit
 

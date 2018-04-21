@@ -12,7 +12,7 @@
 %token <string> IDENT
 
 %start answer
-%type <(string*bool) list> answer
+%type <(Ast_fo.BFO.atom*bool) list> answer
 
 %%
 
@@ -25,8 +25,8 @@ model :
 
 affect :
 | LPAR;DEFFUN; i = IDENT;LPAR;RPAR;BOOL;c = getbool; RPAR
-	{(i,c)}
+	{(String.sub i 1 (String.length i -1) |> int_of_string, c)}
 
-getbool : 
+getbool :
 | TRUE {true}
 | FALSE {false}

@@ -60,7 +60,7 @@ let print_fo f =
 	fpf "%s \n" (aux_fo f)
 
 let rec aux_bfo = function
-| BFO.Atom	x -> x
+| BFO.Atom	x -> spf "v%d" x
 | BFO.Not f -> spf "~ %s" (aux_bfo f)
 | BFO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_bfo f1) (aux_bfo f2)
 | BFO.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_bfo f1) (aux_bfo f2)

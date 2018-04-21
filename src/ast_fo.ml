@@ -13,7 +13,6 @@ module Int = struct
 	let compare = compare
 end
 
-module Smap = Map.Make(String)
 module Sset = Set.Make(Int)
 
 (** module for the first-order formula *)
@@ -148,7 +147,7 @@ end
 module BFO = struct
 
 (** This type for atom in boxed first order formulae *)
-type atom = string
+type atom = int
 
 type formula =
 	| Atom of atom
@@ -192,14 +191,14 @@ Fonction pour créer de nouveaux noms pour les formules
 *)
 	begin
 		incr i_v;
-		spf "v%d" !i_v;
+		!i_v;
 	end
 
 (*--------------------------------------------------------*)
 (*                 Fonctions abs et conc                  *)
 (*--------------------------------------------------------*)
 
-type env = FO.formula Smap.t
+type env = (BFO.atom, FO.formula) H.t
 
 (** An abstraction function : Tansforms the given formula into a boxed
 formula and add the atom in

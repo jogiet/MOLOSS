@@ -4,11 +4,11 @@
 
 (*
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-donc le module de résolution est un foncteur, ce qui permet de le définir 
+donc le module de résolution est un foncteur, ce qui permet de le définir
 plusieurs fois pour faire des tests en cascade
 *)
 
-module type Idiot = 
+module type Idiot =
 (* On définit un module pour faire les appels  *)
 sig
 	val truc : int
@@ -16,7 +16,7 @@ end
 
 open Msat
 
-module SMTmsat (Dummy : Idiot) : Sign.Smt = 
+module SMTmsat (Dummy : Idiot) : Sign.Smt =
 struct
 
 module Sat = Msat.Sat.Make()
@@ -26,21 +26,21 @@ module H = Hashtbl
 module Q = Queue
 module BFO = Ast_fo.BFO
 
-let printbug s = 
+let printbug s =
 	print_string s;
 	flush_all ()
 
 let assump = Q.create ()
-let negassump = Q.create () 
+let negassump = Q.create ()
 
-type ans = 
+type ans =
 	| UNSAT
-	| SAT of (string*bool) list
+	| SAT of (BFO.atom*bool) list
 
 
 let stoa = H.create 42
 
-let init () = 
+let init () =
 begin
 	Q.clear assump;
 	H.reset stoa;
@@ -50,7 +50,7 @@ let close () = H.reset stoa
 
 let dec_const s =
 try
-	let atom = E.fresh () 
+	let atom = E.fresh ()
 	in begin
 		H.add stoa s atom;
 	end
@@ -67,7 +67,7 @@ with _ -> printbug "bfo_tomsat chiale \n"; exit 0
 
 
 
-let dec_assert f = 
+let dec_assert f =
 try
 	Sat.assume (F.make_cnf (bfo_to_msat f))
 with _ -> printbug "dec_assert chiale \n"; exit 0
@@ -75,28 +75,28 @@ with _ -> printbug "dec_assert chiale \n"; exit 0
 let dec_assert_soft f w =
 
 	let g = E.fresh () in
-	let cls = F.make_cnf (F.make_or [F.make_not (F.make_atom g); 
+	let cls = F.make_cnf (F.make_or [F.make_not (F.make_atom g);
 									(bfo_to_msat f)])
 	and atomg = match F.make_cnf (F.make_atom g) with
 				| [[x]] -> x
 				| _ -> assert false
 	in begin
-		Q.push atomg assump;		
-		Sat.assume cls;	
+		Q.push atomg assump;
+		Sat.assume cls;
 	end
 
-let get_assum () = 
+let get_assum () =
 	let res = ref [] in
 	let aux at = res := at::(!res)
 	in begin
 		Q.iter aux assump;
 		!res;
 	end
-	
 
-let rec get_ans () = 
+
+let rec get_ans () =
 	match Sat.solve ~assumptions:(get_assum ()) () with
-	| Sat.Unsat _ -> 
+	| Sat.Unsat _ ->
 		if Q.is_empty assump then
 			UNSAT
 		else
@@ -104,10 +104,10 @@ let rec get_ans () =
 			Q.pop assump |> ignore;
 			get_ans ();
 		end
-	| Sat.Sat state -> 
+	| Sat.Sat state ->
 	let model = ref [] in
-	let aux s a = 
-		try 
+	let aux s a =
+		try
 			model := (s,state.Msat.Solver_intf.eval a)::(!model)
 		with _ ->
 			model := (s,false)::(!model)

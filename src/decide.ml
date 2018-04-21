@@ -30,21 +30,21 @@ module PP = Pprinter
 module M = Ast_modal
 
 
-type env = (string,FO.formula) H.t
+type env = (BFO.atom, FO.formula) H.t
 (** An atom from BFO is bind to the FO formula it represents *)
 (* Un atome de BFO (de type string) est bind à la formule qu'il encadre *)
 
-type thetex = (string,unit) H.t
+type thetex = (BFO.atom, unit) H.t
 (** Represents the set \Theta_\exists *)
 (* représente \Theta_\exists *)
 
 
 
-type thetfor = (string*int,unit) H.t
+type thetfor = (BFO.atom*int, unit) H.t
 (** Represents the set \Theta_\forall *)
 (* représente \Theta_\forall *)
 
-type thetsym = (int*int,unit) H.t
+type thetsym = (int*int, unit) H.t
 (** Represents the set \Theta_\forall.
 Warning : since we store sets, worlds (i.e. strings) are put in
 alphabetical order *)
@@ -95,7 +95,7 @@ let new_config () =
     config;
   end
 
-type model = (string*bool) list
+type model = (BFO.atom * bool) list
 (** Type of a model returned by SMT-solver  *)
 
 
@@ -113,7 +113,7 @@ let rec init (config : config) = function
 		f_box::f_rest, new_var@new_var_rest
 
 
-exception Found of (string list*BFO.formula)
+exception Found of (BFO.atom list*BFO.formula)
 (** When a decision prcedures is applied, it raises an exception with :
     - the new boxed atoms,
     - the new formula *)
@@ -125,9 +125,9 @@ exception Found of (string list*BFO.formula)
     - the soft formula,
     - its weight *)
 exception SoftFound of
-	(string list*
+	(BFO.atom list*
 	 BFO.formula*
-	 string list*
+	 BFO.atom list*
 	 BFO.formula*
 	 int)
 
@@ -613,7 +613,7 @@ let decisions = axiom_to_dec_proc A.argument
 let decide config m = L.iter (fun d_proc -> d_proc config m) decisions
 
 let printDecVar v config =
-  fpf "c #%s -> %s\n" v (PP.aux_fo (Hashtbl.find config.env v))
+  fpf "c #v%d -> %s\n" v (PP.aux_fo (Hashtbl.find config.env v))
 
 let printAssert bfo config =
   fpf "c \027[92massert\027[0m : %s\n" (PP.aux_bfo bfo)

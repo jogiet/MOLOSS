@@ -36,13 +36,13 @@ let close () =
 
 type ans =
 	| UNSAT
-	| SAT of (string*bool) list
+	| SAT of (BFO.atom*bool) list
 
 
 
 
 let rec bfo_to_smtlib = function
-| BFO.Atom i -> i
+| BFO.Atom i -> spf "v%d" i
 | BFO.Not f -> spf "(not %s)" (bfo_to_smtlib f)
 | BFO.Conj (f1,f2) ->
 	spf "(and %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
@@ -50,7 +50,7 @@ let rec bfo_to_smtlib = function
 	spf "(or %s %s)" (bfo_to_smtlib f1) (bfo_to_smtlib f2)
 
 let dec_const v =
-	let s = spf "(declare-const %s Bool) \n" v
+	let s = spf "(declare-const v%d Bool) \n" v
 	in begin
 		output_string !oc s;
 		flush_all ();
