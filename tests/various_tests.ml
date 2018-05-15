@@ -12,47 +12,47 @@ module L = List
 module Sy = Sys
 module D = Direct
 module S = String
-
+(*
 module Sz3 = Solve.Solve(Smtz3.SMTz3)
 module Sminisat = Solve.Solve(Smtminisat.Smtmini)
+module Dummy = struct let truc = 1 end
+module SmtMsat = Solve.Solve(Smtmsat.SMTmsat(Dummy)) *)
 
-module Dummy =
-struct
-	let truc = 1
-end
 
 let pf = Printf.printf
 let spf = Printf.sprintf
 
+let max_var = 50;;
+
 (*--------------------------------------------------------*)
 (*            Génération aléatoire de formule             *)
 (*--------------------------------------------------------*)
-let variables = ["p";"q";"p2";"q2";"r";"r2";"s";"s2"]
+(* let variables = ["p";"q";"p2";"q2";"r";"r2";"s";"s2"] *)
 
-let tire_var () =
+let tire_var max_var =
 begin
 	R.self_init ();
-	L.nth variables (R.int 4);
+	R.int max_var;
 end
 
 
-let rec tire_form n =
+let rec tire_form n max_var =
 begin
 	R.self_init ();
 	match n with
 	| 0 ->
 	begin
 		match R.int 2 with
-		| 0 -> M.Atom (tire_var () )
-		| _ -> M.Not (M.Atom (tire_var () ))
+		| 0 -> M.Atom (tire_var max_var )
+		| _ -> M.Not (M.Atom (tire_var max_var ))
 	end
 	| n ->
 	begin
 		match (R.int 4)  with
-		| 0 -> M.Conj (tire_form (n-1),tire_form (n-1))
-		| 1 -> M.Dij (tire_form (n-1),tire_form (n-1))
-		| 2 -> M.Boxe (tire_form(n-1))
-		| _ -> M.Diamond (tire_form (n-1))
+		| 0 -> M.Conj (tire_form (n-1) max_var, tire_form (n-1) max_var)
+		| 1 -> M.Dij (tire_form (n-1) max_var, tire_form (n-1) max_var)
+		| 2 -> M.Boxe (tire_form(n-1) max_var)
+		| _ -> M.Diamond (tire_form (n-1) max_var)
 	end;
 
 end
@@ -103,10 +103,10 @@ let get_logic () =
 (*--------------------------------------------------------*)
 
 let handle = function
-| C.MeauvaisFormat s ->
+| C.WrongFormat s ->
 	pf "Erreur : meauvais format \n %s \n" s
-| C.FreeVDM (v1,v2,s) ->
-	pf "Erreur : les variables %s et %s ne matchent pas : \n %s \n" v1 v2 s
+| C.FreeVDontMatch (v1,v2,s) ->
+	pf "Erreur : les variables %d et %d ne matchent pas : \n %s \n" v1 v2 s
 | _ -> ()
 
 let print_debug s =
@@ -131,8 +131,16 @@ let get_arg () =
 		begin
 			pf "le second argument est la profondeur max \n";
 			exit 1;
-		end
-	in (nb,n)
+ 		end
+ 	and max_var =
+    try int_of_string (Sy.argv.(3))
+    with
+    | _ ->
+      begin
+        pf "le troisième argument est le nomre de variables \n";
+        exit 1;
+      end
+	in (nb, n, max_var)
    (*
 let rec check_form = function
 | M.Atom _ -> true
@@ -147,7 +155,8 @@ let rec check_form = function
 
 
 let _ =
-let nb,n = get_arg ()
+let nb, n, max_var = get_arg ()
+and a,_ = get_logic ()
 and t0 = ref 0.
 and t_sz3 = ref 0.
 and t_direct = ref 0.
@@ -163,13 +172,19 @@ and res_minisat = ref true
 and res_direct = ref true
 and out = None (* Some (open_out "test.out") *)
 and res = open_out_gen [Open_append] 777 "resultatsz3.csv"
-and comp = ref 0
+and comp = ref 0 in
+let module Argument = struct let argument = a end in
+let module Decide = Decide.GetDecide(Argument) in
+let module Simplify = Simplify.GetSimplify(Argument) in
+let module SmtZ3 = Solve.Solve(Smtz3.SMTz3)(Decide)(Simplify) in
+let module SmtMinisat = Solve.Solve(Smtminisat.Smtmini)(Decide)(Simplify) in
+let module Dummy = struct let truc = 1 end in
+let module SmtMsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))(Decide)(Simplify)
 in begin
 	for i = 1 to nb do
-		let f = tire_form n in
-		let f0 = C.st "w" f
-		and a,_ = get_logic () in
-		let module  Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))
+		let f = tire_form n max_var in
+		let f0 = C.st 0 f in
+  let module  Smsat = Solve.Solve(Smtmsat.SMTmsat(Dummy))(Decide)(Simplify)
 		in begin
 			pf "========================= \n";
 			(*
@@ -181,20 +196,20 @@ in begin
 		On fait les résolutions avec les différents oracles
 		*)
 
-	 		t0 := U.gettimeofday () ;
+	 		(* t0 := U.gettimeofday () ;
 			res_sz3 := Sz3.solve f0 a ;
 			dt_sz3 := (U.gettimeofday () -. !t0);
 			t_sz3 := !t_sz3 +. !dt_sz3;
-
+ *)
 
 			t0 := U.gettimeofday () ;
-			res_msat := Smsat.solve f0 a ;
+			res_msat := SmtMsat.solve f;
 			dt_msat:= (U.gettimeofday () -. !t0);
 			t_msat := !t_msat +. !dt_msat;
 
 
 	 		t0 := U.gettimeofday () ;
-			res_minisat := Sminisat.solve f0 a ;
+			res_minisat := SmtMinisat.solve f;
 			dt_minisat:= (U.gettimeofday () -. !t0);
 			t_minisat := !t_minisat +. !dt_minisat;
 
