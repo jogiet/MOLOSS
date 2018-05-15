@@ -28,6 +28,10 @@ static: sanity
 various_tests: native
 	$(OCB) tests/various_tests.native
 
+# random formula printer
+formula: native
+	$(OCB) tests/printformula.native
+
 # documentation
 doc_html: doc/moloss.odocl
 	$(OCB) doc/moloss.docdir/index.html
