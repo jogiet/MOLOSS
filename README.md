@@ -68,7 +68,7 @@ logic.
    - `-B`: symmetric relation
    - `-4`: transitive relation
    - `-5`: euclidian relation
-   - `CD`: functionnal relation
+   - `-CD`: functionnal relation
 
    Options:
 
