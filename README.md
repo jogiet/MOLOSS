@@ -61,6 +61,15 @@ logic.
    MOLOSS then output `SAT` or `UNSAT`.
    By default, MiniSat is used as an oracle.
 
+   MOLOSS implements some frame axioms that can be called
+   as an option of the execautable:
+
+   - `-S` or `-M`: reflexiv relation
+   - `-B`: symmetric relation
+   - `-4`: transitive relation
+   - `-5`: euclidian relation
+   - `CD`: functionnal relation
+
    Options:
 
    - `--all`: all SAT oracles are used (MiniSat, Z3, mSAT)
