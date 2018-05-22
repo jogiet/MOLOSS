@@ -10,18 +10,27 @@ module FO = Ast_fo.FO
 module PP = Pprinter
 open Lexing
 
+(**
+   This module solves the formula using Z3 as a SMT-solver
+   (with FO-logic)
+*)
+
 
 (*--------------------------------------------------------*)
 (*              Quelques fonctions annexes                *)
 (*--------------------------------------------------------*)
 
+(**/**) (* We don't want shortcuts in the doc *)
 let fpf = Printf.printf
 let spf = Printf.sprintf
+(**/**)
 
+    (** Outputs the string if the channel is defined *)
 let p_out s = function
 	| None -> ()
 	| Some oc -> output_string oc s
 
+    (** Basic function to report errors in Lexing/Parsing *)
 let report (b,e) file =
   let l = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
@@ -33,6 +42,10 @@ let good_suff s =
 let new_suff s =
 	(F.chop_suffix s ".bml")^".out"
 
+(** Prints the header :
+    - the options for proofs and models production,
+    - the FO sort, and the FO predicate for the relation
+*)
 let init oc out =
 	let header =
   "(set-option :produce-proofs true) \n\
@@ -50,7 +63,11 @@ let init oc out =
 (*               Code pour des UniqueId                   *)
 (*--------------------------------------------------------*)
 
+(**/**)
 let index = ref 0
+(**/**)
+
+(** Returns a fresh int *)
 let getUniqueId () =
   let _  = incr index in
   	!index
@@ -59,7 +76,7 @@ let getUniqueId () =
 (*                Gestion des axiomes                     *)
 (*--------------------------------------------------------*)
 
-(** An association liste between the axioms and their FO translation *)
+(** An association list between the axioms and their FO translation *)
 let assoc =
 [("-M",";axiome de réfléxivité \n\
 	(assert (forall ((w0 W)) (r w0 w0)))");
@@ -78,7 +95,7 @@ let assoc =
  			(=> (and (r w0 w1) (r w0 w2)) \
 				(= w1 w2))))\n")]
 
-(** Give the z3 sover the frame axioms *)
+(** Give the z3 solver the frame axioms *)
 let rec p_axiom oc out = function
 | [] -> ()
 | t::q ->
@@ -115,9 +132,8 @@ end
 
 (* ====>      Pour les propriétés (ensemble P)      <==== *)
 
-
+   (** extract the set of FO unary predicates *)
 let extract_p f =
-(* extrait l'ensemble P des propoitions *)
 	let rec aux env = function
 	| FO.Atom (p,_) ->
 		if H.mem env p then ()
@@ -140,8 +156,7 @@ let extract_p f =
 	end
 
 let p_prop oc out f =
-	(* déclare les propositions comme des fonctions prenant en argument
-	un monde *)
+  (** Declare unary predicates to Z3 *)
 	let aux p =
 		let s = spf "(declare-fun P%d (W) Bool)\n" p
 		in begin
@@ -153,6 +168,8 @@ let p_prop oc out f =
 
 (* ====>            Gestion des formules            <==== *)
 
+(** Returns the string equivalent to the assertion of the formula in
+    SMT-LIB format *)
 let assert_of_for f =
   let print_world env x =
     if x >= 0 then
@@ -179,7 +196,9 @@ let assert_of_for f =
 	in
  	spf "(assert (%s))\n" (aux_fo (H.create 17) f)
 
+
 let p_for oc out f =
+  (* Asserts the formula to Z3 *)
 	let s = assert_of_for f
 	in begin
 		output_string oc s;
@@ -191,7 +210,10 @@ let p_for oc out f =
 (*                Fonctions de dialogue                   *)
 (*--------------------------------------------------------*)
 
-type ret = |SAT |UNSAT
+    (** A basic type for the results of the Z3-solver *)
+type ret =
+|SAT
+|UNSAT
 
 (** Asks the z3 SMT solver if the formula is SATISFIABLE *)
 let check_sat ic oc out =

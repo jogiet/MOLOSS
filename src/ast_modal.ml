@@ -6,6 +6,7 @@
 
 type ident = string
 
+    (** This type represents the modal logic formulas *)
 type formula =
 	| True | False
 	| Atom of int
@@ -29,6 +30,7 @@ let rec prop_neg = function
   | True -> False
   | False -> True
 
+ (** Returns the negativ-normal form of the formula *)
 and getNNF = function
   | Atom p -> Atom p
   | Not (Atom p) -> Not (Atom p)
@@ -41,14 +43,14 @@ and getNNF = function
   | True -> True
   | False -> False
 
-let rec formLength = function
     (** Returns the length of the Modal logic formula *)
+let rec formLength = function
   | True | False | Atom _ -> 1
   | Not f | Boxe f | Diamond f -> formLength f + 1
   | Conj (f1,f2) | Dij (f1,f2) | Impl (f1,f2) -> (formLength f1) + (formLength f2) + 1
 
+    (** Returns the modal degree *)
 let rec modDegree = function
-    (** Returns the modal degree*)
   | True | False | Atom _ -> 0
   | Not f -> modDegree f
   | Boxe f | Diamond f -> modDegree f + 1

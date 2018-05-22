@@ -18,20 +18,29 @@ struct
 
 let compt = ref 1
 
+    (** Rturns a fresh minisat litteral *)
 let fresh_lit () =
 	let res = M.Lit.make !compt
 	in begin
 		incr compt;
 		res;
-	end
+end
 
+(** This hashtbl maps the BFO axiom to the mSAT axioms *)
 let storelit = H.create 42
 
 let instance = ref (M.create ())
 
+(** This FIFO contains the guards for the assert-soft formulas
+    that are still valid *)
 let assump = Q.create ()
+
+(** This FIFO contains the guards for the assert-soft formulas
+    that are not valid *)
 let negassump = Q.create ()
 
+(** A boolean that stores
+    if the minisat solver raised the UNSAT excaption *)
 let important = ref true
 
 (*--------------------------------------------------------*)
@@ -65,6 +74,10 @@ let dec_const s =
 		H.add storelit s res;
 	end
 
+(**
+    This function translates a BFO formula to a 3-CNF formula (used by minisat),
+    using Tseityn's algorithm
+*)
 let tseityn f =
 	let res = ref [] in
 	let rec aux = function
@@ -121,6 +134,7 @@ let dec_assert_soft f w =
 		Q.add g assump;
 	end
 
+    (** Returns the list of guard axioms used *)
 let get_assump () =
 	let res = ref [] in
 	let aux lit = res := lit::(!res)

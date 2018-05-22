@@ -10,8 +10,8 @@ module type Smt =
 sig
 
   (** The type of the answer the SMT solver Returns :
-      UNSAT if the formula is unsat
-      or SAT and the ground model satisfaying the formula *)
+      - [ UNSAT ] if the formula is unsat
+      - [ SAT ] and the ground model satisfaying the formula *)
 	type ans =
 	| UNSAT
 	| SAT of (BFO.atom*bool) list
@@ -51,11 +51,6 @@ sig
       - the environnement, i.e relation between FO formula and ground formulas
       - set \Theta_something
 
-      Question : do we hide the configuration in the module ?
-
-      ++ Can be more generic
-
-      -- We might need it in the future !
   *)
   type config
 
@@ -63,6 +58,11 @@ sig
 
   type model = (BFO.atom*bool) list
 
+  (** This function encode the instanciation procedures.
+      It returnes nothing since when a possible instanciation is found,
+      it raises an exception.
+
+   *)
   val decide : config -> model -> unit
 
   val init : config -> Ast_fo.FO.formula list -> Ast_fo.BFO.formula list * BFO.atom list
@@ -112,11 +112,10 @@ end
 module type Solveur =
 sig
 
-  (** You give a formula and the list of axioms,
-      this function returns you the satifiability of this formula
+  (** You give a formula and
+      this function returns you the satifiability of this formula.
 
-      After the refactoring, we won't need the axioms list in the Solveur module,
-      but in the Decide one.
+      This function should what are the frame axioms applied.
   *)
 	val solve : Ast_modal.formula -> bool
 

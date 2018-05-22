@@ -2,6 +2,10 @@
 (*       Pretty Printer pour FO & Modal Formules          *)
 (*########################################################*)
 
+(**
+   This module contains function to get string of formula used
+   in MOLOSS (Modal logic, FO, BFO) and to pretty-print them.
+   *)
 
 module S = String
 module F = Format
@@ -12,18 +16,19 @@ module M = Ast_modal
 module P = Ast_proof.P
 module H = Hashtbl
 
+    (**/**)
 let spf = Printf.sprintf
-
-let fpf  = Printf.printf
-
+let fpf = Printf.printf
+    (**/**)
 
 
 (*--------------------------------------------------------*)
 (*          Pour les formules de logique modale           *)
 (*--------------------------------------------------------*)
 
+  (** Does not print the formula,
+      but returns a string representing the formula *)
 let rec aux_m = function
-(* Renvoie seulement la chaine de la formule *)
 | M.Atom p -> spf "p%d" p
 | M.Not f -> spf "~ (%s)" (aux_m f)
 | M.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_m f1) (aux_m f2)
@@ -34,15 +39,16 @@ let rec aux_m = function
 | M.True -> "true"
 | M.False -> "false"
 
+  (** Prints the formula on stdout *)
 let print_m f =
-(* print la formule sur stdout *)
 	fpf "%s \n" (aux_m f)
 
 (*--------------------------------------------------------*)
 (*          Pour les formules du premier ordre            *)
 (*--------------------------------------------------------*)
+  (** Does not print the formula,
+      but returns a string representing the formula *)
 let rec aux_fo = function
-(* Renvoie seulement la chaine de la formule *)
 | FO.Atom (p,x) -> spf "P%d(w%d)" p x
 | FO.Not f -> spf "~ %s" (aux_fo f)
 | FO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_fo f1) (aux_fo f2)
@@ -55,26 +61,34 @@ let rec aux_fo = function
 	let quant = "exists"
 	in spf "%s w%d, %s" quant x (aux_fo f)
 
+  (** Prints the formula on stdout *)
 let print_fo f =
-(* print la formule sur stdout *)
 	fpf "%s \n" (aux_fo f)
 
+  (** Does not print the formula,
+      but returns a string representing the formula *)
 let rec aux_bfo = function
 | BFO.Atom	x -> spf "v%d" x
 | BFO.Not f -> spf "~ %s" (aux_bfo f)
 | BFO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_bfo f1) (aux_bfo f2)
 | BFO.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_bfo f1) (aux_bfo f2)
 
+(** Prints the formula on stdout *)
 let print_bfo f =
 	fpf "%s \n" (aux_bfo f)
 
 (*--------------------------------------------------------*)
 (*            Pour les formules et les preuves            *)
 (*--------------------------------------------------------*)
+  (** Returns an offset made of spaces *)
 let p_off n =
 	S.make n ' '
 
 
+  (** Does not print the formula,
+      but returns a string representing the formula
+      @deprecated We don't handle Z3 proofs yet
+  *)
 let rec aux_fp env = function
 | P.TRUE -> "true"
 | P.FALSE -> "false"
@@ -87,6 +101,10 @@ let rec aux_fp env = function
 | P.Dij (f1,f2) -> spf "(%s) or (%s)" (aux_fp env f1) (aux_fp env f2)
 | P.Equal (f1,f2) -> spf "(%s) = (%s)" (aux_fp env f1) (aux_fp env f2)
 
+  (** Does not print the proof,
+      but returns a string representing the proof
+      @deprecated We don't handle Z3 proofs yet
+  *)
 let rec aux_pp env off = function
 | P.Refp _ -> assert false
 | P.Axiom f -> spf "%s%s\n%s%s\n"
@@ -158,5 +176,8 @@ end
 
 
 
+  (** Prints the proof on stdout
+      @deprecated We don't handle Z3 proofs yet
+  *)
 let print_proof env p =
 	fpf "%s" (aux_pp env 0 p)

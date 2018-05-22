@@ -1,5 +1,7 @@
 module GetSimplify (A : Sign.DecideArg) : Sign.Simplify = struct
 
+  (** This module should make simplification on the formula *)
+
 module M = Ast_modal
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO

@@ -2,6 +2,12 @@ module H= Hashtbl
 
 module All = struct
 
+  (** This module contains code to extract and use Unsatifiability proof
+      returned by Z3
+
+      @deprecated not used
+  *)
+
 type all =
 	| TRUE | FALSE
 	| Atom of string

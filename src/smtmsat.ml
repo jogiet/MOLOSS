@@ -8,8 +8,11 @@ donc le module de résolution est un foncteur, ce qui permet de le définir
 plusieurs fois pour faire des tests en cascade
 *)
 
+(**
+   A Dummy module in order to clean the solver
+   between two formulas (used for tests).
+*)
 module type Idiot =
-(* On définit un module pour faire les appels  *)
 sig
 	val truc : int
 end
@@ -26,18 +29,24 @@ module H = Hashtbl
 module Q = Queue
 module BFO = Ast_fo.BFO
 
+    (** A printing function for debug *)
 let printbug s =
 	print_string s;
 	flush_all ()
 
+(** This FIFO contains the guards for the assert-soft formulas
+    that are still valid *)
 let assump = Q.create ()
+
+(** This FIFO contains the guards for the assert-soft formulas
+    that are not valid *)
 let negassump = Q.create ()
 
 type ans =
 	| UNSAT
 	| SAT of (BFO.atom*bool) list
 
-
+ 		(** This hashtbl maps the BFO axiom to the mSAT axioms *)
 let stoa = H.create 42
 
 let init () =
@@ -85,6 +94,7 @@ let dec_assert_soft f w =
 		Sat.assume cls;
 	end
 
+    (** Returns the list of asserted guards *)
 let get_assum () =
 	let res = ref [] in
 	let aux at = res := at::(!res)

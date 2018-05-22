@@ -10,19 +10,14 @@ module GetDecide (A : Sign.DecideArg) : Sign.Decide = struct
 module FO = Ast_fo.FO
 module BFO = Ast_fo.BFO
 open Ast_fo
+    (**/**)
 let fpf = Printf.printf
-
+    (**/**)
 (*--------------------------------------------------------*)
 (*               Quelques modules utils                   *)
 (*--------------------------------------------------------*)
 
-(*
-On essaye d'avoir une idée de l'implem à utiliser.
--> Comme on ne bactrack pas mais on fiat beaucoup d'ajouts, on utlise
-une structure mutable : des tables de hash
-TODO : trouver une structure mutable équivalente aux Set !!
-=> réponse une table de hash ('a,unit) ... pas plus opti ?
-*)
+
 
 module H = Hashtbl
 module L = List
@@ -612,6 +607,7 @@ let decisions = axiom_to_dec_proc A.argument
   (** a function that applies all decision procedures  *)
 let decide config m = L.iter (fun d_proc -> d_proc config m) decisions
 
+(** Prints the newly declared Boxed axiom and the corresponding FO formula *)
 let printDecVar v config =
   fpf "c #v%d -> %s\n" v (PP.aux_fo (Hashtbl.find config.env v))
 

@@ -13,7 +13,7 @@ module Int = struct
 	let compare = compare
 end
 
-module Sset = Set.Make(Int)
+module ISet = Set.Make(Int)
 
 (** module for the first-order formula *)
 module FO  = struct
@@ -61,7 +61,7 @@ match f with
 | Conj (f1,f2) | Dij (f1,f2) ->
 	let v1 = extractfv f1
 	and v2 = extractfv f2 in
-		Sset.elements (Sset.union (Sset.of_list v1) (Sset.of_list v2))
+		ISet.elements (ISet.union (ISet.of_list v1) (ISet.of_list v2))
 		(* c'est moche mais ca marche *)
 | Relation (x,y) ->
 	if x = y then
@@ -143,7 +143,7 @@ end
 (*           Formules du 1er ordre "encadrées"            *)
 (*--------------------------------------------------------*)
 
-(** module for the boxed first-order formula *)
+(** module for the boxed first-order formula, i.e. SAT-logic *)
 module BFO = struct
 
 (** This type for atom in boxed first order formulae *)

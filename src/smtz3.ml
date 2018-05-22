@@ -6,16 +6,21 @@
 module SMTz3 : Sign.Smt =
 struct
 
+  (** Module for interace with the Z3 Sat-Solver *)
+
 module BFO = Ast_fo.BFO
 module P = Ast_proof
 module U = Unix
 open Lexing
 
-
+    (**/**)
 let fpf = Format.printf
 let spf = Format.sprintf
+		(**/**)
 
+    (** input-channel to communicate with z3 *)
 let ic = ref stdin
+		(** output-channel to communicate with z3 *)
 and oc = ref stdout
 
 
@@ -40,7 +45,8 @@ type ans =
 
 
 
-
+(** Converts a BFO formula to a string
+    representing the formula in the SMT-LIB *)
 let rec bfo_to_smtlib = function
 | BFO.Atom i -> spf "v%d" i
 | BFO.Not f -> spf "(not %s)" (bfo_to_smtlib f)
@@ -77,7 +83,7 @@ let dec_assert_soft bf weight =
 (*         Fonctions pour le parsing du modèle            *)
 (*--------------------------------------------------------*)
 
-
+(** Basic function to report errors in Lexing/Parsing *)
 let report (b,e) f =
   let l = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
@@ -85,7 +91,7 @@ let report (b,e) f =
   fpf "File \"%s\", line %d, characters %d-%d:\n" f l fc lc
 
 
-
+(** Gets the model when the solver rerturns SAT *)
 let get_model () =
 begin
 	flush_all ();
@@ -112,13 +118,12 @@ begin
 	try
 		Z3_parser.answer Z3_lexer.next_token lb
 	with
-
 	| Z3_lexer.Lex_err s ->
 	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
 	fpf "lexical error: %s.\n" s;
 	flush_all ();
 	exit 1
-    | Z3_parser.Error ->
+  | Z3_parser.Error ->
 	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";
 	fpf "syntax error.\n";
 	flush_all ();
@@ -133,7 +138,7 @@ end
 
 
 
-
+   (** Gets the proof when the solver returns UNSAT *)
 let get_proof oc ic out =
 begin
 	flush_all ();
@@ -155,7 +160,6 @@ begin
 		let file = Pparser.s0 Plexer.next_token lb
 		in P.traite file
 	with
-
 	| Plexer.Lex_err s ->
 	report (lexeme_start_p lb, lexeme_end_p lb) "proof";
 	fpf "lexical error: %s.\n" s;
@@ -172,6 +176,7 @@ end
 (*--------------------------------------------------------*)
 (*            Fonctions pour la réponse                   *)
 (*--------------------------------------------------------*)
+   (** Asks the solver if the formula is SAT *)
 let get_ans () =
 begin
 	output_string !oc "(check-sat) \n";

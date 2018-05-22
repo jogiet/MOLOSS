@@ -2,6 +2,9 @@
 (*                 Foncteur de résolution                 *)
 (*########################################################*)
 
+(**
+   This module contains solve functors for various options.
+  *)
 
 open Format
 open Ast_fo

@@ -2,18 +2,23 @@
 (*                  Interface pour alt-ergo zero                     *)
 (*###################################################################*)
 
+(**
+   This Module is an attempt to use the alt-Ergo-Zero solver.
+   @deprecated Does not work yet.
+*)
+
 module A = Aez
 module S = A.Smt
 module Solver = S.Make ()
 module H = Hashtbl
 
 
-module SMTaez : Sign.Smt = 
+module SMTaez : Sign.Smt =
 struct
 
 let stoa = H.create 42
 
-type ans = 
+type ans =
 	| UNSAT
 	| SAT of (string*bool) list
 
