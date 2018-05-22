@@ -53,6 +53,11 @@ logic.
 	 if you want to use it as an oracle or directly (see
      further).
 
+## Documentation
+
+You can find the
+[documentation online](https://meleagant.github.io/MOLOSS/index.html).
+
 ## Usage
 
    The `moloss` executable takes as an argument a file containing the
