@@ -43,14 +43,7 @@ Type for a configuration. Should contains :<ul>
 <li>the environnement, i.e relation between FO formula and ground formulas</li>
 <li>set \Theta_something</li>
 </ul>
-
-      Question : do we hide the configuration in the module ?
-<p>
-
-      ++ Can be more generic
-<p>
-
-      -- We might need it in the future !<br>
+<br>
 </div>
 
 
@@ -58,7 +51,12 @@ Type for a configuration. Should contains :<ul>
 <pre><span id="TYPEmodel"><span class="keyword">type</span> <code class="type"></code>model</span> = <code class="type">(BFO.atom * bool) list</code> </pre>
 
 
-<pre><span id="VALdecide"><span class="keyword">val</span> decide</span> : <code class="type"><a href="Sign.Decide.html#TYPEconfig">config</a> -> <a href="Sign.Decide.html#TYPEmodel">model</a> -> unit</code></pre>
+<pre><span id="VALdecide"><span class="keyword">val</span> decide</span> : <code class="type"><a href="Sign.Decide.html#TYPEconfig">config</a> -> <a href="Sign.Decide.html#TYPEmodel">model</a> -> unit</code></pre><div class="info ">
+This function encode the instanciation procedures.
+      It returnes nothing since when a possible instanciation is found,
+      it raises an exception.<br>
+</div>
+
 <pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type"><a href="Sign.Decide.html#TYPEconfig">config</a> -><br>       <a href="Ast_fo.FO.html#TYPEformula">Ast_fo.FO.formula</a> list -> <a href="Ast_fo.BFO.html#TYPEformula">Ast_fo.BFO.formula</a> list * BFO.atom list</code></pre><div class="info ">
 This function  returns :<ul>
 <li>the list of the boxed formula corresponding to the FO formula</li>

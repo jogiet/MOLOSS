@@ -40,7 +40,7 @@ Solveur's main module
 </div>
 </td></tr>
 <tr><td class="module"><a href="Solve.html">Solve</a></td><td><div class="info">
-For option --get-model
+This module contains solve functors for various options.
 </div>
 </td></tr>
 <tr><td class="module"><a href="Ast_fo.html">Ast_fo</a></td><td><div class="info">
@@ -48,10 +48,14 @@ module for the first-order formula
 </div>
 </td></tr>
 <tr><td class="module"><a href="Ast_modal.html">Ast_modal</a></td><td><div class="info">
-This function propagate a negation in a modal formula.
+This type represents the modal logic formulas
 </div>
 </td></tr>
-<tr><td class="module"><a href="Ast_proof.html">Ast_proof</a></td><td></td></tr>
+<tr><td class="module"><a href="Ast_proof.html">Ast_proof</a></td><td><div class="info">
+<span class="deprecated">This module contains code to extract and use Unsatifiability proof
+      returned by Z3
+</span></div>
+</td></tr>
 <tr><td class="module"><a href="Convertisseur.html">Convertisseur</a></td><td><div class="info">
 For the Modal Logic &lt;-&gt; FO conversion
 </div>
@@ -62,17 +66,32 @@ Pascal Fontaine et al.) and for the epistemic logic
 </div>
 </td></tr>
 <tr><td class="module"><a href="Direct.html">Direct</a></td><td><div class="info">
-An association liste between the axioms and their FO translation
+This module solves the formula using Z3 as a SMT-solver
+   (with FO-logic)
 </div>
 </td></tr>
-<tr><td class="module"><a href="Pprinter.html">Pprinter</a></td><td></td></tr>
+<tr><td class="module"><a href="Pprinter.html">Pprinter</a></td><td><div class="info">
+This module contains function to get string of formula used
+   in MOLOSS (Modal logic, FO, BFO) and to pretty-print them.
+</div>
+</td></tr>
 <tr><td class="module"><a href="Sign.html">Sign</a></td><td><div class="info">
 Module for generic signatures
 </div>
 </td></tr>
-<tr><td class="module"><a href="Smtminisat.html">Smtminisat</a></td><td></td></tr>
-<tr><td class="module"><a href="Smtmsat.html">Smtmsat</a></td><td></td></tr>
-<tr><td class="module"><a href="Smtz3.html">Smtz3</a></td><td></td></tr>
+<tr><td class="module"><a href="Smtminisat.html">Smtminisat</a></td><td><div class="info">
+Rturns a fresh minisat litteral
+</div>
+</td></tr>
+<tr><td class="module"><a href="Smtmsat.html">Smtmsat</a></td><td><div class="info">
+A Dummy module in order to clean the solver
+   between two formulas (used for tests).
+</div>
+</td></tr>
+<tr><td class="module"><a href="Smtz3.html">Smtz3</a></td><td><div class="info">
+Module for interace with the Z3 Sat-Solver
+</div>
+</td></tr>
 </table>
 </body>
 </html>

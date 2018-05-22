@@ -35,12 +35,30 @@
 <pre><span class="keyword">module</span> Smtmini: <code class="code">sig</code> <a href="Smtminisat.Smtmini.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
 <pre><span id="VALcompt"><span class="keyword">val</span> compt</span> : <code class="type">int Pervasives.ref</code></pre>
-<pre><span id="VALfresh_lit"><span class="keyword">val</span> fresh_lit</span> : <code class="type">unit -> M.Lit.t</code></pre>
-<pre><span id="VALstorelit"><span class="keyword">val</span> storelit</span> : <code class="type">(BFO.atom, M.Lit.t) H.t</code></pre>
+<pre><span id="VALfresh_lit"><span class="keyword">val</span> fresh_lit</span> : <code class="type">unit -> M.Lit.t</code></pre><div class="info ">
+Rturns a fresh minisat litteral<br>
+</div>
+
+<pre><span id="VALstorelit"><span class="keyword">val</span> storelit</span> : <code class="type">(BFO.atom, M.Lit.t) H.t</code></pre><div class="info ">
+This hashtbl maps the BFO axiom to the mSAT axioms<br>
+</div>
+
 <pre><span id="VALinstance"><span class="keyword">val</span> instance</span> : <code class="type">M.t Pervasives.ref</code></pre>
-<pre><span id="VALassump"><span class="keyword">val</span> assump</span> : <code class="type">M.Lit.t Q.t</code></pre>
-<pre><span id="VALnegassump"><span class="keyword">val</span> negassump</span> : <code class="type">M.Lit.t Q.t</code></pre>
-<pre><span id="VALimportant"><span class="keyword">val</span> important</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALassump"><span class="keyword">val</span> assump</span> : <code class="type">M.Lit.t Q.t</code></pre><div class="info ">
+This FIFO contains the guards for the assert-soft formulas
+    that are still valid<br>
+</div>
+
+<pre><span id="VALnegassump"><span class="keyword">val</span> negassump</span> : <code class="type">M.Lit.t Q.t</code></pre><div class="info ">
+This FIFO contains the guards for the assert-soft formulas
+    that are not valid<br>
+</div>
+
+<pre><span id="VALimportant"><span class="keyword">val</span> important</span> : <code class="type">bool Pervasives.ref</code></pre><div class="info ">
+A boolean that stores
+    if the minisat solver raised the UNSAT excaption<br>
+</div>
+
 <pre><span id="VALprintbug"><span class="keyword">val</span> printbug</span> : <code class="type">string -> unit</code></pre>
 <pre><code><span id="TYPEans"><span class="keyword">type</span> <code class="type"></code>ans</span> = </code></pre><table class="typetable">
 <tr>
@@ -63,8 +81,15 @@
 <pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type">unit -> unit</code></pre>
 <pre><span id="VALclose"><span class="keyword">val</span> close</span> : <code class="type">unit -> unit</code></pre>
 <pre><span id="VALdec_const"><span class="keyword">val</span> dec_const</span> : <code class="type">BFO.atom -> unit</code></pre>
-<pre><span id="VALtseityn"><span class="keyword">val</span> tseityn</span> : <code class="type">BFO.formula -> M.Lit.t list list</code></pre>
+<pre><span id="VALtseityn"><span class="keyword">val</span> tseityn</span> : <code class="type">BFO.formula -> M.Lit.t list list</code></pre><div class="info ">
+This function translates a BFO formula to a 3-CNF formula (used by minisat),
+    using Tseityn's algorithm<br>
+</div>
+
 <pre><span id="VALdec_assert"><span class="keyword">val</span> dec_assert</span> : <code class="type">BFO.formula -> unit</code></pre>
 <pre><span id="VALdec_assert_soft"><span class="keyword">val</span> dec_assert_soft</span> : <code class="type">BFO.formula -> 'a -> unit</code></pre>
-<pre><span id="VALget_assump"><span class="keyword">val</span> get_assump</span> : <code class="type">unit -> M.Lit.t array</code></pre>
+<pre><span id="VALget_assump"><span class="keyword">val</span> get_assump</span> : <code class="type">unit -> M.Lit.t array</code></pre><div class="info ">
+Returns the list of guard axioms used<br>
+</div>
+
 <pre><span id="VALget_ans"><span class="keyword">val</span> get_ans</span> : <code class="type">unit -> <a href="Smtminisat.Smtmini.html#TYPEans">ans</a></code></pre></body></html>

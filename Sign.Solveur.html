@@ -38,11 +38,10 @@ This is the signature for a solver module<br>
 <hr width="100%">
 
 <pre><span id="VALsolve"><span class="keyword">val</span> solve</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">Ast_modal.formula</a> -> bool</code></pre><div class="info ">
-You give a formula and the list of axioms,
-      this function returns you the satifiability of this formula
+You give a formula and
+      this function returns you the satifiability of this formula.
 <p>
 
-      After the refactoring, we won't need the axioms list in the Solveur module,
-      but in the Decide one.<br>
+      This function should what are the frame axioms applied.<br>
 </div>
 </body></html>

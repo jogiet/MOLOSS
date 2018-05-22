@@ -38,7 +38,6 @@
 
 <pre><span class="keyword">module</span> <a href="Decide.GetDecide.FO.html">FO</a>: <code class="type"><a href="Ast_fo.FO.html">Ast_fo.FO</a></code></pre>
 <pre><span class="keyword">module</span> <a href="Decide.GetDecide.BFO.html">BFO</a>: <code class="type"><a href="Ast_fo.BFO.html">Ast_fo.BFO</a></code></pre>
-<pre><span id="VALfpf"><span class="keyword">val</span> fpf</span> : <code class="type">('a, Pervasives.out_channel, unit) Pervasives.format -> 'a</code></pre>
 <pre><span class="keyword">module</span> <a href="Decide.GetDecide.H.html">H</a>: <code class="type">Hashtbl</code></pre>
 <pre><span class="keyword">module</span> <a href="Decide.GetDecide.L.html">L</a>: <code class="type">List</code></pre>
 <pre><span class="keyword">module</span> <a href="Decide.GetDecide.PP.html">PP</a>: <code class="type"><a href="Pprinter.html">Pprinter</a></code></pre>
@@ -260,6 +259,9 @@ the list of decision procedures used to solve a formula<br>
 a function that applies all decision procedures<br>
 </div>
 
-<pre><span id="VALprintDecVar"><span class="keyword">val</span> printDecVar</span> : <code class="type"><a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> -> <a href="Decide.GetDecide.html#TYPEconfig">config</a> -> unit</code></pre>
+<pre><span id="VALprintDecVar"><span class="keyword">val</span> printDecVar</span> : <code class="type"><a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> -> <a href="Decide.GetDecide.html#TYPEconfig">config</a> -> unit</code></pre><div class="info ">
+Prints the newly declared Boxed axiom and the corresponding FO formula<br>
+</div>
+
 <pre><span id="VALprintAssert"><span class="keyword">val</span> printAssert</span> : <code class="type">PP.BFO.formula -> 'a -> unit</code></pre>
 <pre><span id="VALprintAssertSoft"><span class="keyword">val</span> printAssertSoft</span> : <code class="type">PP.BFO.formula -> 'a -> unit</code></pre></body></html>

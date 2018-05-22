@@ -53,9 +53,20 @@
 <pre><span class="keyword">module</span> <a href="Smtmsat.SMTmsat.H.html">H</a>: <code class="type">Hashtbl</code></pre>
 <pre><span class="keyword">module</span> <a href="Smtmsat.SMTmsat.Q.html">Q</a>: <code class="type">Queue</code></pre>
 <pre><span class="keyword">module</span> <a href="Smtmsat.SMTmsat.BFO.html">BFO</a>: <code class="type"><a href="Ast_fo.BFO.html">Ast_fo.BFO</a></code></pre>
-<pre><span id="VALprintbug"><span class="keyword">val</span> printbug</span> : <code class="type">string -> unit</code></pre>
-<pre><span id="VALassump"><span class="keyword">val</span> assump</span> : <code class="type">F.atom Q.t</code></pre>
-<pre><span id="VALnegassump"><span class="keyword">val</span> negassump</span> : <code class="type">'_a Q.t</code></pre>
+<pre><span id="VALprintbug"><span class="keyword">val</span> printbug</span> : <code class="type">string -> unit</code></pre><div class="info ">
+A printing function for debug<br>
+</div>
+
+<pre><span id="VALassump"><span class="keyword">val</span> assump</span> : <code class="type">F.atom Q.t</code></pre><div class="info ">
+This FIFO contains the guards for the assert-soft formulas
+    that are still valid<br>
+</div>
+
+<pre><span id="VALnegassump"><span class="keyword">val</span> negassump</span> : <code class="type">'_a Q.t</code></pre><div class="info ">
+This FIFO contains the guards for the assert-soft formulas
+    that are not valid<br>
+</div>
+
 <pre><code><span id="TYPEans"><span class="keyword">type</span> <code class="type"></code>ans</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -74,12 +85,18 @@
 
 
 
-<pre><span id="VALstoa"><span class="keyword">val</span> stoa</span> : <code class="type">(BFO.atom, E.t) H.t</code></pre>
+<pre><span id="VALstoa"><span class="keyword">val</span> stoa</span> : <code class="type">(BFO.atom, E.t) H.t</code></pre><div class="info ">
+This hashtbl maps the BFO axiom to the mSAT axioms<br>
+</div>
+
 <pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type">unit -> unit</code></pre>
 <pre><span id="VALclose"><span class="keyword">val</span> close</span> : <code class="type">unit -> unit</code></pre>
 <pre><span id="VALdec_const"><span class="keyword">val</span> dec_const</span> : <code class="type">BFO.atom -> unit</code></pre>
 <pre><span id="VALbfo_to_msat"><span class="keyword">val</span> bfo_to_msat</span> : <code class="type">BFO.formula -> F.t</code></pre>
 <pre><span id="VALdec_assert"><span class="keyword">val</span> dec_assert</span> : <code class="type">BFO.formula -> unit</code></pre>
 <pre><span id="VALdec_assert_soft"><span class="keyword">val</span> dec_assert_soft</span> : <code class="type">BFO.formula -> 'a -> unit</code></pre>
-<pre><span id="VALget_assum"><span class="keyword">val</span> get_assum</span> : <code class="type">unit -> F.atom list</code></pre>
+<pre><span id="VALget_assum"><span class="keyword">val</span> get_assum</span> : <code class="type">unit -> F.atom list</code></pre><div class="info ">
+Returns the list of asserted guards<br>
+</div>
+
 <pre><span id="VALget_ans"><span class="keyword">val</span> get_ans</span> : <code class="type">unit -> <a href="Smtmsat.SMTmsat.html#TYPEans">ans</a></code></pre></body></html>
