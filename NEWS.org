@@ -1,3 +1,0 @@
-* Release XXX
-
-  First release of MOLOSS.

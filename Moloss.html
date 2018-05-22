@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="next" href="Solve.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Moloss</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Solve.html" title="Solve">Next</a>
+</div>
+<h1>Module <a href="type_Moloss.html">Moloss</a></h1>
+
+<pre><span class="keyword">module</span> Moloss: <code class="code">sig</code> <a href="Moloss.html">..</a> <code class="code">end</code></pre><div class="info module top">
+Solveur's main module<br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Moloss.Dummy.html">Dummy</a>: <code class="code">sig</code> <a href="Moloss.Dummy.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.DecisionArg.html">DecisionArg</a>: <code class="code">sig</code> <a href="Moloss.DecisionArg.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.Decision.html">Decision</a>: <code class="type"><a href="Decide.GetDecide.html">Decide.GetDecide</a></code><code class="code">(</code><code class="type"><a href="Moloss.DecisionArg.html">DecisionArg</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.Simplify.html">Simplify</a>: <code class="type">Simplify.GetSimplify</code><code class="code">(</code><code class="type"><a href="Moloss.DecisionArg.html">DecisionArg</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.Sz3.html">Sz3</a>: <code class="type"><a href="Solve.Solve.html">Solve.Solve</a></code><code class="code">(</code><code class="type"><a href="Smtz3.SMTz3.html">Smtz3.SMTz3</a></code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Decision.html">Decision</a></code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Simplify.html">Simplify</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.Smsat.html">Smsat</a>: <code class="type"><a href="Solve.Solve.html">Solve.Solve</a></code><code class="code">(</code><code class="type"><a href="Smtmsat.SMTmsat.html">Smtmsat.SMTmsat</a></code><code class="code">(</code><code class="type"><a href="Moloss.Dummy.html">Dummy</a></code><code class="code">)</code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Decision.html">Decision</a></code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Simplify.html">Simplify</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.Sminisat.html">Sminisat</a>: <code class="type"><a href="Solve.Solve.html">Solve.Solve</a></code><code class="code">(</code><code class="type"><a href="Smtminisat.Smtmini.html">Smtminisat.Smtmini</a></code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Decision.html">Decision</a></code><code class="code">)</code><code class="code">(</code><code class="type"><a href="Moloss.Simplify.html">Simplify</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Moloss.D.html">D</a>: <code class="type"><a href="Direct.html">Direct</a></code></pre>
+<pre><span id="VALreport"><span class="keyword">val</span> report</span> : <code class="type">Lexing.position * Lexing.position -> string -> unit</code></pre><div class="info ">
+A basic function to report parsing/lexing bug<br>
+</div>
+
+<pre><span id="VALsolve_vanilla"><span class="keyword">val</span> solve_vanilla</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">Ast_modal.formula</a> -> unit</code></pre><div class="info ">
+Main function in the solver for vanilla solving
+    It's the used function when no option is called (except the solver)<br>
+</div>
+
+<pre><span id="VALsolve_model"><span class="keyword">val</span> solve_model</span> : <code class="type">Pprinter.M.formula -> unit</code></pre><div class="info ">
+This function solve the formula and ouputs a model<br>
+</div>
+
+<pre><span id="VALsolve_assert"><span class="keyword">val</span> solve_assert</span> : <code class="type">Pprinter.M.formula -> unit</code></pre><div class="info ">
+This function solve the formula and ouputs the assertions<br>
+</div>
+</body></html>

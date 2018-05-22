@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Pprinter.html">
+<link rel="next" href="Smtminisat.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Sign</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Pprinter.html" title="Pprinter">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Smtminisat.html" title="Smtminisat">Next</a>
+</div>
+<h1>Module <a href="type_Sign.html">Sign</a></h1>
+
+<pre><span class="keyword">module</span> Sign: <code class="code">sig</code> <a href="Sign.html">..</a> <code class="code">end</code></pre><div class="info module top">
+Module for generic signatures<br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Sign.BFO.html">BFO</a>: <code class="type"><a href="Ast_fo.BFO.html">Ast_fo.BFO</a></code></pre>
+<pre><span class="keyword">module type</span> <a href="Sign.Smt.html">Smt</a> = <code class="code">sig</code> <a href="Sign.Smt.html">..</a> <code class="code">end</code></pre><div class="info">
+This is the signature for an interface between decision precedures and
+    the SMT solver
+</div>
+
+<pre><span class="keyword">module type</span> <a href="Sign.Simplify.html">Simplify</a> = <code class="code">sig</code> <a href="Sign.Simplify.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module type</span> <a href="Sign.Decide.html">Decide</a> = <code class="code">sig</code> <a href="Sign.Decide.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module type</span> <a href="Sign.DecideArg.html">DecideArg</a> = <code class="code">sig</code> <a href="Sign.DecideArg.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module type</span> <a href="Sign.Solveur.html">Solveur</a> = <code class="code">sig</code> <a href="Sign.Solveur.html">..</a> <code class="code">end</code></pre><div class="info">
+This is the signature for a solver module
+</div>
+</body></html>
