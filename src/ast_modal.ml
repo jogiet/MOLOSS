@@ -2,6 +2,7 @@
 (*         Ast pour les formules de logique modale        *)
 (*########################################################*)
 
+(** This module explicits the AST of modal logic formulas *)
 
 
 type ident = string
@@ -49,7 +50,8 @@ let rec formLength = function
   | Not f | Boxe f | Diamond f -> formLength f + 1
   | Conj (f1,f2) | Dij (f1,f2) | Impl (f1,f2) -> (formLength f1) + (formLength f2) + 1
 
-    (** Returns the modal degree *)
+  (** Returns the modal degree, i.e. then number of [] and <> in the
+   * formula *)
 let rec modDegree = function
   | True | False | Atom _ -> 0
   | Not f -> modDegree f

@@ -2,6 +2,8 @@
 (*                 Interface pour minisat                 *)
 (*########################################################*)
 
+(** This module introduces the connexion between MOLOSS and minisat *)
+
 module M = Minisat
 module BFO = Ast_fo.BFO
 module H = Hashtbl
@@ -11,6 +13,7 @@ module Q = Queue
 
 module Smtmini : Sign.Smt =
 struct
+(** This module introduces the connexion between MOLOSS and minisat *)
 
 (*--------------------------------------------------------*)
 (*                    Variables globales                  *)
