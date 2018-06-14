@@ -1,11 +1,11 @@
 for filename in ./data/InToHyLo/test*; do
 	echo " "
 	echo "$filename"
-	./moloss.native "$filename" --time
+	./moloss.native "$filename" --time $*
 	if [ $? != 0 ]
 		then exit 1
 	fi
-	./moloss.native "$filename" --time --mSAT
+	./moloss.native "$filename" --time --mSAT $*
 	if [ $? != 0 ]
 		then exit 1
 	fi
