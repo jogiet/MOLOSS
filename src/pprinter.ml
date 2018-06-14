@@ -19,6 +19,8 @@ module H = Hashtbl
     (**/**)
 let spf = Printf.sprintf
 let fpf = Printf.printf
+let add_parenthesis s = 
+  spf "(%s)" s
     (**/**)
 
 
@@ -28,16 +30,43 @@ let fpf = Printf.printf
 
   (** Does not print the formula,
       but returns a string representing the formula *)
-let rec aux_m = function
-| M.Atom p -> spf "p%d" p
-| M.Not f -> spf "~ (%s)" (aux_m f)
-| M.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_m f1) (aux_m f2)
-| M.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_m f1) (aux_m f2)
-| M.Impl (f1,f2) -> spf "(%s) => (%s)" (aux_m f1) (aux_m f2)
-| M.Boxe f -> spf "[r1] (%s)" (aux_m f)
-| M.Diamond f -> spf "<r1> (%s)" (aux_m f)
-| M.True -> "true"
-| M.False -> "false"
+let aux_m f = 
+  (* Some basics functions for pretty-printing *)
+  let rec aux_atom f = 
+    match f with
+    | M.True -> "true"
+    | M.False -> "false"
+    | M.Atom p -> spf "p%d" p
+    | M.Not f0 -> spf "~%s" (aux_atom f0)
+    | M.Conj _ -> aux_conj f |> add_parenthesis
+    | M.Dij _ -> aux_dij f |> add_parenthesis
+    | M.Boxe _ | M.Diamond _ -> aux_boxe_diamond f |> add_parenthesis
+    | M.Impl _ -> aux_impl f |> add_parenthesis
+  and aux_conj = function 
+  | M.Conj (f1,f2) -> 
+    spf "%s & %s" (aux_conj f1) (aux_conj f2)
+  | _ as f -> aux_atom f
+  and aux_dij = function
+  | M.Dij (f1,f2) ->
+    spf "%s | %s" (aux_dij f1) (aux_dij f2)
+  | M.Conj _ as f -> aux_conj f
+  | _ as f -> aux_atom f 
+  and aux_boxe_diamond = function
+  | M.Boxe f -> spf "[r1] %s" (aux_boxe_diamond f)
+  | M.Diamond f -> spf "<r1> %s" (aux_boxe_diamond f)
+  | _ as f -> aux_atom f
+  and aux_impl f = 
+  match f with
+  | M.Impl (f1,f2) -> 
+    spf "%s -> %s" (aux_atom f1) (aux_impl f2)
+  | _ -> aux_atom f
+in 
+match f with
+| M.Atom _ | M.Not _ | M.True | M.False -> aux_atom f
+| M.Conj _ -> aux_conj f
+| M.Dij _ -> aux_dij f
+| M.Impl _  -> aux_impl f
+| M.Boxe _ | M.Diamond _ -> aux_boxe_diamond f
 
   (** Prints the formula on stdout *)
 let print_m f =
@@ -48,18 +77,27 @@ let print_m f =
 (*--------------------------------------------------------*)
   (** Does not print the formula,
       but returns a string representing the formula *)
-let rec aux_fo = function
-| FO.Atom (p,x) -> spf "P%d(w%d)" p x
-| FO.Not f -> spf "~ %s" (aux_fo f)
-| FO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_fo f1) (aux_fo f2)
-| FO.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_fo f1) (aux_fo f2)
-| FO.Relation (x,y) -> spf "w%dRw%d" x y
-| FO.Forall (x,f)->
-	let quant = "forall"
-	in spf "%s w%d, %s" quant x (aux_fo f)
-| FO.Exists (x,f)->
-	let quant = "exists"
-	in spf "%s w%d, %s" quant x (aux_fo f)
+let rec aux_fo f =
+  let rec aux_atom = function
+  | FO.Atom (p,x) -> spf "P%d(w%d)" p x
+  | FO.Not f -> spf "~ %s" (aux_atom f)
+  | FO.Relation (x,y) ->
+    spf "w%dRw%d" x y
+  | FO.Forall (x,f) ->
+    spf "forall w%d, %s" x (aux_atom f)
+  | FO.Exists (x,f) ->
+    spf "exists w%d, %s" x (aux_atom f)
+  | FO.Conj _ as f -> aux_conj f |> add_parenthesis
+  | FO.Dij _ as f -> aux_dij f |> add_parenthesis
+  and aux_conj = function
+  | FO.Conj (f1,f2) -> spf "%s & %s" (aux_conj f1) (aux_conj f2)
+  | _ as f -> aux_atom f 
+  and aux_dij = function
+  | FO.Dij (f1,f2) ->spf "%s | %s" (aux_dij f1) (aux_dij f2)
+  | FO.Conj _ as f -> aux_conj f
+  | _ as f -> aux_atom f
+in aux_dij f
+
 
   (** Prints the formula on stdout *)
 let print_fo f =
@@ -67,11 +105,20 @@ let print_fo f =
 
   (** Does not print the formula,
       but returns a string representing the formula *)
-let rec aux_bfo = function
-| BFO.Atom	x -> spf "v%d" x
-| BFO.Not f -> spf "~ %s" (aux_bfo f)
-| BFO.Conj (f1,f2) -> spf "(%s) & (%s)" (aux_bfo f1) (aux_bfo f2)
-| BFO.Dij (f1,f2) -> spf "(%s) | (%s)" (aux_bfo f1) (aux_bfo f2)
+let rec aux_bfo f =
+  let rec aux_atom = function
+  | BFO.Atom x -> spf "v%d" x
+  | BFO.Not f -> spf "~ %s" (aux_atom f)
+  | BFO.Conj _ as f -> aux_conj f |> add_parenthesis
+  | BFO.Dij _ as f -> aux_dij f |> add_parenthesis
+  and aux_conj = function
+  | BFO.Conj (f1,f2) -> spf "%s & %s" (aux_conj f1) (aux_conj f2)
+  | _ as f -> aux_atom f
+  and aux_dij = function
+  | BFO.Dij (f1,f2) -> spf "%s | %s" (aux_dij f1) (aux_dij f2)
+  | BFO.Conj _ as f -> aux_conj f
+  | _ as f -> aux_atom f
+in aux_dij f
 
 (** Prints the formula on stdout *)
 let print_bfo f =
