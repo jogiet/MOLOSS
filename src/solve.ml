@@ -12,6 +12,7 @@ open Decide
 module C = Convertisseur
 
 module L = List
+module ISet = Set.Make(struct type t = BFO.atom let compare = compare end)
 
 module PP = Pprinter
 
@@ -21,11 +22,59 @@ let fpf = printf
 (*                    Fonction Core                       *)
 (*--------------------------------------------------------*)
 
+(** Add all new axioms occuring in the boxed formula in the 
+    model with the value [true].  
+*)
+let add_model model new_bf =
+	let rec get_axioms f (accu: ISet.t) =
+  match f with
+		| BFO.Dij (f1, f2)
+		| BFO.Conj (f1, f2) ->
+			accu
+			|> get_axioms f1
+			|> get_axioms f2
+		| BFO.Not f ->
+			get_axioms f accu
+		| BFO.Atom x -> ISet.add x accu
+	in
+  match new_bf with
+  | BFO.Dij (_, bf) ->
+    let axs = get_axioms new_bf ISet.empty in
+    ISet.fold
+      (fun ax model -> (ax, true)::model)
+			axs model
+  | _ -> assert false
+
+
 module Solve
     (SMT : Sign.Smt)
     (D : Sign.Decide)
     (S : Sign.Simplify) : Sign.Solveur =
 struct
+
+
+
+
+let rec multi_decide config model =
+  try
+    D.decide config model
+  with
+  | D.Found (new_var, new_bf) ->
+	begin
+    let _ = List.iter (fun v -> SMT.dec_const v) new_var
+    and _ = SMT.dec_assert new_bf in
+    let new_m = add_model model new_bf in
+    multi_decide config new_m
+	end
+  | D.SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
+    begin
+      List.iter (fun v -> SMT.dec_const v ) new_var1;
+      List.iter (fun v -> SMT.dec_const v ) new_var2;
+      SMT.dec_assert new_bf;
+      SMT.dec_assert_soft bf_soft wght;
+    end
+  
+
 
 let solve f =
   let f = S.simplify f in
@@ -53,13 +102,11 @@ let solve f =
 				cont := false;
 				res := false;
 			end
-			| SMT.SAT  m ->
+			| SMT.SAT m ->
 				try begin
 					D.decide config m;
 					fpf "s SATISFIABLE\n";
-					(*
-					print_soluce config m;
-					*)
+					(* print_soluce config m; *)
 					flush_all ();
 					cont := false;
 				end
@@ -68,6 +115,8 @@ let solve f =
 				begin
 					List.iter (fun v -> SMT.dec_const v) new_var;
 					SMT.dec_assert new_bf ;
+          let new_m = add_model m new_bf in
+          multi_decide config new_m
 				end;
 				| D.SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
 				begin
