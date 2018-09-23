@@ -18,6 +18,13 @@ type formula =
 	| Boxe of formula
 	| Diamond of formula
 
+type axiom = 
+  | AxS
+  | AxB
+  | Ax4
+  | Ax5
+  | AxCD
+
   (** This function propagate a negation in a modal formula.
      Helps to compute the NNF of the formula *)
 let rec prop_neg = function

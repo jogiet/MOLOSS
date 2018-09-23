@@ -522,37 +522,20 @@ end
 let axiom_to_dec_proc axiom =
   let rec aux = function
     | [] -> []
-    | "-S"::q | "-M"::q | "-boxeM"::q ->
-      if L.mem "-5" axiom then
+    | M.AxS::q ->
+      if L.mem M.Ax5 axiom then
         reflexiv::(aux q)
       else
         reflexiv::(aux q)
-    | "-K"::q -> aux q
-    | "-4"::q -> transitivity::(aux q)
-    | "-B"::q -> symmetric::(aux q)
-    | "-5"::q -> euclidean::(aux q)
-    | "-CD"::q -> functionnal::(aux q)
-    | t::q ->
-    begin
-      if String.length t <= 1
-      then begin
-        Printf.printf "argument inconnu : %s\n" t;
-        exit 0
-      end
-      else if String.get t 0 = '-' && String.get t 1 != '-'
-      then
-      begin
-        fpf "Axiome inconne : %s \n" t;
-        exit 1
-      end
-      else
-        aux q
-    end
+    | M.Ax4::q -> transitivity::(aux q)
+    | M.AxB::q -> symmetric::(aux q)
+    | M.Ax5::q -> euclidean::(aux q)
+    | M.AxCD::q -> functionnal::(aux q)
   in let res = aux axiom in
-  if L.mem  "-CD" axiom  || L.mem "-boxeM" axiom then
+  if L.mem  M.AxCD axiom then
     res@[forall]
-  else if (L.mem "-4" axiom || L.mem "-5" axiom || L.mem "--soft" axiom)
-    && not (L.mem "--soft-ignore" axiom) then
+  else if (L.mem M.Ax4 axiom || L.mem M.Ax5 axiom || Cmdline.(!optSoft))
+    && not (Cmdline.(!optSoftIgnore)) then
     res@[forall;softexist]
   else
     res@[forall;exist]

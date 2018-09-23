@@ -43,7 +43,15 @@ let add_model model new_bf =
     ISet.fold
       (fun ax model -> (ax, true)::model)
 			axs model
-  | _ -> assert false
+  | BFO.Conj _ ->
+    let _ = Printf.printf "C'est Conj"
+    in assert false
+  | BFO.Atom _ ->
+    let _ = Printf.printf "C'est Atom"
+    in assert false
+  | BFO.Not _ ->
+    let _ = Printf.printf "C'est Not"
+    in assert false
 
 
 module Solve
@@ -115,9 +123,11 @@ let solve f =
 				begin
 					List.iter (fun v -> SMT.dec_const v) new_var;
 					SMT.dec_assert new_bf ;
+          (*
           let new_m = add_model m new_bf in
           multi_decide config new_m
-				end;
+				  *)
+        end;
 				| D.SoftFound (new_var1,new_bf,new_var2,bf_soft,wght) ->
 				begin
 					List.iter (fun v -> SMT.dec_const v ) new_var1;

@@ -78,19 +78,19 @@ let getUniqueId () =
 
 (** An association list between the axioms and their FO translation *)
 let assoc =
-[("-M",";axiome de réfléxivité \n\
+[(Ast_modal.AxS,";axiome de réfléxivité \n\
 	(assert (forall ((w0 W)) (r w0 w0)))");
- ("-4",";axiome de trasitivité \n\
+ (Ast_modal.Ax4,";axiome de trasitivité \n\
  	(assert (forall ((w0 W) (w1 W) (w2 W)) \
 			(=> (and (r w0 w1) (r w1 w2)) (r w0 w2))))\n");
- ("-B",";axiome de symétrie \n\
+ (Ast_modal.AxB,";axiome de symétrie \n\
  	(assert (forall ((w1 W)(w2 W)) \
  			(=> (r w1 w2) (r w2 w1))))\n");
- ("-5",":axiome de euclidienne \n\
+ (Ast_modal.Ax5,":axiome de euclidienne \n\
  	(assert (forall ((w0 W) (w1 W) (w2 W)) \
  			(=> (and (r w0 w1) (r w0 w2)) \
 				(and (r w1 w2) (r w2 w1)))))\n");
- ("-CD",";axiome de fonctionelle \n\
+ (Ast_modal.AxCD,";axiome de fonctionelle \n\
  	(assert (forall ((w0 W) (w1 W) (w2 W)) \
  			(=> (and (r w0 w1) (r w0 w2)) \
 				(= w1 w2))))\n")]
@@ -105,24 +105,10 @@ begin
 		in begin
 			output_string oc ax;
 			p_out ax out;
+	    p_axiom oc out q;
 		end
 	else
-	begin
-    if String.length t <= 1
-    then begin
-      Printf.printf "argument inconnu : %s\n" t;
-      exit 1
-    end
-    else if String.get t 0 = '-' && String.get t 1 != '-'
-    then
-    begin
-      fpf "Axiome inconne : %s \n" t;
-      exit 1
-    end
-    else
-      p_axiom oc out q
-	 end;
-	p_axiom oc out q;
+    assert false
 end
 
 

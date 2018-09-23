@@ -1,4 +1,4 @@
-for filename in ./data/InToHyLo/test*; do
+for filename in ./data/InToHyLo/test-basic*; do
 	echo " "
 	echo "$filename"
 	./moloss.native "$filename" --time $*

@@ -104,7 +104,7 @@ module type DecideArg =
 sig
   (** Basically : this argument is the argument in the command line. it contains :
     - the axioms : -S, -K, -4, -5 *)
-		val argument : string list
+		val argument : Ast_modal.axiom list
 end
 
 

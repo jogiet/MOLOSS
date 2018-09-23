@@ -4,14 +4,13 @@ open Lexing
 
 module Dummy  = struct let truc = 0 end
 
+
 module DecisionArg : Sign.DecideArg =
 struct
-  let argument = match (Array.to_list (Sys.argv)) with
-    | _ :: _ :: q ->
-      q
-    | _  ->
-      Printf.printf "Give a formula to solve\n";
-      exit 1
+
+  let argument = 
+    let _ = Cmdline.init () in
+      Cmdline.(!axs)
 end
 
 module Decision = Decide.GetDecide(DecisionArg)
@@ -39,7 +38,7 @@ let argv = Array.to_list (Sys.argv) in
 	if List.mem "--out" argv then
 		Printf.printf "pas encore implem'\n"
 	else
-		if List.mem "--all" argv then
+		if Cmdline.(!optAll) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
@@ -51,13 +50,13 @@ let argv = Array.to_list (Sys.argv) in
 				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve f |> ignore;
 			end
-		else if List.mem "--z3" argv then
+		else if Cmdline.(!optZ3) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle z3\n";
 				Z3.solve f |> ignore;
 			end
-		else if List.mem "--mSAT" argv then
+		else if Cmdline.(!optmSAT) then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
 			in begin
 				Printf.printf "c oracle mSAT\n";
@@ -77,7 +76,7 @@ let argv = Array.to_list (Sys.argv) in
 	if List.mem "--out" argv then
 		Printf.printf "pas encore implem'\n"
 	else
-		if List.mem "--all" argv then
+		if Cmdline.(!optAll) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
@@ -90,14 +89,14 @@ let argv = Array.to_list (Sys.argv) in
 				Printf.printf "c oracle minisat\n";
 				MiniSAT.solve f |> ignore;
 			end
-		else if List.mem "--z3" argv then
+		else if Cmdline.(!optZ3) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
 				Printf.printf "c oracle z3\n";
 				Z3.solve f |> ignore;
 			end
-		else if List.mem "--mSAT" argv then
+		else if Cmdline.(!optmSAT) then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
 			in begin
         Printf.printf "c "; Pprinter.print_m f;
@@ -119,7 +118,7 @@ let solve_assert f =
   if List.mem "--out" argv then
     Printf.printf "pas encore implem'\n"
   else
-  if List.mem "--all" argv then
+	if Cmdline.(!optAll) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify) in
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify) in
     let module MiniSAT = Solv(Smtminisat.Smtmini)(Decision)(Simplify)
@@ -132,14 +131,14 @@ let solve_assert f =
       Printf.printf "c oracle minisat\n";
       MiniSAT.solve f |> ignore;
     end
-  else if List.mem "--z3" argv then
+	else if Cmdline.(!optZ3) then
     let module Z3 = Solv(Smtz3.SMTz3)(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
       Printf.printf "c oracle z3\n";
       Z3.solve f |> ignore;
     end
-  else if List.mem "--mSAT" argv then
+	else if Cmdline.(!optmSAT) then
     let module MSAT = Solv(Smtmsat.SMTmsat(Dummy))(Decision)(Simplify)
     in begin
       Printf.printf "c "; Pprinter.print_m f;
@@ -156,23 +155,23 @@ let solve_assert f =
 
 
 let _ =
-	let argv = Array.to_list (Sys.argv)
-	and t0 = Unix.gettimeofday ()
+  let _ = Cmdline.init () in
+  let t0 = Unix.gettimeofday ()
 	in begin
 	begin
-		match argv with
-  	| _ :: filename :: _  ->
+		match Cmdline.(!file) with
+  	| Some filename ->
     begin
       let file = open_in filename in
       let lb = Lexing.from_channel file in
       try
         let f = InToHyLoParser.file InToHyLoLexer.next_token lb in
-        if List.mem "--direct" argv then
+        if Cmdline.(!optDirect) then
           begin
             Printf.printf "c oracle direct\n";
-            (Direct.solve (Convertisseur.st 0 f) argv) |> ignore;
+            (Direct.solve (Convertisseur.st 0 f) Cmdline.(!axs)) |> ignore;
           end
-        else if List.mem "--get-simplify" argv then
+        else if Cmdline.(!optGetSimplify) then
           let fs = Simplify.simplify f in
           let l = Ast_modal.formLength f
           and d = Ast_modal.modDegree f
@@ -186,9 +185,9 @@ let _ =
 						else "\027[31m"
           in
             Printf.printf "%d,%d,%s%d\027[0m,%s%d\027[0m\n" l d cls ls cds ds
-        else if List.mem "--get-assert" argv then
+        else if Cmdline.(!optGetAssert) then
           solve_assert f
-        else if List.mem "--get-model" argv then
+        else if Cmdline.(!optGetAssert) then
           solve_model f
         else
           solve_vanilla f
@@ -206,12 +205,11 @@ let _ =
     end
 		| _ ->
 		begin
-			Printf.printf
-			"Give a filename of a InToHyLo formula to solve.\n";
+      Cmdline.print_usage ();
 			exit 1;
 		end;
 	end;
 		flush_all ();
-		if List.mem "--time" argv then
+		if Cmdline.(!optTime) then
     Printf.printf "c Done in %f s \n" (Unix.gettimeofday () -.t0);
 	end

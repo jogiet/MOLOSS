@@ -124,9 +124,9 @@ let rec simplifyS = function
     end
 
 let getSimplify arg =
-  if L.mem "--no-simplify" arg then
+  if Cmdline.(!optNoSimplify) then
     (fun x -> x)
-  else if L.mem "-S" arg  || L.mem "--S4" arg || L.mem "--S5" arg
+  else if L.mem M.AxS arg
     then simplifyS
     else simplifyK
 
