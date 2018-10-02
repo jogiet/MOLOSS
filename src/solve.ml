@@ -41,7 +41,7 @@ let add_model model new_bf =
   | BFO.Dij (_, bf) ->
     let axs = get_axioms new_bf ISet.empty in
     ISet.fold
-      (fun ax model -> (ax, true)::model)
+      (fun ax model -> ax::model)
 			axs model
   | BFO.Conj _ ->
     let _ = Printf.printf "C'est Conj"

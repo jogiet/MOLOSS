@@ -56,7 +56,7 @@ let printbug s =
 
 type ans =
 	| UNSAT
-	| SAT of (BFO.atom*bool) list
+	| SAT of (BFO.atom) list
 
 let init () =
 begin
@@ -173,8 +173,8 @@ let get_ans () =
 			let model = ref [] in
 			let aux s lit =
 				match M.value !instance lit with
-				| M.V_true -> model := (s,true)::(!model)
-				| _ -> model := (s,false)::(!model)
+				| M.V_true -> model := s::(!model)
+				| _ -> ()
 			in begin
 				H.iter aux storelit;
 				SAT !model;

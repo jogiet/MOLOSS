@@ -90,14 +90,13 @@ let new_config () =
     config;
   end
 
-type model = (BFO.atom * bool) list
+type model = (BFO.atom) list
 (** Type of a model returned by SMT-solver  *)
 
 
 (** returns :
     - the list of the boxed formula corresponding to the FO formula
     - the variables in the boxed formula
-
     and add the formula in the config by side effect. *)
 let rec init (config : config) = function
 | [] ->
@@ -136,7 +135,7 @@ exception SoftFound of
 (** Decision procedure for the \exists rule *)
 let rec exist config = function
 | [] -> ()
-| (eps,b)::q when b ->
+| (eps)::q ->
 begin
 if H.mem config.exists eps then
 	exist config q
@@ -157,26 +156,24 @@ else
 	end
 	| _ -> exist config q
 end
-| _::q -> exist config q
 
 
 (*  ===========>  règle forall  <=========== *)
 (** Decision procedure for the \forall rule *)
 let rec forall config model  =
-	(* D'abord on extrait les realtions du modèle *)
+	(* D'abord on extrait les relations du modèle *)
 	let rec make_rel config  = function
 	| [] -> []
-	| (eps,b)::q when b ->
+	| (eps)::q ->
 	begin
 		match H.find config.env eps with
 		| FO.Relation (x,y) -> (x,y)::(make_rel config q)
 		| _ -> make_rel config q
 	end
-	| _::q -> make_rel config q
 	(* Puis on parcourt le modèle pour trouver un epsilon qui convient *)
 	and aux config rel = function
 	| [] -> ()
-	| (eps,b)::q when b ->
+	| (eps)::q ->
 	begin
 		let f = H.find config.env eps in
 		match f with
@@ -200,7 +197,6 @@ let rec forall config model  =
 		end
 		| _ -> aux config rel q
 	end
-  | _::q ->  aux config rel q
   (* On Combine les deux *)
 	in aux config (make_rel config model) model
 
@@ -209,9 +205,8 @@ let rec forall config model  =
 (** Decision procedure for the reflexivity rule (use the modal axiom :
 W\R w, is implicit in the frame *)
 let reflexiv config model =
-	let aux (eps,b) =
+	let aux eps =
 	(* renvoie true si le couple est bon pour trigger *)
-		b &&
 		begin
 		match H.find config.env eps with
 		| FO.Forall (_,(FO.Dij (FO.Not (FO.Relation (c,_)),f)) )
@@ -227,9 +222,9 @@ let reflexiv config model =
  	match L.filter aux model with
 	(*  On recherche ensuite tous les couple qui triggent *)
 	| [] -> ()
-	| (eps,_)::q ->
+	| (eps)::q ->
 	let fd = L.fold_left
-	(fun f0 (eps,_) ->
+  (fun f0 (eps) ->
 		let f = H.find config.env eps in
 		match f with
 		| FO.Forall (_,FO.Dij (FO.Not (FO.Relation (w,_)),fi)) ->
@@ -256,7 +251,7 @@ let reflexiv config model =
 (** Decision procedure for the fonctionnal rule *)
 let rec functionnal config = function
 | [] -> ()
-| (eps,b)::q when b ->
+| (eps)::q ->
 begin
 if H.mem config.exists eps then
 	functionnal config q
@@ -287,7 +282,6 @@ else
 	end
 	| _ -> functionnal config q
 end
-| _::q -> functionnal config q
 
 
 
@@ -295,7 +289,7 @@ end
 (** Decision procedure for the symmetrical rule *)
 let rec symmetric config = function
 | [] -> ()
-| (eps,b)::q  when b ->
+| (eps)::q ->
 begin
 	let f = H.find config.env eps in
 	match f with
@@ -318,7 +312,6 @@ begin
 			end
 	| _ -> symmetric config q
 end
-| _::q -> symmetric config q
 
 
 (*  ===========> Transitivité  <=========== *)
@@ -326,7 +319,7 @@ end
 let transitivity config model =
 	let rec aux rel = function
 	| [] -> ()
-	| (eps,b)::q when b ->
+	| (eps)::q ->
 	begin
 		match H.find config.env eps with
 		| FO.Relation (x,y) ->
@@ -365,7 +358,6 @@ let transitivity config model =
 		end
 		| _ -> aux rel q
 	end
-	| _::q -> aux rel q
 	in
 	aux [] model
 
@@ -374,7 +366,7 @@ let transitivity config model =
 let euclidean config model =
 	let rec aux rel = function
 	| [] -> ()
-	| (eps,b)::q when b ->
+	| (eps)::q ->
 	begin
 		match H.find config.env eps with
 		| FO.Relation (x,u) ->
@@ -403,7 +395,6 @@ let euclidean config model =
 		end
 		| _ -> aux rel q
 	end
-	| _::q -> aux rel q
 	in
 	aux [] model
 
@@ -419,7 +410,7 @@ let euclidean config model =
 (** Decision procedure for the \exists_soft rule *)
 let rec softexist config = function
 | [] -> ()
-| (eps,b)::q when b ->
+| (eps)::q ->
 begin
 if H.mem config.exists eps then
 	softexist config q
@@ -460,7 +451,6 @@ else
 	end
 	| _ -> softexist config q
 end
-| _::q -> softexist config q
 
 
 
@@ -469,7 +459,7 @@ end
 @deprecated : not used *)
 let rec softreflexiv config = function
 | [] -> ()
-| (eps,b)::q when b ->
+| (eps)::q ->
 begin
 if H.mem config.exists eps then
 	softreflexiv config q
@@ -512,7 +502,6 @@ else
 	end
 	| _ -> softreflexiv config q
 end
-| _::q -> softreflexiv config q
 
 
 
@@ -547,20 +536,20 @@ let print_model config model =
   let prop = H.create 42
   and cardProp = ref 0 in
   let relation = ref [] in
-  let aux (k,b) =
+  let aux k =
     let f = H.find config.env k in
     match f with
     | FO.Relation (w1,w2) ->
-      if b then relation := (w1,w2)::!relation
+      relation := (w1,w2)::!relation
     | FO.Atom (p,w)   ->
     begin
       if p > !cardProp then cardProp := p;
-      H.add prop (p,w) b;
+      H.add prop (p,w) true;
     end
     | FO.Not (FO.Atom (p,w)) ->
     begin
       if p > !cardProp then cardProp := p;
-      H.add prop (p,w) (not b);
+      H.add prop (p,w) false;
     end
     | FO.Exists _ | FO.Forall _ -> ()
     |  _ -> assert false

@@ -14,7 +14,7 @@ sig
       - [ SAT ] and the ground model satisfaying the formula *)
 	type ans =
 	| UNSAT
-	| SAT of (BFO.atom*bool) list
+	| SAT of BFO.atom list
 
     (** Function to launch a solver. Only used for z3*)
  	val init : unit -> unit
@@ -56,7 +56,7 @@ sig
 
   val new_config : unit -> config
 
-  type model = (BFO.atom*bool) list
+  type model = (BFO.atom) list
 
   (** This function encode the instanciation procedures.
       It returnes nothing since when a possible instanciation is found,

@@ -41,7 +41,7 @@ let close () =
 
 type ans =
 	| UNSAT
-	| SAT of (BFO.atom*bool) list
+	| SAT of (BFO.atom) list
 
 
 
@@ -116,7 +116,9 @@ begin
 		done;
 	let lb = Lexing.from_string !res in
 	try
-		Z3_parser.answer Z3_lexer.next_token lb
+		(Z3_parser.answer Z3_lexer.next_token lb)
+    |> List.filter (fun (_,b) -> b) 
+    |> List.map (fun (x,_) -> x)
 	with
 	| Z3_lexer.Lex_err s ->
 	report (lexeme_start_p lb, lexeme_end_p lb) "modèle";

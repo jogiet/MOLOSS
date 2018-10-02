@@ -44,7 +44,7 @@ let negassump = Q.create ()
 
 type ans =
 	| UNSAT
-	| SAT of (BFO.atom*bool) list
+	| SAT of (BFO.atom) list
 
  		(** This hashtbl maps the BFO axiom to the mSAT axioms *)
 let stoa = H.create 42
@@ -117,10 +117,8 @@ let rec get_ans () =
 	| Sat.Sat state ->
 	let model = ref [] in
 	let aux s a =
-		try
-			model := (s,state.Msat.Solver_intf.eval a)::(!model)
-		with _ ->
-			model := (s,false)::(!model)
+    if try state.Msat.Solver_intf.eval a with _ -> false then
+      model := s::(!model)
 	in begin
 		H.iter aux stoa;
 		SAT !model;
