@@ -25,6 +25,9 @@ static: sanity
 	STATIC=true $(OCB) -tag custom src/moloss.native
 
 # tests
+tests: native
+	bash test.sh
+
 various_tests: native
 	$(OCB) tests/various_tests.native
 
