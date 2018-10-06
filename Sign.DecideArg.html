@@ -21,6 +21,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -36,7 +37,7 @@
 
 <pre><span class="keyword">module type</span> DecideArg = <code class="code">sig</code> <a href="Sign.DecideArg.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
-<pre><span id="VALargument"><span class="keyword">val</span> argument</span> : <code class="type">string list</code></pre><div class="info ">
+<pre><span id="VALargument"><span class="keyword">val</span> argument</span> : <code class="type"><a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> list</code></pre><div class="info ">
 Basically : this argument is the argument in the command line. it contains :<ul>
 <li>the axioms : -S, -K, -4, -5</li>
 </ul>

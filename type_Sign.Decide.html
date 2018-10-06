@@ -16,6 +16,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -26,7 +27,7 @@
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;config<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;new_config&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sign</span>.<span class="constructor">Decide</span>.config<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;model&nbsp;=&nbsp;(<span class="constructor">BFO</span>.atom&nbsp;*&nbsp;bool)&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;model&nbsp;=&nbsp;<span class="constructor">BFO</span>.atom&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;decide&nbsp;:&nbsp;<span class="constructor">Sign</span>.<span class="constructor">Decide</span>.config&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sign</span>.<span class="constructor">Decide</span>.model&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;init&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sign</span>.<span class="constructor">Decide</span>.config&nbsp;<span class="keywordsign">-&gt;</span><br>

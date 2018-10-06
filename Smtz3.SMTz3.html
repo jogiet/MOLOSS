@@ -19,6 +19,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -59,7 +60,7 @@ output-channel to communicate with z3<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTans.SAT"><span class="constructor">SAT</span></span> <span class="keyword">of</span> <code class="type">(BFO.atom * bool) list</code></code></td>
+<code><span id="TYPEELTans.SAT"><span class="constructor">SAT</span></span> <span class="keyword">of</span> <code class="type">BFO.atom list</code></code></td>
 
 </tr></table>
 
@@ -77,7 +78,7 @@ Converts a BFO formula to a string
 Basic function to report errors in Lexing/Parsing<br>
 </div>
 
-<pre><span id="VALget_model"><span class="keyword">val</span> get_model</span> : <code class="type">unit -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list</code></pre><div class="info ">
+<pre><span id="VALget_model"><span class="keyword">val</span> get_model</span> : <code class="type">unit -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list</code></pre><div class="info ">
 Gets the model when the solver rerturns SAT<br>
 </div>
 

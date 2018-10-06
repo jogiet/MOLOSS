@@ -21,6 +21,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -173,7 +174,7 @@ The type for a configuration<br>
 
 
 <pre><span id="VALnew_config"><span class="keyword">val</span> new_config</span> : <code class="type">unit -> <a href="Decide.GetDecide.html#TYPEconfig">config</a></code></pre>
-<pre><span id="TYPEmodel"><span class="keyword">type</span> <code class="type"></code>model</span> = <code class="type">(<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list</code> </pre>
+<pre><span id="TYPEmodel"><span class="keyword">type</span> <code class="type"></code>model</span> = <code class="type"><a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list</code> </pre>
 <div class="info ">
 Type of a model returned by SMT-solver<br>
 </div>
@@ -182,10 +183,10 @@ Type of a model returned by SMT-solver<br>
 <pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -><br>       <a href="Ast_fo.FO.html#TYPEformula">Ast_fo.FO.formula</a> list -> <a href="Ast_fo.BFO.html#TYPEformula">Ast_fo.BFO.formula</a> list * int list</code></pre><div class="info ">
 returns :<ul>
 <li>the list of the boxed formula corresponding to the FO formula</li>
-<li>the variables in the boxed formula</li>
+<li>the variables in the boxed formula
+    and add the formula in the config by side effect.</li>
 </ul>
-
-    and add the formula in the config by side effect.<br>
+<br>
 </div>
 
 <pre><span id="EXCEPTIONFound"><span class="keyword">exception</span> Found</span> <span class="keyword">of</span> <code class="type">(<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list * <a href="Ast_fo.BFO.html#TYPEformula">Ast_fo.BFO.formula</a>)</code></pre>
@@ -208,54 +209,54 @@ When \exists_soft applies, it raises an exception with :<ul>
 <br>
 </div>
 
-<pre><span id="VALexist"><span class="keyword">val</span> exist</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALexist"><span class="keyword">val</span> exist</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the \exists rule<br>
 </div>
 
-<pre><span id="VALforall"><span class="keyword">val</span> forall</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALforall"><span class="keyword">val</span> forall</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the \forall rule<br>
 </div>
 
-<pre><span id="VALreflexiv"><span class="keyword">val</span> reflexiv</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALreflexiv"><span class="keyword">val</span> reflexiv</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the reflexivity rule (use the modal axiom :
 W\R w, is implicit in the frame<br>
 </div>
 
-<pre><span id="VALfunctionnal"><span class="keyword">val</span> functionnal</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALfunctionnal"><span class="keyword">val</span> functionnal</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the fonctionnal rule<br>
 </div>
 
-<pre><span id="VALsymmetric"><span class="keyword">val</span> symmetric</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALsymmetric"><span class="keyword">val</span> symmetric</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the symmetrical rule<br>
 </div>
 
-<pre><span id="VALtransitivity"><span class="keyword">val</span> transitivity</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALtransitivity"><span class="keyword">val</span> transitivity</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the transitivity rule<br>
 </div>
 
-<pre><span id="VALeuclidean"><span class="keyword">val</span> euclidean</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALeuclidean"><span class="keyword">val</span> euclidean</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the euclidian rule<br>
 </div>
 
-<pre><span id="VALsoftexist"><span class="keyword">val</span> softexist</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALsoftexist"><span class="keyword">val</span> softexist</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 Decision procedure for the \exists_soft rule<br>
 </div>
 
-<pre><span id="VALsoftreflexiv"><span class="keyword">val</span> softreflexiv</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALsoftreflexiv"><span class="keyword">val</span> softreflexiv</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 <span class="warning">Deprecated.</span>: not used<br>
 Decision procedure for the symmetric rule with assert-soft<br>
 </div>
 
-<pre><span id="VALaxiom_to_dec_proc"><span class="keyword">val</span> axiom_to_dec_proc</span> : <code class="type">string list -><br>       (<a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit) list</code></pre><div class="info ">
+<pre><span id="VALaxiom_to_dec_proc"><span class="keyword">val</span> axiom_to_dec_proc</span> : <code class="type">M.axiom list -><br>       (<a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit) list</code></pre><div class="info ">
 Returns the list of the decision procdures for the formula<br>
 </div>
 
-<pre><span id="VALprint_model"><span class="keyword">val</span> print_model</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre>
-<pre><span id="VALdecisions"><span class="keyword">val</span> decisions</span> : <code class="type">(<a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit) list</code></pre><div class="info ">
+<pre><span id="VALprint_model"><span class="keyword">val</span> print_model</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre>
+<pre><span id="VALdecisions"><span class="keyword">val</span> decisions</span> : <code class="type">(<a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit) list</code></pre><div class="info ">
 the list of decision procedures used to solve a formula<br>
 </div>
 
-<pre><span id="VALdecide"><span class="keyword">val</span> decide</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> (<a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> * bool) list -> unit</code></pre><div class="info ">
+<pre><span id="VALdecide"><span class="keyword">val</span> decide</span> : <code class="type"><a href="Decide.GetDecide.html#TYPEconfig">config</a> -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list -> unit</code></pre><div class="info ">
 a function that applies all decision procedures<br>
 </div>
 

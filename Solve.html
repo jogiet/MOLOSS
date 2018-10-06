@@ -21,6 +21,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -41,8 +42,19 @@ This module contains solve functors for various options.<br>
 
 <pre><span class="keyword">module</span> <a href="Solve.C.html">C</a>: <code class="type"><a href="Convertisseur.html">Convertisseur</a></code></pre>
 <pre><span class="keyword">module</span> <a href="Solve.L.html">L</a>: <code class="type">List</code></pre>
+<pre><span class="keyword">module</span> <a href="Solve.ISet.html">ISet</a>: <code class="type">Set.Make</code><code class="code">(</code><code class="code">sig</code></pre><div class="sig_block">
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type"><a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a></code> </pre>
+
+
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type">'a -> 'a -> int</code></pre></div>
+<pre><code class="code">end</code><code class="code">)</code></pre>
 <pre><span class="keyword">module</span> <a href="Solve.PP.html">PP</a>: <code class="type"><a href="Pprinter.html">Pprinter</a></code></pre>
 <pre><span id="VALfpf"><span class="keyword">val</span> fpf</span> : <code class="type">('a, Format.formatter, unit) Pervasives.format -> 'a</code></pre>
+<pre><span id="VALadd_model"><span class="keyword">val</span> add_model</span> : <code class="type">ISet.elt list -> <a href="Ast_fo.BFO.html#TYPEformula">Ast_fo.BFO.formula</a> -> ISet.elt list</code></pre><div class="info ">
+Add all new axioms occuring in the boxed formula in the 
+    model with the value <code class="code">true</code>.<br>
+</div>
+
 <pre><span class="keyword">module</span> <a href="Solve.Solve.html">Solve</a>: <div class="sig_block"><code class="code">functor (</code><code class="code">SMT</code><code class="code"> : </code><code class="type"><a href="Sign.Smt.html">Sign.Smt</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">D</code><code class="code"> : </code><code class="type"><a href="Sign.Decide.html">Sign.Decide</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">S</code><code class="code"> : </code><code class="type"><a href="Sign.Simplify.html">Sign.Simplify</a></code><code class="code">) -&gt; </code><code class="code">sig</code> <a href="Solve.Solve.html">..</a> <code class="code">end</code></div></div></div></pre>
 <pre><span class="keyword">module</span> <a href="Solve.SolveMod.html">SolveMod</a>: <div class="sig_block"><code class="code">functor (</code><code class="code">SMT</code><code class="code"> : </code><code class="type"><a href="Sign.Smt.html">Sign.Smt</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">D</code><code class="code"> : </code><code class="type"><a href="Sign.Decide.html">Sign.Decide</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">S</code><code class="code"> : </code><code class="type"><a href="Sign.Simplify.html">Sign.Simplify</a></code><code class="code">) -&gt; </code><code class="code">sig</code> <a href="Solve.SolveMod.html">..</a> <code class="code">end</code></div></div></div></pre>
 <pre><span class="keyword">module</span> <a href="Solve.SolveAssert.html">SolveAssert</a>: <div class="sig_block"><code class="code">functor (</code><code class="code">SMT</code><code class="code"> : </code><code class="type"><a href="Sign.Smt.html">Sign.Smt</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">D</code><code class="code"> : </code><code class="type"><a href="Sign.Decide.html">Sign.Decide</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">S</code><code class="code"> : </code><code class="type"><a href="Sign.Simplify.html">Sign.Simplify</a></code><code class="code">) -&gt; </code><code class="code">sig</code> <a href="Solve.SolveAssert.html">..</a> <code class="code">end</code></div></div></div></pre></body></html>

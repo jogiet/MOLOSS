@@ -21,6 +21,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -48,7 +49,7 @@ Type for a configuration. Should contains :<ul>
 
 
 <pre><span id="VALnew_config"><span class="keyword">val</span> new_config</span> : <code class="type">unit -> <a href="Sign.Decide.html#TYPEconfig">config</a></code></pre>
-<pre><span id="TYPEmodel"><span class="keyword">type</span> <code class="type"></code>model</span> = <code class="type">(BFO.atom * bool) list</code> </pre>
+<pre><span id="TYPEmodel"><span class="keyword">type</span> <code class="type"></code>model</span> = <code class="type">BFO.atom list</code> </pre>
 
 
 <pre><span id="VALdecide"><span class="keyword">val</span> decide</span> : <code class="type"><a href="Sign.Decide.html#TYPEconfig">config</a> -> <a href="Sign.Decide.html#TYPEmodel">model</a> -> unit</code></pre><div class="info ">

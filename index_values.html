@@ -17,6 +17,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -36,6 +37,18 @@ formula and add the atom in
 the envirronment by side effect
 </div>
 </td></tr>
+<tr><td><a href="Cmdline.html#VALadd_axs">add_axs</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Solve.html#VALadd_model">add_model</a> [<a href="Solve.html">Solve</a>]</td>
+<td><div class="info">
+Add all new axioms occuring in the boxed formula in the 
+    model with the value <code class="code">true</code>.
+</div>
+</td></tr>
+<tr><td><a href="Cmdline.html#VALanon_fun">anon_fun</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALargs">args</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td><a href="Sign.DecideArg.html#VALargument">argument</a> [<a href="Sign.DecideArg.html">Sign.DecideArg</a>]</td>
 <td><div class="info">
 Basically : this argument is the argument in the command line.
@@ -103,6 +116,8 @@ Does not print the formula,
 Returns the list of the decision procdures for the formula
 </div>
 </td></tr>
+<tr><td><a href="Cmdline.html#VALaxs">axs</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>B</td></tr>
 <tr><td><a href="Smtmsat.SMTmsat.html#VALbfo_to_msat">bfo_to_msat</a> [<a href="Smtmsat.SMTmsat.html">Smtmsat.SMTmsat</a>]</td>
 <td></td></tr>
@@ -241,6 +256,8 @@ return the free variable of a formula
 </div>
 </td></tr>
 <tr><td align="left"><br>F</td></tr>
+<tr><td><a href="Cmdline.html#VALfile">file</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td><a href="Decide.GetDecide.html#VALforall">forall</a> [<a href="Decide.GetDecide.html">Decide.GetDecide</a>]</td>
 <td><div class="info">
 Decision procedure for the \forall rule
@@ -352,6 +369,8 @@ This function  returns : the list of the boxed formula corresponding to the FO f
 Function to launch a solver.
 </div>
 </td></tr>
+<tr><td><a href="Cmdline.html#VALinit">init</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td><a href="Direct.html#VALinit">init</a> [<a href="Direct.html">Direct</a>]</td>
 <td><div class="info">
 Prints the header : the options for proofs and models production,, the FO sort, and the FO predicate for the relation
@@ -375,6 +394,8 @@ returns : the list of the boxed formula corresponding to the FO formula, the var
 Returns the modal degree, i.e.
 </div>
 </td></tr>
+<tr><td><a href="Solve.Solve.html#VALmulti_decide">multi_decide</a> [<a href="Solve.Solve.html">Solve.Solve</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>N</td></tr>
 <tr><td><a href="Smtmsat.SMTmsat.html#VALnegassump">negassump</a> [<a href="Smtmsat.SMTmsat.html">Smtmsat.SMTmsat</a>]</td>
 <td><div class="info">
@@ -400,6 +421,30 @@ This FIFO contains the guards for the assert-soft formulas
 output-channel to communicate with z3
 </div>
 </td></tr>
+<tr><td><a href="Cmdline.html#VALoptAll">optAll</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptDirect">optDirect</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptGetAssert">optGetAssert</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptGetLog">optGetLog</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptGetModel">optGetModel</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptGetSimplify">optGetSimplify</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptNoSimplify">optNoSimplify</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptSoft">optSoft</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptSoftIgnore">optSoftIgnore</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptTime">optTime</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptZ3">optZ3</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
+<tr><td><a href="Cmdline.html#VALoptmSAT">optmSAT</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>P</td></tr>
 <tr><td><a href="Direct.html#VALp_axiom">p_axiom</a> [<a href="Direct.html">Direct</a>]</td>
 <td><div class="info">
@@ -459,6 +504,8 @@ Prints the formula on stdout
 <span class="deprecated">Prints the proof on stdout
 </span></div>
 </td></tr>
+<tr><td><a href="Cmdline.html#VALprint_usage">print_usage</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td><a href="Smtmsat.SMTmsat.html#VALprintbug">printbug</a> [<a href="Smtmsat.SMTmsat.html">Smtmsat.SMTmsat</a>]</td>
 <td><div class="info">
 A printing function for debug
@@ -568,6 +615,8 @@ Decision procedure for the symmetrical rule
 </div>
 </td></tr>
 <tr><td align="left"><br>T</td></tr>
+<tr><td><a href="Cmdline.html#VALtoto">toto</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_proof.html#VALtraite">traite</a> [<a href="Ast_proof.html">Ast_proof</a>]</td>
 <td></td></tr>
 <tr><td><a href="Decide.GetDecide.html#VALtransitivity">transitivity</a> [<a href="Decide.GetDecide.html">Decide.GetDecide</a>]</td>
@@ -585,6 +634,9 @@ This function translates a BFO formula to a 3-CNF formula (used by minisat),
     using Tseityn's algorithm
 </div>
 </td></tr>
+<tr><td align="left"><br>U</td></tr>
+<tr><td><a href="Cmdline.html#VALusage">usage</a> [<a href="Cmdline.html">Cmdline</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>X</td></tr>
 <tr><td><a href="Convertisseur.html#VALx0">x0</a> [<a href="Convertisseur.html">Convertisseur</a>]</td>
 <td></td></tr>

@@ -20,6 +20,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -66,11 +67,11 @@ Prints the header :<ul>
 Returns a fresh int<br>
 </div>
 
-<pre><span id="VALassoc"><span class="keyword">val</span> assoc</span> : <code class="type">(string * string) list</code></pre><div class="info ">
+<pre><span id="VALassoc"><span class="keyword">val</span> assoc</span> : <code class="type">(<a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> * string) list</code></pre><div class="info ">
 An association list between the axioms and their FO translation<br>
 </div>
 
-<pre><span id="VALp_axiom"><span class="keyword">val</span> p_axiom</span> : <code class="type">Pervasives.out_channel -><br>       Pervasives.out_channel option -> string list -> unit</code></pre><div class="info ">
+<pre><span id="VALp_axiom"><span class="keyword">val</span> p_axiom</span> : <code class="type">Pervasives.out_channel -><br>       Pervasives.out_channel option -> <a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> list -> unit</code></pre><div class="info ">
 Give the z3 solver the frame axioms<br>
 </div>
 
@@ -114,7 +115,7 @@ Asks the z3 SMT solver if the formula is SATISFIABLE<br>
 Asks the z3 SMT solver for a kripke model if the formula is SATISFIABLE<br>
 </div>
 
-<pre><span id="VALsolve"><span class="keyword">val</span> solve</span> : <code class="type">FO.formula -> string list -> bool</code></pre><div class="info ">
+<pre><span id="VALsolve"><span class="keyword">val</span> solve</span> : <code class="type">FO.formula -> <a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> list -> bool</code></pre><div class="info ">
 This function solve the formula<br>
 </div>
 </body></html>

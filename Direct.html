@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Decide.html">
-<link rel="next" href="Pprinter.html">
+<link rel="next" href="Cmdline.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -21,6 +21,7 @@
 <link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
 <link title="Decide" rel="Chapter" href="Decide.html">
 <link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Pprinter" rel="Chapter" href="Pprinter.html">
 <link title="Sign" rel="Chapter" href="Sign.html">
 <link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
@@ -30,7 +31,7 @@
 <body>
 <div class="navbar"><a class="pre" href="Decide.html" title="Decide">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Pprinter.html" title="Pprinter">Next</a>
+&nbsp;<a class="post" href="Cmdline.html" title="Cmdline">Next</a>
 </div>
 <h1>Module <a href="type_Direct.html">Direct</a></h1>
 
@@ -72,11 +73,11 @@ Prints the header :<ul>
 Returns a fresh int<br>
 </div>
 
-<pre><span id="VALassoc"><span class="keyword">val</span> assoc</span> : <code class="type">(string * string) list</code></pre><div class="info ">
+<pre><span id="VALassoc"><span class="keyword">val</span> assoc</span> : <code class="type">(<a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> * string) list</code></pre><div class="info ">
 An association list between the axioms and their FO translation<br>
 </div>
 
-<pre><span id="VALp_axiom"><span class="keyword">val</span> p_axiom</span> : <code class="type">Pervasives.out_channel -><br>       Pervasives.out_channel option -> string list -> unit</code></pre><div class="info ">
+<pre><span id="VALp_axiom"><span class="keyword">val</span> p_axiom</span> : <code class="type">Pervasives.out_channel -><br>       Pervasives.out_channel option -> <a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> list -> unit</code></pre><div class="info ">
 Give the z3 solver the frame axioms<br>
 </div>
 
@@ -120,7 +121,7 @@ Asks the z3 SMT solver if the formula is SATISFIABLE<br>
 Asks the z3 SMT solver for a kripke model if the formula is SATISFIABLE<br>
 </div>
 
-<pre><span id="VALsolve"><span class="keyword">val</span> solve</span> : <code class="type">FO.formula -> string list -> bool</code></pre><div class="info ">
+<pre><span id="VALsolve"><span class="keyword">val</span> solve</span> : <code class="type">FO.formula -> <a href="Ast_modal.html#TYPEaxiom">Ast_modal.axiom</a> list -> bool</code></pre><div class="info ">
 This function solve the formula<br>
 </div>
 </body></html>
