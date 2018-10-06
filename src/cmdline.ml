@@ -31,14 +31,16 @@
        (* For Options *)
        "--all", Arg.Set optAll, 
           " Use all SAT oracles (minisat, z3, mSAT";
-       "--z3", Arg.Set optZ3, " Use z3 as SAT oracle";
-       "--mSAT", Arg.Set optmSAT, " Use mSAT as SAT oracle";
+       "--z3", Arg.Set optZ3, 
+          " Use z3 as SAT oracle";
+       "--mSAT", Arg.Set optmSAT, 
+          " Use mSAT as SAT oracle";
        "--get-model", Arg.Set optGetModel, 
-          " Printthe Kripke model \
+          " Print the Kripke model \
           if the formula is satisfiable \
           in the Flat Kripke Model (FKM) format";
        "--get-assert", Arg.Set optGetAssert, 
-          "print the assertions made by the solver \
+          " Print the assertions made by the solver \
           and the final model if the formule is satisfiable";
        "--direct", Arg.Set optDirect, 
           " Use Z3 as a first-order solver \
@@ -46,15 +48,15 @@
           into first-order formulas (no instanciation \
           procedures are used)";
        "--get-log", Arg.Set optGetLog, 
-          "Print the log of interaction \
+          " Print the log of interaction \
           with the z3 SMT solver (only for `direct` mode)";
        "--time", Arg.Set optTime, 
           "Print the time needed to resolve the problem";
       "--soft", Arg.Set optSoft, 
-          "Use `assert-soft` constraints, even if not needed by \
+          " Use `assert-soft` constraints, even if not needed by \
           the considered modal logic";
       "--soft-ignore", Arg.Set optSoftIgnore,
-          "Do not use `assert-soft` constraints, \
+          " Do not use `assert-soft` constraints, \
           even if needed (beware, infinite loop possible in this case!)" ] 
 
   let usage = "usage : moloss.native file.intohylo [axioms] [options]"

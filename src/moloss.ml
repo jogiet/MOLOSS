@@ -187,7 +187,7 @@ let _ =
             Printf.printf "%d,%d,%s%d\027[0m,%s%d\027[0m\n" l d cls ls cds ds
         else if Cmdline.(!optGetAssert) then
           solve_assert f
-        else if Cmdline.(!optGetAssert) then
+        else if Cmdline.(!optGetModel) then
           solve_model f
         else
           solve_vanilla f
