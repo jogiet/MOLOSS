@@ -6,6 +6,7 @@ Ast_proof
 Convertisseur
 Decide
 Direct
+Cmdline
 Pprinter
 Sign
 Smtminisat
