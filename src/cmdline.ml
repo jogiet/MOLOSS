@@ -21,7 +21,7 @@
   let optNoSimplify = ref true
   let optTime = ref false
 
-  let args = 
+  let args = Arg.align
       (* For axioms *)
       ["-S", Arg.Unit (add_axs Ast_modal.AxS ), " Use reflexivity axiom"; 
        "-B", Arg.Unit (add_axs Ast_modal.AxB ), " Use symmetry axiom"; 
