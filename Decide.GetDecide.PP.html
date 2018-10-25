@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Decide.GetDecide.L.html">
+<link rel="next" href="Decide.GetDecide.M.html">
+<link rel="Up" href="Decide.GetDecide.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Decide.GetDecide.PP</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Decide.GetDecide.L.html" title="Decide.GetDecide.L">Previous</a>
+&nbsp;<a class="up" href="Decide.GetDecide.html" title="Decide.GetDecide">Up</a>
+&nbsp;<a class="post" href="Decide.GetDecide.M.html" title="Decide.GetDecide.M">Next</a>
+</div>
+<h1>Module <a href="type_Decide.GetDecide.PP.html">Decide.GetDecide.PP</a></h1>
+
+<pre><span class="keyword">module</span> PP: <code class="type"><a href="Pprinter.html">Pprinter</a></code></pre><hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Pprinter.S.html">S</a>: <code class="type">String</code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.F.html">F</a>: <code class="type">Format</code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.FO.html">FO</a>: <code class="type"><a href="Ast_fo.FO.html">Ast_fo.FO</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.BFO.html">BFO</a>: <code class="type"><a href="Ast_fo.BFO.html">Ast_fo.BFO</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.M.html">M</a>: <code class="type"><a href="Ast_modal.html">Ast_modal</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.P.html">P</a>: <code class="type"><a href="Ast_proof.P.html">Ast_proof.P</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Pprinter.H.html">H</a>: <code class="type">Hashtbl</code></pre>
+<pre><span id="VALaux_m"><span class="keyword">val</span> aux_m</span> : <code class="type">M.formula -> string</code></pre><div class="info ">
+Does not print the formula,
+      but returns a string representing the formula<br>
+</div>
+
+<pre><span id="VALprint_m"><span class="keyword">val</span> print_m</span> : <code class="type">M.formula -> unit</code></pre><div class="info ">
+Prints the formula on stdout<br>
+</div>
+
+<pre><span id="VALaux_fo"><span class="keyword">val</span> aux_fo</span> : <code class="type">FO.formula -> string</code></pre><div class="info ">
+Does not print the formula,
+      but returns a string representing the formula<br>
+</div>
+
+<pre><span id="VALprint_fo"><span class="keyword">val</span> print_fo</span> : <code class="type">FO.formula -> unit</code></pre><div class="info ">
+Prints the formula on stdout<br>
+</div>
+
+<pre><span id="VALaux_bfo"><span class="keyword">val</span> aux_bfo</span> : <code class="type">BFO.formula -> string</code></pre><div class="info ">
+Does not print the formula,
+      but returns a string representing the formula<br>
+</div>
+
+<pre><span id="VALprint_bfo"><span class="keyword">val</span> print_bfo</span> : <code class="type">BFO.formula -> unit</code></pre><div class="info ">
+Prints the formula on stdout<br>
+</div>
+
+<pre><span id="VALp_off"><span class="keyword">val</span> p_off</span> : <code class="type">int -> string</code></pre><div class="info ">
+Returns an offset made of spaces<br>
+</div>
+
+<pre><span id="VALaux_fp"><span class="keyword">val</span> aux_fp</span> : <code class="type">(string, FO.formula) H.t -> P.formula -> string</code></pre><div class="info ">
+<span class="warning">Deprecated.</span>We don't handle Z3 proofs yet<br>
+Does not print the formula,
+      but returns a string representing the formula<br>
+</div>
+
+<pre><span id="VALaux_pp"><span class="keyword">val</span> aux_pp</span> : <code class="type">(string, FO.formula) H.t -> int -> P.proof -> string</code></pre><div class="info ">
+<span class="warning">Deprecated.</span>We don't handle Z3 proofs yet<br>
+Does not print the proof,
+      but returns a string representing the proof<br>
+</div>
+
+<pre><span id="VALprint_proof"><span class="keyword">val</span> print_proof</span> : <code class="type">(string, FO.formula) H.t -> P.proof -> unit</code></pre><div class="info ">
+<span class="warning">Deprecated.</span>We don't handle Z3 proofs yet<br>
+Prints the proof on stdout<br>
+</div>
+</body></html>

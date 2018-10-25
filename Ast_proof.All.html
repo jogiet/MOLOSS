@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ast_proof.H.html">
+<link rel="next" href="Ast_proof.Proof.html">
+<link rel="Up" href="Ast_proof.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Ast_proof.All</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ast_proof.H.html" title="Ast_proof.H">Previous</a>
+&nbsp;<a class="up" href="Ast_proof.html" title="Ast_proof">Up</a>
+&nbsp;<a class="post" href="Ast_proof.Proof.html" title="Ast_proof.Proof">Next</a>
+</div>
+<h1>Module <a href="type_Ast_proof.All.html">Ast_proof.All</a></h1>
+
+<pre><span class="keyword">module</span> All: <code class="code">sig</code> <a href="Ast_proof.All.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<br>
+This module contains code to extract and use Unsatifiability proof
+      returned by Z3<br>
+
+<pre><code><span id="TYPEall"><span class="keyword">type</span> <code class="type"></code>all</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.TRUE"><span class="constructor">TRUE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.FALSE"><span class="constructor">FALSE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Atom"><span class="constructor">Atom</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Reff"><span class="constructor">Reff</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Refp"><span class="constructor">Refp</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Impl"><span class="constructor">Impl</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Equiv"><span class="constructor">Equiv</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Conj"><span class="constructor">Conj</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Dij"><span class="constructor">Dij</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Axiom"><span class="constructor">Axiom</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Asserted"><span class="constructor">Asserted</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.AndElim"><span class="constructor">AndElim</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.MP"><span class="constructor">MP</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Rewrite"><span class="constructor">Rewrite</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Unit"><span class="constructor">Unit</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Monotonicity"><span class="constructor">Monotonicity</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Equal"><span class="constructor">Equal</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Trans"><span class="constructor">Trans</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Hyp"><span class="constructor">Hyp</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTall.Lemma"><span class="constructor">Lemma</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr></table>
+
+
+
+<pre><code><span id="TYPEfile"><span class="keyword">type</span> <code class="type"></code>file</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfile.Declf"><span class="constructor">Declf</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEfile">file</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfile.Declp"><span class="constructor">Declp</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Ast_proof.All.html#TYPEall">all</a> * <a href="Ast_proof.All.html#TYPEfile">file</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfile.Proof"><span class="constructor">Proof</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_proof.All.html#TYPEall">all</a></code></code></td>
+
+</tr></table>
+
+
+</body></html>

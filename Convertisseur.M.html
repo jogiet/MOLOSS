@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Convertisseur.S.html">
+<link rel="next" href="Convertisseur.FO.html">
+<link rel="Up" href="Convertisseur.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Convertisseur.M</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Convertisseur.S.html" title="Convertisseur.S">Previous</a>
+&nbsp;<a class="up" href="Convertisseur.html" title="Convertisseur">Up</a>
+&nbsp;<a class="post" href="Convertisseur.FO.html" title="Convertisseur.FO">Next</a>
+</div>
+<h1>Module <a href="type_Convertisseur.M.html">Convertisseur.M</a></h1>
+
+<pre><span class="keyword">module</span> M: <code class="type"><a href="Ast_modal.html">Ast_modal</a></code></pre><hr width="100%">
+
+<pre><span id="TYPEident"><span class="keyword">type</span> <code class="type"></code>ident</span> = <code class="type">string</code> </pre>
+
+
+<pre><code><span id="TYPEformula"><span class="keyword">type</span> <code class="type"></code>formula</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.True"><span class="constructor">True</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.False"><span class="constructor">False</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Atom"><span class="constructor">Atom</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Conj"><span class="constructor">Conj</span></span> <span class="keyword">of</span> <code class="type">(<a href="Ast_modal.html#TYPEformula">formula</a> * <a href="Ast_modal.html#TYPEformula">formula</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Dij"><span class="constructor">Dij</span></span> <span class="keyword">of</span> <code class="type">(<a href="Ast_modal.html#TYPEformula">formula</a> * <a href="Ast_modal.html#TYPEformula">formula</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Impl"><span class="constructor">Impl</span></span> <span class="keyword">of</span> <code class="type">(<a href="Ast_modal.html#TYPEformula">formula</a> * <a href="Ast_modal.html#TYPEformula">formula</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Boxe"><span class="constructor">Boxe</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Diamond"><span class="constructor">Diamond</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a></code></code></td>
+
+</tr></table>
+
+<div class="info ">
+This type represents the modal logic formulas<br>
+</div>
+
+
+<pre><code><span id="TYPEaxiom"><span class="keyword">type</span> <code class="type"></code>axiom</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTaxiom.AxS"><span class="constructor">AxS</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTaxiom.AxB"><span class="constructor">AxB</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTaxiom.Ax4"><span class="constructor">Ax4</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTaxiom.Ax5"><span class="constructor">Ax5</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTaxiom.AxCD"><span class="constructor">AxCD</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="VALprop_neg"><span class="keyword">val</span> prop_neg</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a> -> <a href="Ast_modal.html#TYPEformula">formula</a></code></pre><div class="info ">
+This function propagate a negation in a modal formula.
+     Helps to compute the NNF of the formula<br>
+</div>
+
+<pre><span id="VALgetNNF"><span class="keyword">val</span> getNNF</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a> -> <a href="Ast_modal.html#TYPEformula">formula</a></code></pre><div class="info ">
+Returns the negativ-normal form of the formula<br>
+</div>
+
+<pre><span id="VALformLength"><span class="keyword">val</span> formLength</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a> -> int</code></pre><div class="info ">
+Returns the length of the Modal logic formula<br>
+</div>
+
+<pre><span id="VALmodDegree"><span class="keyword">val</span> modDegree</span> : <code class="type"><a href="Ast_modal.html#TYPEformula">formula</a> -> int</code></pre><div class="info ">
+Returns the modal degree, i.e. then number of [] and &lt;&gt; in the
+   * formula<br>
+</div>
+</body></html>

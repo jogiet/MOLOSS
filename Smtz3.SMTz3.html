@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="Up" href="Smtz3.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Smtz3.SMTz3</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Smtz3.html" title="Smtz3">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Smtz3.SMTz3.html">Smtz3.SMTz3</a></h1>
+
+<pre><span class="keyword">module</span> SMTz3: <code class="code">sig</code> <a href="Smtz3.SMTz3.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<br>
+Module for interace with the Z3 Sat-Solver<br>
+
+<pre><span class="keyword">module</span> <a href="Smtz3.SMTz3.BFO.html">BFO</a>: <code class="type"><a href="Ast_fo.BFO.html">Ast_fo.BFO</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Smtz3.SMTz3.P.html">P</a>: <code class="type"><a href="Ast_proof.html">Ast_proof</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Smtz3.SMTz3.U.html">U</a>: <code class="type">Unix</code></pre>
+<pre><span id="VALic"><span class="keyword">val</span> ic</span> : <code class="type">Pervasives.in_channel Pervasives.ref</code></pre><div class="info ">
+input-channel to communicate with z3<br>
+</div>
+
+<pre><span id="VALoc"><span class="keyword">val</span> oc</span> : <code class="type">Pervasives.out_channel Pervasives.ref</code></pre><div class="info ">
+output-channel to communicate with z3<br>
+</div>
+
+<pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="VALclose"><span class="keyword">val</span> close</span> : <code class="type">unit -> unit</code></pre>
+<pre><code><span id="TYPEans"><span class="keyword">type</span> <code class="type"></code>ans</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTans.UNSAT"><span class="constructor">UNSAT</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTans.SAT"><span class="constructor">SAT</span></span> <span class="keyword">of</span> <code class="type">BFO.atom list</code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="VALbfo_to_smtlib"><span class="keyword">val</span> bfo_to_smtlib</span> : <code class="type">BFO.formula -> string</code></pre><div class="info ">
+Converts a BFO formula to a string
+    representing the formula in the SMT-LIB<br>
+</div>
+
+<pre><span id="VALdec_const"><span class="keyword">val</span> dec_const</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="VALdec_assert"><span class="keyword">val</span> dec_assert</span> : <code class="type">BFO.formula -> unit</code></pre>
+<pre><span id="VALdec_assert_soft"><span class="keyword">val</span> dec_assert_soft</span> : <code class="type">BFO.formula -> int -> unit</code></pre>
+<pre><span id="VALreport"><span class="keyword">val</span> report</span> : <code class="type">Lexing.position * Lexing.position -> string -> unit</code></pre><div class="info ">
+Basic function to report errors in Lexing/Parsing<br>
+</div>
+
+<pre><span id="VALget_model"><span class="keyword">val</span> get_model</span> : <code class="type">unit -> <a href="Ast_fo.BFO.html#TYPEatom">Ast_fo.BFO.atom</a> list</code></pre><div class="info ">
+Gets the model when the solver rerturns SAT<br>
+</div>
+
+<pre><span id="VALget_proof"><span class="keyword">val</span> get_proof</span> : <code class="type">Pervasives.out_channel -> Pervasives.in_channel -> 'a -> P.P.proof</code></pre><div class="info ">
+Gets the proof when the solver returns UNSAT<br>
+</div>
+
+<pre><span id="VALget_ans"><span class="keyword">val</span> get_ans</span> : <code class="type">unit -> <a href="Smtz3.SMTz3.html#TYPEans">ans</a></code></pre><div class="info ">
+Asks the solver if the formula is SAT<br>
+</div>
+</body></html>

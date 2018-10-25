@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ast_fo.FO.html">
+<link rel="next" href="Ast_fo.H.html">
+<link rel="Up" href="Ast_fo.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Moloss" rel="Chapter" href="Moloss.html">
+<link title="Solve" rel="Chapter" href="Solve.html">
+<link title="Ast_fo" rel="Chapter" href="Ast_fo.html">
+<link title="Ast_modal" rel="Chapter" href="Ast_modal.html">
+<link title="Ast_proof" rel="Chapter" href="Ast_proof.html">
+<link title="Convertisseur" rel="Chapter" href="Convertisseur.html">
+<link title="Decide" rel="Chapter" href="Decide.html">
+<link title="Direct" rel="Chapter" href="Direct.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Pprinter" rel="Chapter" href="Pprinter.html">
+<link title="Sign" rel="Chapter" href="Sign.html">
+<link title="Smtminisat" rel="Chapter" href="Smtminisat.html">
+<link title="Smtmsat" rel="Chapter" href="Smtmsat.html">
+<link title="Smtz3" rel="Chapter" href="Smtz3.html"><title>Ast_fo.BFO</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ast_fo.FO.html" title="Ast_fo.FO">Previous</a>
+&nbsp;<a class="up" href="Ast_fo.html" title="Ast_fo">Up</a>
+&nbsp;<a class="post" href="Ast_fo.H.html" title="Ast_fo.H">Next</a>
+</div>
+<h1>Module <a href="type_Ast_fo.BFO.html">Ast_fo.BFO</a></h1>
+
+<pre><span class="keyword">module</span> BFO: <code class="code">sig</code> <a href="Ast_fo.BFO.html">..</a> <code class="code">end</code></pre><div class="info module top">
+module for the boxed first-order formula, i.e. SAT-logic<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEatom"><span class="keyword">type</span> <code class="type"></code>atom</span> = <code class="type">int</code> </pre>
+<div class="info ">
+This type for atom in boxed first order formulae<br>
+</div>
+
+
+<pre><code><span id="TYPEformula"><span class="keyword">type</span> <code class="type"></code>formula</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Atom"><span class="constructor">Atom</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_fo.BFO.html#TYPEatom">atom</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_fo.BFO.html#TYPEformula">formula</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Conj"><span class="constructor">Conj</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_fo.BFO.html#TYPEformula">formula</a> * <a href="Ast_fo.BFO.html#TYPEformula">formula</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTformula.Dij"><span class="constructor">Dij</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast_fo.BFO.html#TYPEformula">formula</a> * <a href="Ast_fo.BFO.html#TYPEformula">formula</a></code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type"><a href="Ast_fo.BFO.html#TYPEformula">formula</a></code> </pre>
+<div class="info ">
+In order to use *.Make functors<br>
+</div>
+
+
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type">'a -> 'a -> int</code></pre><div class="info ">
+In order to use *.Make functors<br>
+</div>
+
+<pre><span id="TYPEvalue"><span class="keyword">type</span> <code class="type"></code>value</span> = <code class="type">bool</code> </pre>
+
+</body></html>
