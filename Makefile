@@ -38,6 +38,7 @@ formula: native
 # documentation
 doc_html: doc/moloss.odocl
 	$(OCB) doc/moloss.docdir/index.html
+	cp doc/style.css moloss.docdir/style.css
 
 doc_man: doc/moloss.odocl
 	$(OCB) doc/moloss.docdir/man
